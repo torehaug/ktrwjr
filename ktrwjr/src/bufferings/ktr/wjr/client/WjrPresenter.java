@@ -1,3 +1,18 @@
+/*
+ * Copyright 2010 bufferings[at]gmail.com
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
 package bufferings.ktr.wjr.client;
 
 import java.util.List;
@@ -7,7 +22,7 @@ import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
 
-import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -75,7 +90,7 @@ public class WjrPresenter implements WjrDisplayHandler {
   public void onRunButtonClick() {
     List<WjrMethodItem> checkedMethods = view.getCheckedMethodItems();
     if (checkedMethods.size() == 0) {
-      Log.warn("No method items are checked.");
+      GWT.log("No method items are checked.");
       view.notifyRunningFinished();
       return;
     }
@@ -96,7 +111,7 @@ public class WjrPresenter implements WjrDisplayHandler {
   @Override
   public void onCancelButtonClick() {
     if (!running) {
-      Log.warn("No tests are running.");
+      GWT.log("No tests are running.");
       return;
     }
     cancelRequested = true;
@@ -110,7 +125,7 @@ public class WjrPresenter implements WjrDisplayHandler {
       new AsyncCallback<WjrMethodItem>() {
         @Override
         public void onFailure(Throwable caught) {
-          Log.warn("Run WjrMethodItem failed.", caught);
+          GWT.log("Run WjrMethodItem failed.", caught);
 
           WjrMethodItem stored = checkedMethods.get(currentIndex);
           stored.setState(State.ERROR);
@@ -138,7 +153,7 @@ public class WjrPresenter implements WjrDisplayHandler {
 
         @Override
         public void onSuccess(WjrMethodItem result) {
-          Log.info("Run WjrMethodItem succeeded.");
+          GWT.log("Run WjrMethodItem succeeded.");
 
           WjrMethodItem stored =
             store.getMethodItem(result.getMethodCanonicalName());

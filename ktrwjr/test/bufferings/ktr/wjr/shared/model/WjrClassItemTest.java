@@ -35,174 +35,223 @@ public class WjrClassItemTest {
   }
 
   @Test
-  public void wjrClassItem_CanConstruct() {
-    WjrClassItem wjrClassItem = new WjrClassItem("Foo");
-    assertThat(wjrClassItem.getClassCanonicalName(), is("Foo"));
-    assertThat(wjrClassItem.getClassSimpleName(), is("Foo"));
+  public void wjrClassItem_CanConstruct_WithDefaultPackageClass() {
+    WjrClassItem classItem = new WjrClassItem("Foo");
+    assertThat(classItem.getClassCanonicalName(), is("Foo"));
+    assertThat(classItem.getClassSimpleName(), is("Foo"));
+  }
 
-    WjrClassItem wjrClassItem2 = new WjrClassItem("foo.Foo");
-    assertThat(wjrClassItem2.getClassCanonicalName(), is("foo.Foo"));
-    assertThat(wjrClassItem2.getClassSimpleName(), is("Foo"));
+  @Test
+  public void wjrClassItem_CanConstruct_WithCommonClass() {
+    WjrClassItem classItem = new WjrClassItem("bar.foo.Foo");
+    assertThat(classItem.getClassCanonicalName(), is("bar.foo.Foo"));
+    assertThat(classItem.getClassSimpleName(), is("Foo"));
   }
 
   @Test
   public void clearSummary_CanClearSummary() {
-    WjrClassItem wjrClassItem = new WjrClassItem("foo.Foo");
-    wjrClassItem.state = State.ERROR;
-    wjrClassItem.successCount = 10;
-    wjrClassItem.failureCount = 5;
-    wjrClassItem.errorCount = 3;
-    wjrClassItem.notYetCount = 2;
-    wjrClassItem.totalCount = 20;
+    WjrClassItem classItem = new WjrClassItem("foo.Foo");
+    classItem.state = State.ERROR;
+    classItem.successCount = 10;
+    classItem.failureCount = 5;
+    classItem.errorCount = 3;
+    classItem.runningCount = 5;
+    classItem.notYetCount = 2;
+    classItem.totalCount = 25;
 
-    wjrClassItem.clearSummary();
+    classItem.clearSummary();
 
-    assertThat(wjrClassItem.getClassCanonicalName(), is("foo.Foo"));
-    assertThat(wjrClassItem.getClassSimpleName(), is("Foo"));
+    assertThat(classItem.getClassCanonicalName(), is("foo.Foo"));
+    assertThat(classItem.getClassSimpleName(), is("Foo"));
 
-    assertThat(wjrClassItem.state, is(State.NOT_YET));
-    assertThat(wjrClassItem.successCount, is(0));
-    assertThat(wjrClassItem.failureCount, is(0));
-    assertThat(wjrClassItem.errorCount, is(0));
-    assertThat(wjrClassItem.notYetCount, is(20));
-    assertThat(wjrClassItem.totalCount, is(20));
+    assertThat(classItem.getState(), is(State.NOT_YET));
+    assertThat(classItem.getSuccessCount(), is(0));
+    assertThat(classItem.getFailureCount(), is(0));
+    assertThat(classItem.getErrorCount(), is(0));
+    assertThat(classItem.getRunningCount(), is(0));
+    assertThat(classItem.getNotYetCount(), is(25));
+    assertThat(classItem.getTotalCount(), is(25));
   }
 
   @Test(expected = NullPointerException.class)
   public void updateSummary_WillThrowNPE_WhenWjrStoreIsNull() {
-    WjrClassItem wjrClassItem = new WjrClassItem("foo.Foo");
-    wjrClassItem.updateSummary(null);
+    WjrClassItem classItem = new WjrClassItem("foo.Foo");
+    classItem.updateSummary(null);
   }
 
   @Test
-  public void updateSummary_WillBeErrorState_WhenErrorMethodExist() {
-    WjrStore wjrStore = new WjrStore();
-    WjrClassItem wjrClassItem = new WjrClassItem("foo.Foo");
-    wjrStore.addClassItem(wjrClassItem);
+  public void updateSummary_WillBeErrorState_WithError() {
+    WjrStore store = new WjrStore();
+    WjrClassItem classItem = new WjrClassItem("foo.Foo");
+    store.addClassItem(classItem);
 
-    WjrMethodItem wjrMethodItem1 = new WjrMethodItem("foo.Foo", "barMethod1");
-    WjrMethodItem wjrMethodItem2 = new WjrMethodItem("foo.Foo", "barMethod2");
-    WjrMethodItem wjrMethodItem3 = new WjrMethodItem("foo.Foo", "barMethod3");
-    WjrMethodItem wjrMethodItem4 = new WjrMethodItem("foo.Foo", "barMethod4");
-    WjrMethodItem wjrMethodItem5 = new WjrMethodItem("foo.Foo", "barMethod5");
-    wjrStore.addMethodItem(wjrMethodItem1);
-    wjrStore.addMethodItem(wjrMethodItem2);
-    wjrStore.addMethodItem(wjrMethodItem3);
-    wjrStore.addMethodItem(wjrMethodItem4);
-    wjrStore.addMethodItem(wjrMethodItem5);
+    WjrMethodItem methodItem1 = new WjrMethodItem("foo.Foo", "barMethod1");
+    WjrMethodItem methodItem2 = new WjrMethodItem("foo.Foo", "barMethod2");
+    WjrMethodItem methodItem3 = new WjrMethodItem("foo.Foo", "barMethod3");
+    WjrMethodItem methodItem4 = new WjrMethodItem("foo.Foo", "barMethod4");
+    WjrMethodItem methodItem5 = new WjrMethodItem("foo.Foo", "barMethod5");
+    WjrMethodItem methodItem6 = new WjrMethodItem("foo.Foo", "barMethod6");
+    store.addMethodItem(methodItem1);
+    store.addMethodItem(methodItem2);
+    store.addMethodItem(methodItem3);
+    store.addMethodItem(methodItem4);
+    store.addMethodItem(methodItem5);
+    store.addMethodItem(methodItem6);
 
-    wjrMethodItem1.setState(State.SUCCESS);
-    wjrMethodItem2.setState(State.ERROR);
-    wjrMethodItem3.setState(State.FAILURE);
-    wjrMethodItem4.setState(State.SUCCESS);
-    wjrMethodItem5.setState(State.FAILURE);
+    methodItem1.setState(State.SUCCESS);
+    methodItem2.setState(State.ERROR);
+    methodItem3.setState(State.FAILURE);
+    methodItem4.setState(State.SUCCESS);
+    methodItem5.setState(State.NOT_YET);
+    methodItem6.setState(State.RUNNING);
 
-    wjrClassItem.updateSummary(wjrStore);
+    classItem.updateSummary(store);
 
-    assertThat(wjrClassItem.state, is(State.ERROR));
-    assertThat(wjrClassItem.successCount, is(2));
-    assertThat(wjrClassItem.failureCount, is(2));
-    assertThat(wjrClassItem.errorCount, is(1));
-    assertThat(wjrClassItem.notYetCount, is(0));
-    assertThat(wjrClassItem.totalCount, is(5));
+    assertThat(classItem.getState(), is(State.ERROR));
+    assertThat(classItem.getSuccessCount(), is(2));
+    assertThat(classItem.getFailureCount(), is(1));
+    assertThat(classItem.getErrorCount(), is(1));
+    assertThat(classItem.getRunningCount(), is(1));
+    assertThat(classItem.getNotYetCount(), is(1));
+    assertThat(classItem.getTotalCount(), is(6));
   }
 
   @Test
-  public void updateSummary_WillBeFailureState_WhenFailureMethodExistAndErrorNotExist() {
-    WjrStore wjrStore = new WjrStore();
-    WjrClassItem wjrClassItem = new WjrClassItem("foo.Foo");
-    wjrStore.addClassItem(wjrClassItem);
+  public void updateSummary_WillBeFailureState_WithFailureAndNoError() {
+    WjrStore store = new WjrStore();
+    WjrClassItem classItem = new WjrClassItem("foo.Foo");
+    store.addClassItem(classItem);
 
-    WjrMethodItem wjrMethodItem1 = new WjrMethodItem("foo.Foo", "barMethod1");
-    WjrMethodItem wjrMethodItem2 = new WjrMethodItem("foo.Foo", "barMethod2");
-    WjrMethodItem wjrMethodItem3 = new WjrMethodItem("foo.Foo", "barMethod3");
-    WjrMethodItem wjrMethodItem4 = new WjrMethodItem("foo.Foo", "barMethod4");
-    WjrMethodItem wjrMethodItem5 = new WjrMethodItem("foo.Foo", "barMethod5");
-    wjrStore.addMethodItem(wjrMethodItem1);
-    wjrStore.addMethodItem(wjrMethodItem2);
-    wjrStore.addMethodItem(wjrMethodItem3);
-    wjrStore.addMethodItem(wjrMethodItem4);
-    wjrStore.addMethodItem(wjrMethodItem5);
+    WjrMethodItem methodItem1 = new WjrMethodItem("foo.Foo", "barMethod1");
+    WjrMethodItem methodItem2 = new WjrMethodItem("foo.Foo", "barMethod2");
+    WjrMethodItem methodItem3 = new WjrMethodItem("foo.Foo", "barMethod3");
+    WjrMethodItem methodItem4 = new WjrMethodItem("foo.Foo", "barMethod4");
+    WjrMethodItem methodItem5 = new WjrMethodItem("foo.Foo", "barMethod5");
+    WjrMethodItem methodItem6 = new WjrMethodItem("foo.Foo", "barMethod6");
+    store.addMethodItem(methodItem1);
+    store.addMethodItem(methodItem2);
+    store.addMethodItem(methodItem3);
+    store.addMethodItem(methodItem4);
+    store.addMethodItem(methodItem5);
+    store.addMethodItem(methodItem6);
 
-    wjrMethodItem1.setState(State.SUCCESS);
-    wjrMethodItem2.setState(State.NOT_YET);
-    wjrMethodItem3.setState(State.FAILURE);
-    wjrMethodItem4.setState(State.SUCCESS);
-    wjrMethodItem5.setState(State.FAILURE);
+    methodItem1.setState(State.SUCCESS);
+    methodItem2.setState(State.FAILURE);
+    methodItem3.setState(State.FAILURE);
+    methodItem4.setState(State.SUCCESS);
+    methodItem5.setState(State.NOT_YET);
+    methodItem6.setState(State.RUNNING);
 
-    wjrClassItem.updateSummary(wjrStore);
+    classItem.updateSummary(store);
 
-    assertThat(wjrClassItem.state, is(State.FAILURE));
-    assertThat(wjrClassItem.successCount, is(2));
-    assertThat(wjrClassItem.failureCount, is(2));
-    assertThat(wjrClassItem.errorCount, is(0));
-    assertThat(wjrClassItem.notYetCount, is(1));
-    assertThat(wjrClassItem.totalCount, is(5));
+    assertThat(classItem.getState(), is(State.FAILURE));
+    assertThat(classItem.getSuccessCount(), is(2));
+    assertThat(classItem.getFailureCount(), is(2));
+    assertThat(classItem.getErrorCount(), is(0));
+    assertThat(classItem.getRunningCount(), is(1));
+    assertThat(classItem.getNotYetCount(), is(1));
+    assertThat(classItem.getTotalCount(), is(6));
   }
 
   @Test
-  public void updateSummary_WillBeNotYetState_WhenNotYetMethodExistAndFailureAndErrorNotExist() {
-    WjrStore wjrStore = new WjrStore();
-    WjrClassItem wjrClassItem = new WjrClassItem("foo.Foo");
-    wjrStore.addClassItem(wjrClassItem);
+  public void updateSummary_WillBeRunningState_WithRunningAndNoFailureError() {
+    WjrStore store = new WjrStore();
+    WjrClassItem classItem = new WjrClassItem("foo.Foo");
+    store.addClassItem(classItem);
 
-    WjrMethodItem wjrMethodItem1 = new WjrMethodItem("foo.Foo", "barMethod1");
-    WjrMethodItem wjrMethodItem2 = new WjrMethodItem("foo.Foo", "barMethod2");
-    WjrMethodItem wjrMethodItem3 = new WjrMethodItem("foo.Foo", "barMethod3");
-    WjrMethodItem wjrMethodItem4 = new WjrMethodItem("foo.Foo", "barMethod4");
-    WjrMethodItem wjrMethodItem5 = new WjrMethodItem("foo.Foo", "barMethod5");
-    wjrStore.addMethodItem(wjrMethodItem1);
-    wjrStore.addMethodItem(wjrMethodItem2);
-    wjrStore.addMethodItem(wjrMethodItem3);
-    wjrStore.addMethodItem(wjrMethodItem4);
-    wjrStore.addMethodItem(wjrMethodItem5);
+    WjrMethodItem methodItem1 = new WjrMethodItem("foo.Foo", "barMethod1");
+    WjrMethodItem methodItem2 = new WjrMethodItem("foo.Foo", "barMethod2");
+    WjrMethodItem methodItem3 = new WjrMethodItem("foo.Foo", "barMethod3");
+    WjrMethodItem methodItem4 = new WjrMethodItem("foo.Foo", "barMethod4");
+    WjrMethodItem methodItem5 = new WjrMethodItem("foo.Foo", "barMethod5");
+    store.addMethodItem(methodItem1);
+    store.addMethodItem(methodItem2);
+    store.addMethodItem(methodItem3);
+    store.addMethodItem(methodItem4);
+    store.addMethodItem(methodItem5);
 
-    wjrMethodItem1.setState(State.SUCCESS);
-    wjrMethodItem2.setState(State.NOT_YET);
-    wjrMethodItem3.setState(State.SUCCESS);
-    wjrMethodItem4.setState(State.SUCCESS);
-    wjrMethodItem5.setState(State.SUCCESS);
+    methodItem1.setState(State.SUCCESS);
+    methodItem2.setState(State.NOT_YET);
+    methodItem3.setState(State.SUCCESS);
+    methodItem4.setState(State.RUNNING);
+    methodItem5.setState(State.SUCCESS);
 
-    wjrClassItem.updateSummary(wjrStore);
+    classItem.updateSummary(store);
 
-    assertThat(wjrClassItem.state, is(State.NOT_YET));
-    assertThat(wjrClassItem.successCount, is(4));
-    assertThat(wjrClassItem.failureCount, is(0));
-    assertThat(wjrClassItem.errorCount, is(0));
-    assertThat(wjrClassItem.notYetCount, is(1));
-    assertThat(wjrClassItem.totalCount, is(5));
+    assertThat(classItem.getState(), is(State.RUNNING));
+    assertThat(classItem.getSuccessCount(), is(3));
+    assertThat(classItem.getFailureCount(), is(0));
+    assertThat(classItem.getErrorCount(), is(0));
+    assertThat(classItem.getRunningCount(), is(1));
+    assertThat(classItem.getNotYetCount(), is(1));
+    assertThat(classItem.getTotalCount(), is(5));
   }
 
   @Test
-  public void updateSummary_WillBeSuccessState_WhenAllMethodSuccess() {
-    WjrStore wjrStore = new WjrStore();
-    WjrClassItem wjrClassItem = new WjrClassItem("foo.Foo");
-    wjrStore.addClassItem(wjrClassItem);
+  public void updateSummary_WillBeNotYetState_WithNotYetAndNoFailureErrorRunning() {
+    WjrStore store = new WjrStore();
+    WjrClassItem classItem = new WjrClassItem("foo.Foo");
+    store.addClassItem(classItem);
 
-    WjrMethodItem wjrMethodItem1 = new WjrMethodItem("foo.Foo", "barMethod1");
-    WjrMethodItem wjrMethodItem2 = new WjrMethodItem("foo.Foo", "barMethod2");
-    WjrMethodItem wjrMethodItem3 = new WjrMethodItem("foo.Foo", "barMethod3");
-    WjrMethodItem wjrMethodItem4 = new WjrMethodItem("foo.Foo", "barMethod4");
-    WjrMethodItem wjrMethodItem5 = new WjrMethodItem("foo.Foo", "barMethod5");
-    wjrStore.addMethodItem(wjrMethodItem1);
-    wjrStore.addMethodItem(wjrMethodItem2);
-    wjrStore.addMethodItem(wjrMethodItem3);
-    wjrStore.addMethodItem(wjrMethodItem4);
-    wjrStore.addMethodItem(wjrMethodItem5);
+    WjrMethodItem methodItem1 = new WjrMethodItem("foo.Foo", "barMethod1");
+    WjrMethodItem methodItem2 = new WjrMethodItem("foo.Foo", "barMethod2");
+    WjrMethodItem methodItem3 = new WjrMethodItem("foo.Foo", "barMethod3");
+    WjrMethodItem methodItem4 = new WjrMethodItem("foo.Foo", "barMethod4");
+    WjrMethodItem methodItem5 = new WjrMethodItem("foo.Foo", "barMethod5");
+    store.addMethodItem(methodItem1);
+    store.addMethodItem(methodItem2);
+    store.addMethodItem(methodItem3);
+    store.addMethodItem(methodItem4);
+    store.addMethodItem(methodItem5);
 
-    wjrMethodItem1.setState(State.SUCCESS);
-    wjrMethodItem2.setState(State.SUCCESS);
-    wjrMethodItem3.setState(State.SUCCESS);
-    wjrMethodItem4.setState(State.SUCCESS);
-    wjrMethodItem5.setState(State.SUCCESS);
+    methodItem1.setState(State.SUCCESS);
+    methodItem2.setState(State.NOT_YET);
+    methodItem3.setState(State.SUCCESS);
+    methodItem4.setState(State.SUCCESS);
+    methodItem5.setState(State.SUCCESS);
 
-    wjrClassItem.updateSummary(wjrStore);
+    classItem.updateSummary(store);
 
-    assertThat(wjrClassItem.state, is(State.SUCCESS));
-    assertThat(wjrClassItem.successCount, is(5));
-    assertThat(wjrClassItem.failureCount, is(0));
-    assertThat(wjrClassItem.errorCount, is(0));
-    assertThat(wjrClassItem.notYetCount, is(0));
-    assertThat(wjrClassItem.totalCount, is(5));
+    assertThat(classItem.getState(), is(State.NOT_YET));
+    assertThat(classItem.getSuccessCount(), is(4));
+    assertThat(classItem.getFailureCount(), is(0));
+    assertThat(classItem.getErrorCount(), is(0));
+    assertThat(classItem.getRunningCount(), is(0));
+    assertThat(classItem.getNotYetCount(), is(1));
+    assertThat(classItem.getTotalCount(), is(5));
+  }
+
+  @Test
+  public void updateSummary_WillBeSuccessState_WithAllSuccess() {
+    WjrStore store = new WjrStore();
+    WjrClassItem classItem = new WjrClassItem("foo.Foo");
+    store.addClassItem(classItem);
+
+    WjrMethodItem methodItem1 = new WjrMethodItem("foo.Foo", "barMethod1");
+    WjrMethodItem methodItem2 = new WjrMethodItem("foo.Foo", "barMethod2");
+    WjrMethodItem methodItem3 = new WjrMethodItem("foo.Foo", "barMethod3");
+    WjrMethodItem methodItem4 = new WjrMethodItem("foo.Foo", "barMethod4");
+    WjrMethodItem methodItem5 = new WjrMethodItem("foo.Foo", "barMethod5");
+    store.addMethodItem(methodItem1);
+    store.addMethodItem(methodItem2);
+    store.addMethodItem(methodItem3);
+    store.addMethodItem(methodItem4);
+    store.addMethodItem(methodItem5);
+
+    methodItem1.setState(State.SUCCESS);
+    methodItem2.setState(State.SUCCESS);
+    methodItem3.setState(State.SUCCESS);
+    methodItem4.setState(State.SUCCESS);
+    methodItem5.setState(State.SUCCESS);
+
+    classItem.updateSummary(store);
+
+    assertThat(classItem.getState(), is(State.SUCCESS));
+    assertThat(classItem.getSuccessCount(), is(5));
+    assertThat(classItem.getFailureCount(), is(0));
+    assertThat(classItem.getErrorCount(), is(0));
+    assertThat(classItem.getRunningCount(), is(0));
+    assertThat(classItem.getNotYetCount(), is(0));
+    assertThat(classItem.getTotalCount(), is(5));
   }
 }

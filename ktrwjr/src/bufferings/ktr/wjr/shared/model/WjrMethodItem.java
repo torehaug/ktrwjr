@@ -1,36 +1,108 @@
+/*
+ * Copyright 2010 bufferings[at]gmail.com
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
 package bufferings.ktr.wjr.shared.model;
 
 import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 
+/**
+ * Test case class method information.
+ * 
+ * This class keeps the test method run result information.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class WjrMethodItem extends WjrStoreItem {
 
+  /**
+   * The separator between the class name and the method name.
+   */
   protected static final String CLASS_METHOD_SEPARATOR = "#";
 
+  /**
+   * The class canonical name.
+   */
   protected String classCanonicalName;
 
+  /**
+   * The class simple name.
+   */
   protected String classSimpleName;
 
+  /**
+   * The class canonical name and method name binded with
+   * {@link WjrMethodItem#CLASS_METHOD_SEPARATOR}
+   */
   protected String methodCanonicalName;
 
+  /**
+   * The method name.
+   */
   protected String methodSimpleName;
 
-  protected String trace;
-
-  protected String log;
-
-  protected String time;
-
-  protected String cpuTime;
-
-  protected String apiTime;
+  /**
+   * The trace string of the run test. This cannot be null.
+   */
+  protected String trace = "";
 
   /**
-   * Default constructor for GWT serialization.
+   * The log string of the run test. This cannot be null.
+   */
+  protected String log = "";
+
+  /**
+   * The real time the run test took. The unit is [ms]. This cannot be null.
+   */
+  protected String time = "";
+
+  /**
+   * The cpu time the run test took. The unit is [cpums]. This cannot be null.
+   */
+  protected String cpuTime = "";
+
+  /**
+   * The api time the run test took. The unit is [apims]. This cannot be null.
+   */
+  protected String apiTime = "";
+
+  /**
+   * Constructor for only GWT-RPC serialization.
    */
   @SuppressWarnings("unused")
   private WjrMethodItem() {
   }
 
+  /**
+   * Constructs with the class canonical name and the method name.
+   * 
+   * Both the class canonical name and the method name must not be null or
+   * empty.
+   * 
+   * @param classCanonicalName
+   *          The class canonical name.
+   * @param methodName
+   *          The method name.
+   * @throws NullPointerException
+   *           When the classCanonicalName parameter is null.
+   * @throws IllegalArgumentException
+   *           When the classCanonicalName parameter is empty.
+   * @throws NullPointerException
+   *           When the methodName parameter is null.
+   * @throws IllegalArgumentException
+   *           When the methodName parameter is empty.
+   */
   public WjrMethodItem(String classCanonicalName, String methodName) {
     checkNotNull(
       classCanonicalName,
@@ -50,94 +122,156 @@ public class WjrMethodItem extends WjrStoreItem {
   }
 
   /**
-   * @return the classCanonicalName
+   * Gets the class canonical name.
+   * 
+   * @return The class canonical name.
    */
   public String getClassCanonicalName() {
     return classCanonicalName;
   }
 
   /**
-   * @return the classSimpleName
+   * Gets the class simple name.
+   * 
+   * @return The class simple name.
    */
   public String getClassSimpleName() {
     return classSimpleName;
   }
 
   /**
-   * @return the methodCanonicalName
+   * Gets the class canonical name and method name binded with
+   * {@link WjrMethodItem#CLASS_METHOD_SEPARATOR}
+   * 
+   * @return The class canonical name and method name binded with
+   *         {@link WjrMethodItem#CLASS_METHOD_SEPARATOR}
    */
   public String getMethodCanonicalName() {
     return methodCanonicalName;
   }
 
   /**
-   * @return the methodSimpleName
+   * Gets the method name.
+   * 
+   * @return The method name.
    */
   public String getMethodSimpleName() {
     return methodSimpleName;
   }
 
   /**
-   * @return the trace
+   * Gets the trace string of the run test. This cannot be null.
+   * 
+   * @return The trace string of the run test.
    */
   public String getTrace() {
     return trace;
   }
 
   /**
+   * Sets the trace string of the run test. If the trace parameter is null, the
+   * empty string is set.
+   * 
    * @param trace
-   *          the trace to set
+   *          The trace string of the run test.
    */
   public void setTrace(String trace) {
-    this.trace = trace;
+    this.trace = (trace != null ? trace : "");
   }
 
   /**
-   * @return the time
+   * Gets the log string of the run test. This cannot be null.
+   * 
+   * @return The log string of the run test.
+   */
+  public String getLog() {
+    return log;
+  }
+
+  /**
+   * Sets the log string of the run test. If the log parameter is null, the
+   * empty string is set.
+   * 
+   * @param log
+   *          The log string of the run test.
+   */
+  public void setLog(String log) {
+    this.log = (log != null ? log : "");
+  }
+
+  /**
+   * Gets the real time the run test took. The unit is [ms]. This cannot be
+   * null.
+   * 
+   * @return The real time the run test took.
    */
   public String getTime() {
     return time;
   }
 
   /**
+   * Sets the real time the run test took. The unit is [ms]. If the time
+   * parameter is null, the empty string is set.
+   * 
    * @param time
-   *          the time to set
+   *          The real time the run test took. The unit is [ms].
    */
   public void setTime(String time) {
-    this.time = time;
+    this.time = (time != null ? time : "");
   }
 
+  /**
+   * Gets the cpu time the run test took. The unit is [cpums]. This cannot be
+   * null.
+   * 
+   * @return The cpu time the run test took.
+   */
   public String getCpuTime() {
     return cpuTime;
   }
 
+  /**
+   * Sets the cpu time the run test took. The unit is [cpums]. If the cpuTime
+   * parameter is null, the empty string is set.
+   * 
+   * @param cpuTime
+   *          The cpu time the run test took. The unit is [cpums].
+   */
   public void setCpuTime(String cpuTime) {
-    this.cpuTime = cpuTime;
+    this.cpuTime = (cpuTime != null ? cpuTime : "");
   }
 
+  /**
+   * Gets the api time the run test took. The unit is [apims]. This cannot be
+   * null.
+   * 
+   * @return The api time the run test took.
+   */
   public String getApiTime() {
     return apiTime;
   }
 
+  /**
+   * Sets the api time the run test took. The unit is [apims]. If the apiTime
+   * parameter is null, the empty string is set.
+   * 
+   * @param apiTime
+   *          The api time the run test took. The unit is [apims].
+   */
   public void setApiTime(String apiTime) {
-    this.apiTime = apiTime;
+    this.apiTime = (apiTime != null ? apiTime : "");
   }
 
-  public String getLog() {
-    return log;
-  }
-
-  public void setLog(String log) {
-    this.log = log;
-  }
-
+  /**
+   * Clears the test result.
+   */
   public void clearResult() {
     state = State.NOT_YET;
-    trace = null;
-    log = null;
-    time = null;
-    cpuTime = null;
-    apiTime = null;
+    trace = "";
+    log = "";
+    time = "";
+    cpuTime = "";
+    apiTime = "";
   }
 
 }

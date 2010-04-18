@@ -20,9 +20,11 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 
 /**
- * This file is copied from Guice 2.0 by bufferings.
- * ・The packaged is moved for GWT client use.
- * ・The visibility of the "format" method is changed to "public".
+ * This file is copied from Guice 2.0 and modified by bufferings in 2010/04.
+ * <ul>
+ * <li>The packaged is moved for GWT client use.</li>
+ * <li>The visibility of the "format" method is changed to "public".</li>
+ * </ul>
  * 
  * Simple static methods to be called at the start of your own methods to verify
  * correct arguments and state. This allows constructs such as

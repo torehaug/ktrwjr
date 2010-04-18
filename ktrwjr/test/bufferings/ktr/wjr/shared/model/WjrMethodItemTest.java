@@ -45,41 +45,109 @@ public class WjrMethodItemTest {
   }
 
   @Test
-  public void wjrMethodItem_CanConstruct() {
-    WjrMethodItem wjrMethodItem = new WjrMethodItem("Foo", "barMethod");
-    assertThat(wjrMethodItem.getClassCanonicalName(), is("Foo"));
-    assertThat(wjrMethodItem.getClassSimpleName(), is("Foo"));
+  public void wjrMethodItem_CanConstruct_WithDefaultPackageClass() {
+    WjrMethodItem methodItem = new WjrMethodItem("Foo", "barMethod");
+    assertThat(methodItem.getClassCanonicalName(), is("Foo"));
+    assertThat(methodItem.getClassSimpleName(), is("Foo"));
 
-    assertThat(wjrMethodItem.getMethodCanonicalName(), is("Foo#barMethod"));
-    assertThat(wjrMethodItem.getMethodSimpleName(), is("barMethod"));
+    assertThat(methodItem.getMethodCanonicalName(), is("Foo#barMethod"));
+    assertThat(methodItem.getMethodSimpleName(), is("barMethod"));
+  }
 
-    WjrMethodItem wjrMethodItem2 = new WjrMethodItem("foo.Foo", "barMethod");
-    assertThat(wjrMethodItem2.getClassCanonicalName(), is("foo.Foo"));
-    assertThat(wjrMethodItem2.getClassSimpleName(), is("Foo"));
+  @Test
+  public void wjrMethodItem_CanConstruct_WithCommonClass() {
+    WjrMethodItem methodItem = new WjrMethodItem("bar.foo.Foo", "barMethod");
+    assertThat(methodItem.getClassCanonicalName(), is("bar.foo.Foo"));
+    assertThat(methodItem.getClassSimpleName(), is("Foo"));
 
-    assertThat(wjrMethodItem2.getMethodCanonicalName(), is("foo.Foo#barMethod"));
-    assertThat(wjrMethodItem2.getMethodSimpleName(), is("barMethod"));
+    assertThat(methodItem.getMethodCanonicalName(), is("bar.foo.Foo#barMethod"));
+    assertThat(methodItem.getMethodSimpleName(), is("barMethod"));
+  }
+
+  @Test
+  public void setTrace_WillBeEmpty_WhenNullIsSet() {
+    WjrMethodItem methodItem = new WjrMethodItem("bar.foo.Foo", "barMethod");
+
+    methodItem.setTrace("abcde");
+    assertThat(methodItem.getTrace(), is("abcde"));
+
+    methodItem.setTrace(null);
+    assertThat(methodItem.getTrace(), is(""));
+  }
+
+  @Test
+  public void setLog_WillBeEmpty_WhenNullIsSet() {
+    WjrMethodItem methodItem = new WjrMethodItem("bar.foo.Foo", "barMethod");
+
+    methodItem.setLog("abcde");
+    assertThat(methodItem.getLog(), is("abcde"));
+
+    methodItem.setLog(null);
+    assertThat(methodItem.getLog(), is(""));
+  }
+
+  @Test
+  public void setTime_WillBeEmpty_WhenNullIsSet() {
+    WjrMethodItem methodItem = new WjrMethodItem("bar.foo.Foo", "barMethod");
+
+    methodItem.setTime("1000");
+    assertThat(methodItem.getTime(), is("1000"));
+
+    methodItem.setTime(null);
+    assertThat(methodItem.getTime(), is(""));
+  }
+
+  @Test
+  public void setCpuTime_WillBeEmpty_WhenNullIsSet() {
+    WjrMethodItem methodItem = new WjrMethodItem("bar.foo.Foo", "barMethod");
+
+    methodItem.setCpuTime("1000");
+    assertThat(methodItem.getCpuTime(), is("1000"));
+
+    methodItem.setCpuTime(null);
+    assertThat(methodItem.getCpuTime(), is(""));
+  }
+
+  @Test
+  public void setApuTime_WillBeEmpty_WhenNullIsSet() {
+    WjrMethodItem methodItem = new WjrMethodItem("bar.foo.Foo", "barMethod");
+
+    methodItem.setApiTime("1000");
+    assertThat(methodItem.getApiTime(), is("1000"));
+
+    methodItem.setApiTime(null);
+    assertThat(methodItem.getApiTime(), is(""));
   }
 
   @Test
   public void clearResult_CanClearResult() {
-    WjrMethodItem wjrMethodItem = new WjrMethodItem("foo.Foo", "barMethod");
-    wjrMethodItem.state = State.ERROR;
-    wjrMethodItem.log = "sampleLog";
-    wjrMethodItem.time = "1111";
-    wjrMethodItem.trace = "sampleTrace";
+    WjrMethodItem methodItem = new WjrMethodItem("bar.foo.Foo", "barMethod");
+    methodItem.setState(State.ERROR);
+    methodItem.setTrace("sampleTrace");
+    methodItem.setLog("sampleLog");
+    methodItem.setTime("1111");
+    methodItem.setCpuTime("1111");
+    methodItem.setApiTime("1111");
 
-    wjrMethodItem.clearResult();
+    methodItem.clearResult();
 
-    assertThat(wjrMethodItem.getClassCanonicalName(), is("foo.Foo"));
-    assertThat(wjrMethodItem.getClassSimpleName(), is("Foo"));
-    assertThat(wjrMethodItem.getMethodCanonicalName(), is("foo.Foo#barMethod"));
-    assertThat(wjrMethodItem.getMethodSimpleName(), is("barMethod"));
+    assertThat(methodItem.getClassCanonicalName(), is("bar.foo.Foo"));
+    assertThat(methodItem.getClassSimpleName(), is("Foo"));
+    assertThat(methodItem.getMethodCanonicalName(), is("bar.foo.Foo#barMethod"));
+    assertThat(methodItem.getMethodSimpleName(), is("barMethod"));
 
-    assertThat(wjrMethodItem.state, is(State.NOT_YET));
-    assertThat(wjrMethodItem.log, is(nullValue()));
-    assertThat(wjrMethodItem.time, is(nullValue()));
-    assertThat(wjrMethodItem.trace, is(nullValue()));
+    assertThat(methodItem.getState(), is(State.NOT_YET));
+    assertThat(methodItem.getTrace(), is(""));
+    assertThat(methodItem.getLog(), is(""));
+    assertThat(methodItem.getTime(), is(""));
+    assertThat(methodItem.getCpuTime(), is(""));
+    assertThat(methodItem.getApiTime(), is(""));
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void setState_WillThrowNPE_WhenStateIsNull() {
+    WjrMethodItem methodItem = new WjrMethodItem("bar.foo.Foo", "barMethod");
+    methodItem.setState(null);
   }
 
 }

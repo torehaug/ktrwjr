@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 bufferings[at]gmail.com
+ * Copyright 2010 bufferings[at]gmail.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package bufferings.ktr.wjr.server.service;
+ package bufferings.ktr.wjr.server.service;
 
 import bufferings.ktr.wjr.client.service.KtrWjrService;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
