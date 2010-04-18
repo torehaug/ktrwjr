@@ -1,0 +1,26 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:k="urn:import:bufferings.ktr.wjr.client.ui.widget">
+
+  <ui:style>
+    .panel {
+      margin-right: 3px;
+    }
+  </ui:style>
+
+  <g:HorizontalPanel
+    width="100%">
+    <g:cell
+      horizontalAlignment="ALIGN_RIGHT">
+      <g:SimplePanel styleName="{style.panel}">
+        <k:WjrIconTextButton
+          ui:field="button"
+          icon="ui-icon-play"
+          disabled="true"
+          title="Run Checked Tests">Run</k:WjrIconTextButton>
+      </g:SimplePanel>
+    </g:cell>
+  </g:HorizontalPanel>
+</ui:UiBinder> 

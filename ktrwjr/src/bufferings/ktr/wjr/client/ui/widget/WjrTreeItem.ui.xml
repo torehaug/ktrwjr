@@ -1,0 +1,73 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:k="urn:import:bufferings.ktr.wjr.client.ui.widget">
+
+  <ui:style
+    type="bufferings.ktr.wjr.client.ui.widget.WjrTreeItem.MyStyle">
+      .toggleIconLabel {
+        cursor: pointer;
+      }
+      
+      .itemPanel {
+        border: solid 1px transparent;
+      }
+      
+      .textLabel {
+        padding: 0 3px 0 3px;
+      }
+      
+      .childrenPanel {
+        margin: 0 0 0 16px;
+      }
+    </ui:style>
+
+  <g:FlowPanel
+    styleName="">
+    <g:HorizontalPanel
+      ui:field="captionPanel"
+      styleName=""
+      spacing="0">
+      <g:cell
+        verticalAlignment="ALIGN_MIDDLE">
+        <g:Label
+          ui:field="toggleIconLabel"
+          styleName="ui-icon ui-icon-empty" />
+      </g:cell>
+      <k:WjrTreeItem.ItemPanel
+        ui:field="itemPanel"
+        styleName="{style.itemPanel}">
+        <g:HorizontalPanel
+          styleName=""
+          spacing="0">
+          <g:cell
+            verticalAlignment="ALIGN_MIDDLE">
+            <g:CheckBox
+              ui:field="checkBox"
+              styleName="" />
+          </g:cell>
+          <g:cell
+            verticalAlignment="ALIGN_MIDDLE">
+            <g:Label
+              ui:field="iconLabel"
+              styleName="ui-icon ui-icon-empty" />
+          </g:cell>
+          <g:cell
+            verticalAlignment="ALIGN_MIDDLE">
+            <g:Label
+              ui:field="textLabel"
+              styleName="ui-widget {style.textLabel}"
+              wordWrap="false" />
+          </g:cell>
+        </g:HorizontalPanel>
+      </k:WjrTreeItem.ItemPanel>
+    </g:HorizontalPanel>
+
+    <g:FlowPanel
+      ui:field="childrenPanel"
+      styleName="{style.childrenPanel}"
+      visible="false" />
+  </g:FlowPanel>
+</ui:UiBinder>
+ 

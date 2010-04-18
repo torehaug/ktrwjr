@@ -1,0 +1,26 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:k="urn:import:bufferings.ktr.wjr.client.ui.widget">
+
+  <g:HorizontalPanel
+    styleName="ui-widget ui-widget-header ui-corner-top"
+    spacing="1">
+
+    <k:WjrIconTextLabel
+      icon="ui-icon-arrowreturnthick-1-e">Kotori Web JUnit Runner</k:WjrIconTextLabel>
+
+    <g:cell
+      horizontalAlignment="ALIGN_RIGHT"
+      verticalAlignment="ALIGN_BOTTOM">
+      <g:HTMLPanel
+        styleName="ui-widget">
+        <a
+          href="http://code.google.com/p/ktrwjr/"
+          target="_blank"
+          style="font-size: 80%; padding-right: 3px;">Kotori Web JUnit Runner (Google Code)</a>
+      </g:HTMLPanel>
+    </g:cell>
+  </g:HorizontalPanel>
+</ui:UiBinder> 

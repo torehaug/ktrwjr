@@ -1,0 +1,196 @@
+package bufferings.ktr.wjr.client;
+
+import java.util.List;
+
+import bufferings.ktr.wjr.client.service.KtrWjrServiceAsync;
+import bufferings.ktr.wjr.shared.model.WjrMethodItem;
+import bufferings.ktr.wjr.shared.model.WjrStore;
+import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HasWidgets;
+
+public class WjrPresenter implements WjrDisplayHandler {
+
+  protected KtrWjrServiceAsync rpcService;
+
+  protected WjrDisplay view;
+
+  protected WjrStore store;
+
+  protected boolean running = false;
+
+  protected boolean cancelRequested = false;
+
+  public WjrPresenter(KtrWjrServiceAsync rpcService, WjrDisplay view) {
+    this.rpcService = rpcService;
+    this.view = view;
+  }
+
+  public void go(HasWidgets container, Element loadingElem) {
+    view.go(this, container, loadingElem);
+    rpcService.loadStore(new AsyncCallback<WjrStore>() {
+
+      @Override
+      public void onFailure(Throwable caught) {
+        view.notifyLoadingFailed(caught);
+      }
+
+      @Override
+      public void onSuccess(WjrStore result) {
+        store = result;
+        view.notifyLoadingSucceeded(store);
+      }
+    });
+  }
+
+  @Override
+  public void onLoadStore() {
+    rpcService.loadStore(new AsyncCallback<WjrStore>() {
+
+      @Override
+      public void onFailure(Throwable caught) {
+        view.setData(new WjrStore());
+        view.notifyReloadingFailed(caught);
+      }
+
+      @Override
+      public void onSuccess(WjrStore result) {
+        store = result;
+        view.setData(store);
+        view.notifyReloadingSucceeded();
+      }
+    });
+  }
+
+  @Override
+  public void onClearButtonClick() {
+    store.clearAllResultsAndSummaries();
+    view.repaintAllTreeItems(store);
+  }
+
+  @Override
+  public void onRunButtonClick() {
+    List<WjrMethodItem> checkedMethods = view.getCheckedMethodItems();
+    if (checkedMethods.size() == 0) {
+      Log.warn("No method items are checked.");
+      view.notifyRunningFinished();
+      return;
+    }
+
+    running = true;
+    cancelRequested = false;
+
+    for (WjrMethodItem item : checkedMethods) {
+      item.clearResult();
+      item.setState(State.RUNNING);
+    }
+    store.updateAllSummaries();
+    view.repaintAllTreeItems(store);
+
+    runWjrMethodItem(checkedMethods, 0);
+  }
+
+  @Override
+  public void onCancelButtonClick() {
+    if (!running) {
+      Log.warn("No tests are running.");
+      return;
+    }
+    cancelRequested = true;
+  }
+
+  protected void runWjrMethodItem(final List<WjrMethodItem> checkedMethods,
+      final int currentIndex) {
+
+    rpcService.runTest(
+      checkedMethods.get(currentIndex),
+      new AsyncCallback<WjrMethodItem>() {
+        @Override
+        public void onFailure(Throwable caught) {
+          Log.warn("Run WjrMethodItem failed.", caught);
+
+          WjrMethodItem stored = checkedMethods.get(currentIndex);
+          stored.setState(State.ERROR);
+          stored.setTrace(getTrace(caught));
+
+          store.getClassItem(stored.getClassCanonicalName()).updateSummary(
+            store);
+          store.updateSummary();
+
+          view.repaintTreeItemAncestors(store, stored);
+
+          int nextIndex = currentIndex + 1;
+          if (checkedMethods.size() <= nextIndex) {
+            onRunSuccess();
+            return;
+          }
+
+          if (cancelRequested) {
+            onRunCancel();
+            return;
+          }
+
+          runWjrMethodItem(checkedMethods, nextIndex);
+        }
+
+        @Override
+        public void onSuccess(WjrMethodItem result) {
+          Log.info("Run WjrMethodItem succeeded.");
+
+          WjrMethodItem stored =
+            store.getMethodItem(result.getMethodCanonicalName());
+          copyMethodItemAttributes(result, stored);
+
+          store.getClassItem(stored.getClassCanonicalName()).updateSummary(
+            store);
+          store.updateSummary();
+          view.repaintTreeItemAncestors(store, stored);
+
+          int nextIndex = currentIndex + 1;
+          if (checkedMethods.size() <= nextIndex) {
+            onRunSuccess();
+            return;
+          }
+
+          if (cancelRequested) {
+            onRunCancel();
+            return;
+          }
+
+          runWjrMethodItem(checkedMethods, nextIndex);
+        }
+
+        private void copyMethodItemAttributes(WjrMethodItem from,
+            WjrMethodItem to) {
+          to.setState(from.getState());
+          to.setTrace(from.getTrace());
+          to.setTime(from.getTime());
+          to.setCpuTime(from.getCpuTime());
+          to.setApiTime(from.getApiTime());
+          to.setLog(from.getLog());
+        }
+
+        private String getTrace(Throwable e) {
+          return e.toString();
+        }
+
+        private void onRunSuccess() {
+          view.notifyRunningFinished();
+        }
+
+        private void onRunCancel() {
+          for (WjrMethodItem item : checkedMethods) {
+            if (item.getState() == State.RUNNING) {
+              item.setState(State.NOT_YET);
+            }
+          }
+          store.updateAllSummaries();
+          view.repaintAllTreeItems(store);
+          view.notifyRunningFinished();
+        }
+      });
+  }
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:k="urn:import:bufferings.ktr.wjr.client.ui.widget">
+
+  <ui:style>
+    .titlePanel {
+      padding-left: 5px;
+    }
+  </ui:style>
+
+  <g:DockLayoutPanel>
+    <g:north
+      size="23">
+      <g:HorizontalPanel
+        styleName="ui-widget ui-widget-header ui-corner-top {style.titlePanel}"
+        width="100%"
+        height="25px"
+        spacing="1">
+
+        <g:cell
+          verticalAlignment="ALIGN_MIDDLE">
+          <g:HTML
+            styleName="ui-widget">Tests</g:HTML>
+        </g:cell>
+
+        <g:cell
+          horizontalAlignment="ALIGN_RIGHT">
+          <g:HorizontalPanel
+            spacing="1">
+
+            <k:WjrIconButton
+              icon="ui-icon-circlesmall-plus"
+              title="Expand All"
+              ui:field="expandAllButton"
+              disabled="true" />
+            <k:WjrIconButton
+              icon="ui-icon-circlesmall-minus"
+              title="Collapse All"
+              ui:field="collapseAllButton"
+              disabled="true" />
+            <k:WjrIconButton
+              icon="ui-icon-bullet"
+              title="Check All"
+              ui:field="checkAllButton"
+              disabled="true" />
+            <k:WjrIconButton
+              icon="ui-icon-radio-on"
+              title="Uncheck All"
+              ui:field="uncheckAllButton"
+              disabled="true" />
+            <k:WjrIconButton
+              icon="ui-icon-arrowreturn-1-w"
+              title="Clear Results"
+              ui:field="clearButton"
+              disabled="true" />
+            <k:WjrIconButton
+              icon="ui-icon-refresh"
+              title="Reload Testcases"
+              ui:field="reloadButton"
+              disabled="true" />
+          </g:HorizontalPanel>
+        </g:cell>
+      </g:HorizontalPanel>
+    </g:north>
+
+    <g:center>
+      <g:ScrollPanel
+        styleName="ui-widget ui-widget-content ui-corner-bottom">
+        <k:WjrTree
+          ui:field="tree" />
+      </g:ScrollPanel>
+    </g:center>
+  </g:DockLayoutPanel>
+</ui:UiBinder>
+ 

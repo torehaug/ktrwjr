@@ -1,0 +1,13 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:k="urn:import:bufferings.ktr.wjr.client.ui.widget">
+
+  <g:DockLayoutPanel>
+    <g:center>
+      <k:WjrTabPanel ui:field="tabPanel" styleName="ui-widget ui-widget-content ui-corner-all" />
+    </g:center>
+  </g:DockLayoutPanel>
+
+</ui:UiBinder> 

@@ -1,0 +1,40 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+  <ui:style>
+    .innerPanel {
+      position: relative;
+      height: 16px;
+      top: 50%;
+      margin: auto;
+      margin-top: -9px;
+    }
+  </ui:style>
+
+  <g:SimplePanel
+    width="100px"
+    height="25px"
+    styleName="ui-widget ui-button ui-corner-all ui-state-default">
+    <g:HorizontalPanel
+      styleName="{style.innerPanel}"
+      spacing="1">
+      <g:cell
+        verticalAlignment="ALIGN_MIDDLE">
+        <g:Label
+          ui:field="iconLabel"
+          styleName="ui-icon ui-icon-empty" />
+      </g:cell>
+      <g:cell
+        verticalAlignment="ALIGN_MIDDLE">
+        <g:Label
+          ui:field="textLabel"
+          styleName="ui-widget" />
+      </g:cell>
+      <g:Label
+        styleName="ui-icon ui-icon-empty" />
+    </g:HorizontalPanel>
+  </g:SimplePanel>
+</ui:UiBinder>
+ 

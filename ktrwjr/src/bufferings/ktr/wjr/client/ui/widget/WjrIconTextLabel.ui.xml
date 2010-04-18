@@ -1,0 +1,24 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+  <g:HorizontalPanel
+    styleName=""
+    spacing="1">
+    <g:cell
+      verticalAlignment="ALIGN_MIDDLE">
+      <g:Label
+        ui:field="iconLabel"
+        styleName="ui-icon ui-icon-empty" />
+    </g:cell>
+    <g:cell
+      verticalAlignment="ALIGN_MIDDLE">
+      <g:Label
+        ui:field="textLabel"
+        styleName="ui-widget"
+        wordWrap="false" />
+    </g:cell>
+  </g:HorizontalPanel>
+</ui:UiBinder>
+ 

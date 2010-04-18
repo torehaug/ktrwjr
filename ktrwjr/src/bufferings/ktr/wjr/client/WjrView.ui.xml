@@ -1,0 +1,63 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:k="urn:import:bufferings.ktr.wjr.client.ui">
+
+  <ui:style>
+    .frameMargin {
+      margin: 1px;
+    }
+    
+    .panelMargin {
+      margin: 1px 0 0 1px;
+    }
+    
+    .tracePanelMargin {
+      margin: 1px;
+    }
+  </ui:style>
+
+  <g:DockLayoutPanel
+    styleName="{style.frameMargin}">
+    <g:north
+      size="20">
+      <k:WjrTitlePanel
+        width="100%"
+        height="100%" />
+    </g:north>
+
+    <g:center>
+      <g:SplitLayoutPanel
+        styleName="ui-widget ui-widget-content ui-corner-bottom">
+        <g:west
+          size="500">
+          <g:DockLayoutPanel>
+            <g:north
+              size="78">
+              <k:WjrResultPanel
+                ui:field="resultPanel"
+                styleName="{style.panelMargin}" />
+            </g:north>
+            <g:center>
+              <k:WjrTreePanel
+                ui:field="treePanel"
+                styleName="{style.panelMargin}" />
+            </g:center>
+            <g:south
+              size="35">
+              <k:WjrButtonPanel
+                ui:field="buttonPanel"
+                styleName="{style.panelMargin}" />
+            </g:south>
+          </g:DockLayoutPanel>
+        </g:west>
+        <g:center>
+          <k:WjrTracePanel
+            ui:field="tracePanel"
+            styleName="{style.tracePanelMargin}" />
+        </g:center>
+      </g:SplitLayoutPanel>
+    </g:center>
+  </g:DockLayoutPanel>
+</ui:UiBinder> 

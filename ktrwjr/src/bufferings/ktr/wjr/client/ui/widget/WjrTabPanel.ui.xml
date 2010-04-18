@@ -1,0 +1,52 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+  <ui:style
+    type="bufferings.ktr.wjr.client.ui.widget.WjrTabPanel.MyStyle">
+      .tabSelected {
+        margin: 0px 1px 0px 1px;
+        padding: 3px 5px 4px 5px;
+        border-bottom: 0 !important;
+        cursor: text;
+      }
+      
+      .tabUnselected {
+        margin: 0px 1px 1px 1px;
+        padding: 3px 5px 3px 5px;
+        border-bottom: 0 !important;
+        cursor: pointer;
+      }
+      
+      .tabBar {
+        position: relative;
+        top: 1px;
+        border: 0;
+        padding-left:5px;
+      }
+    </ui:style>
+
+  <g:LayoutPanel
+    ui:field="panel"
+    styleName="">
+    <g:layer
+      left="3px"
+      right="3px"
+      top="3px"
+      height="32px"
+      widgetVerticalPostion="END">
+      <g:SimplePanel
+        styleName="ui-widget ui-widget-header ui-corner-all">
+        <g:HorizontalPanel
+          ui:field="tabBar"
+          styleName="{style.tabBar}"
+          verticalAlignment="ALIGN_BOTTOM"
+          height="30px">
+        </g:HorizontalPanel>
+      </g:SimplePanel>
+    </g:layer>
+  </g:LayoutPanel>
+
+</ui:UiBinder>
+ 

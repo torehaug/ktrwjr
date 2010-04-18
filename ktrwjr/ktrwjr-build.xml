@@ -1,0 +1,105 @@
+<project name="ktrwjr" default="dist" basedir=".">
+
+  <property file="ktrwjr-build.properties" />
+  <property name="gwt.home"
+            value="C:\eclipse\eclipse\plugins\com.google.gwt.eclipse.sdkbundle.2.0.3_2.0.3.v201002191036\gwt-2.0.3" />
+  <property name="gae.home"
+            value="C:\eclipse\eclipse\plugins\com.google.appengine.eclipse.sdkbundle.1.3.2_1.3.2.v201003241245\appengine-java-sdk-1.3.2\lib" />
+
+  <tstamp>
+    <format property="TIMESTAMP" pattern="yyyyMMddHHmm" />
+  </tstamp>
+
+  <target name="prepare">
+    <property name="target" value="target" />
+    <property name="work" value="target/${TIMESTAMP}" />
+    <property name="work.classes" value="${work}/classes" />
+    <property name="work.lib" value="${work}/lib" />
+    <property name="work.gwtc" value="${work}/gwtc" />
+    <mkdir dir="${target}" />
+    <mkdir dir="${work.classes}" />
+    <mkdir dir="${work.lib}" />
+    <mkdir dir="${work.gwtc}" />
+  </target>
+
+  <target name="compile" depends="prepare">
+    <javac srcdir="src"
+           destdir="${work.classes}"
+           source="1.5"
+           encoding="UTF-8"
+           classpath="war\WEB-INF\lib\junit-4.7.jar;war\WEB-INF\lib\gwt-log-3.0.1.jar;war\WEB-INF\lib\slim3-1.0.1.jar;${gwt.home}\gwt-user.jar;${gwt.home}\gwt-dev.jar;${gae.home}\user\appengine-api-1.0-sdk-1.3.2.jar"
+           memoryInitialSize="512m"
+           memoryMaximumSize="512m"
+           fork="true">
+      <include name="**/*.java" />
+      <compilerarg value="-Xlint:unchecked" />
+    </javac>
+  </target>
+
+  <target name="create-lib" depends="prepare, compile">
+    <jar jarfile="${work.lib}/${ant.project.name}.jar">
+      <zipfileset src="war/WEB-INF/lib/gwt-log-3.0.1.jar" />
+      <fileset dir="${work.classes}" />
+      <fileset dir="src" includes="**/*" excludes="**/package-info.java" />
+      <manifest>
+        <section name="bufferings/ktr/wjr">
+          <attribute name="Extension-name" value="bufferings.ktr.wjr" />
+          <attribute name="Specification-Title"
+                     value="Kotori Web JUnit Runner" />
+          <attribute name="Specification-Version" value="${ktrwjr.version}" />
+          <attribute name="Specification-Vendor"
+                     value="bufferings[at]gmail.com" />
+          <attribute name="Implementation-Title" value="bufferings.ktr.wjr" />
+          <attribute name="Implementation-Version" value="${TIMESTAMP}" />
+          <attribute name="Implementation-Vendor"
+                     value="bufferings[at]gmail.com" />
+        </section>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="gwtc" depends="prepare">
+    <java failonerror="true"
+          fork="true"
+          classname="com.google.gwt.dev.Compiler"
+          classpath="${gwt.home}\gwt-user.jar;${gwt.home}\gwt-dev.jar;war\WEB-INF\lib\gwt-log-3.0.1.jar;">
+      <classpath>
+        <pathelement location="src" />
+        <pathelement location="war/WEB-INF/classes" />
+      </classpath>
+      <!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+      <jvmarg value="-Xmx256M" />
+      <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+      <arg line="-war ${work.gwtc}" />
+      <arg value="bufferings.ktr.wjr.KtrWjr" />
+    </java>
+  </target>
+
+  <target name="dist" depends="create-lib, gwtc">
+    <zip zipfile="${target}/${ant.project.name}-${ktrwjr.version}-v${TIMESTAMP}.zip">
+      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/war/WEB-INF/lib"
+                  dir="${work.lib}" />
+      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/war/ktrwjr/ktrwjr"
+                  dir="${work.gwtc}/ktrwjr" />
+      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/war/ktrwjr/js"
+                  dir="war/js" />
+      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/war/ktrwjr/css"
+                  dir="war/css" />
+      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/war/ktrwjr"
+                  dir="war"
+                  includes="index.html,ktrwjr.css" />
+      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/licenses/gwt-log"
+                  dir="licenses/gwt-log" />
+      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/licenses/jqueryui"
+                  dir="licenses/jqueryui" />
+      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/licenses/junit"
+                  dir="licenses/junit" />
+      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/licenses/slim3"
+                  dir="licenses/slim3" />
+      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/licenses"
+                  file="licenses/LICENSE.txt" />
+    </zip>
+    <delete dir="${work}" />
+  </target>
+
+</project>
