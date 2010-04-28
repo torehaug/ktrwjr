@@ -25,12 +25,12 @@ import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
 public class WjrMethodItemTest {
 
   @Test(expected = NullPointerException.class)
-  public void wjrMethodItem_WillThrowNPE_WhenClassCanonicalNameIsNull() {
+  public void wjrMethodItem_WillThrowNPE_WhenClassNameIsNull() {
     new WjrMethodItem(null, "barMethod");
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void wjrMethodItem_WillThrowIAE_WhenClassCanonicalNameIsEmpty() {
+  public void wjrMethodItem_WillThrowIAE_WhenClassNameIsEmpty() {
     new WjrMethodItem("", "barMethod");
   }
 
@@ -45,23 +45,12 @@ public class WjrMethodItemTest {
   }
 
   @Test
-  public void wjrMethodItem_CanConstruct_WithDefaultPackageClass() {
-    WjrMethodItem methodItem = new WjrMethodItem("Foo", "barMethod");
-    assertThat(methodItem.getClassCanonicalName(), is("Foo"));
-    assertThat(methodItem.getClassSimpleName(), is("Foo"));
-
-    assertThat(methodItem.getMethodCanonicalName(), is("Foo#barMethod"));
-    assertThat(methodItem.getMethodSimpleName(), is("barMethod"));
-  }
-
-  @Test
-  public void wjrMethodItem_CanConstruct_WithCommonClass() {
+  public void wjrMethodItem_CanConstruct() {
     WjrMethodItem methodItem = new WjrMethodItem("bar.foo.Foo", "barMethod");
-    assertThat(methodItem.getClassCanonicalName(), is("bar.foo.Foo"));
-    assertThat(methodItem.getClassSimpleName(), is("Foo"));
+    assertThat(methodItem.getClassName(), is("bar.foo.Foo"));
 
-    assertThat(methodItem.getMethodCanonicalName(), is("bar.foo.Foo#barMethod"));
-    assertThat(methodItem.getMethodSimpleName(), is("barMethod"));
+    assertThat(methodItem.getClassAndMethodName(), is("bar.foo.Foo#barMethod"));
+    assertThat(methodItem.getMethodName(), is("barMethod"));
   }
 
   @Test
@@ -131,10 +120,9 @@ public class WjrMethodItemTest {
 
     methodItem.clearResult();
 
-    assertThat(methodItem.getClassCanonicalName(), is("bar.foo.Foo"));
-    assertThat(methodItem.getClassSimpleName(), is("Foo"));
-    assertThat(methodItem.getMethodCanonicalName(), is("bar.foo.Foo#barMethod"));
-    assertThat(methodItem.getMethodSimpleName(), is("barMethod"));
+    assertThat(methodItem.getClassName(), is("bar.foo.Foo"));
+    assertThat(methodItem.getClassAndMethodName(), is("bar.foo.Foo#barMethod"));
+    assertThat(methodItem.getMethodName(), is("barMethod"));
 
     assertThat(methodItem.getState(), is(State.NOT_YET));
     assertThat(methodItem.getTrace(), is(""));

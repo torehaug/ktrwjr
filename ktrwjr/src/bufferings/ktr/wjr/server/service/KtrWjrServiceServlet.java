@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.server.service;
+package bufferings.ktr.wjr.server.service;
 
 import bufferings.ktr.wjr.client.service.KtrWjrService;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
@@ -22,7 +22,7 @@ import bufferings.ktr.wjr.shared.model.WjrStore;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
- * A KtrWjrService servlet for running out of Slim3 environment.
+ * A KtrWjrService servlet for running without Slim3.
  * <p>
  * This servlet delegates all operations to {@link KtrWjrServiceImpl}.
  * </p>
@@ -34,15 +34,27 @@ public class KtrWjrServiceServlet extends RemoteServiceServlet implements
 
   private static final long serialVersionUID = 1L;
 
-  /** delegation */
+  /**
+   * delegation
+   */
   protected KtrWjrServiceImpl delegate = new KtrWjrServiceImpl();
 
-  /** {@inheritDoc} */
+  /*
+   * (non-Javadoc)
+   * 
+   * @see bufferings.ktr.wjr.client.service.KtrWjrService#loadStore()
+   */
   public WjrStore loadStore() {
     return delegate.loadStore();
   }
 
-  /** {@inheritDoc} */
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * bufferings.ktr.wjr.client.service.KtrWjrService#runTest(bufferings.ktr.
+   * wjr.shared.model.WjrMethodItem)
+   */
   public WjrMethodItem runTest(WjrMethodItem methodItem) {
     return delegate.runTest(methodItem);
   }

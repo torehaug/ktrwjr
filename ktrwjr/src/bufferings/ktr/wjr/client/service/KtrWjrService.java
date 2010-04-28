@@ -21,7 +21,7 @@ import bufferings.ktr.wjr.shared.model.WjrStore;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-@RemoteServiceRelativePath("service.s3gwt")
+@RemoteServiceRelativePath("ktrwjr.s3gwt")
 public interface KtrWjrService extends RemoteService {
   public WjrStore loadStore();
 

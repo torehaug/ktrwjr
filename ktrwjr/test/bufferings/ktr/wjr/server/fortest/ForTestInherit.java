@@ -13,21 +13,8 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package bufferings.ktr.wjr.server.service;
+package bufferings.ktr.wjr.server.fortest;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-import org.slim3.tester.ServletTestCase;
-
-public class WjrServiceImplTest extends ServletTestCase {
-
-  private KtrWjrServiceImpl service = new KtrWjrServiceImpl();
-
-  @Test
-  public void isJUnit4Available_IsTrue() throws Exception {
-    assertThat(service.isJUnit4Available(), is(true));
-  }
+public class ForTestInherit extends ForTest {
 
 }

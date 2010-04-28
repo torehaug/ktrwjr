@@ -21,24 +21,41 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class WjrConfig {
+/**
+ * Configuration property class.
+ * 
+ * Loads the ktrwjr.properties in the resource. The only property is "timezone"
+ * which is used for converting time of logs.
+ * 
+ * @author bufferings[at]gmail.com
+ */
+public class KtrWjrConfig {
 
   private static final Logger logger =
-    Logger.getLogger(WjrConfig.class.getSimpleName());
+    Logger.getLogger(KtrWjrConfig.class.getSimpleName());
 
   protected static final String RESOURCE_FILE = "ktrwjr.properties";
 
   protected static final String KEY_TIMEZONE = "timezone";
 
-  protected static WjrConfig instance;
+  /**
+   * The singleton instance.
+   */
+  protected static KtrWjrConfig instance;
 
-  protected static WjrConfig get() {
+  /**
+   * Gets the singleton instance. If the instance is null, it will be
+   * constructed.
+   * 
+   * @return The singleton instance.
+   */
+  protected static KtrWjrConfig get() {
     if (instance != null) {
       return instance;
     }
 
-    WjrConfig config = new WjrConfig();
-    Properties props = loadProperties();
+    KtrWjrConfig config = new KtrWjrConfig();
+    Properties props = loadProperties(RESOURCE_FILE);
     if (props.containsKey(KEY_TIMEZONE)) {
       config.timezone = props.getProperty(KEY_TIMEZONE);
     }
@@ -48,28 +65,43 @@ public class WjrConfig {
     return config;
   }
 
-  protected static Properties loadProperties() {
-    Properties properties = new Properties();
+  /**
+   * Loads the property from the property file.
+   * 
+   * @param resourceFile
+   *          The resource file name.
+   * @return Loaded properties.
+   */
+  protected static Properties loadProperties(String resourceFileName) {
+    if (resourceFileName == null || resourceFileName.isEmpty()) {
+      return new Properties();
+    }
+
     InputStream is = null;
     try {
       ClassLoader cl = Thread.currentThread().getContextClassLoader();
-      is = cl.getResourceAsStream(RESOURCE_FILE);
+      is = cl.getResourceAsStream(resourceFileName);
       if (is != null) {
         try {
+          Properties properties = new Properties();
           properties.load(is);
+          return properties;
         } catch (IOException e) {
           logger.log(
             Level.WARNING,
-            "Fails to load configuration resource file .("
-              + RESOURCE_FILE
+            "Fails to load configuration resource file .(file="
+              + resourceFileName
               + ")",
             e);
-          e.printStackTrace();
+          return new Properties();
         }
       } else {
-        logger.log(Level.WARNING, "Configuration resource file not found.("
-          + RESOURCE_FILE
-          + ")");
+        logger.log(
+          Level.WARNING,
+          "Configuration resource file not found.(file="
+            + resourceFileName
+            + ")");
+        return new Properties();
       }
     } finally {
       if (is != null) {
@@ -80,18 +112,36 @@ public class WjrConfig {
         }
       }
     }
-    return properties;
   }
 
+  /**
+   * Gets the timezone property for logs.
+   * 
+   * @return The timezone property for logs.
+   */
   public static String getTimezone() {
     return get().timezone;
   }
 
+  /**
+   * The timezone property for logs. The default value is GMT.
+   */
   protected String timezone = "GMT";
 
+  /**
+   * Closed for singleton.(Open for testing.)
+   */
+  protected KtrWjrConfig() {
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "WjrConfig(timezone=" + timezone + ")";
+    return KtrWjrConfig.class.getSimpleName() + "(timezone=" + timezone + ")";
   }
 
 }

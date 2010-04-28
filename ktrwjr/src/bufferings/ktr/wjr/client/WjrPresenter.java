@@ -131,7 +131,7 @@ public class WjrPresenter implements WjrDisplayHandler {
           stored.setState(State.ERROR);
           stored.setTrace(getTrace(caught));
 
-          store.getClassItem(stored.getClassCanonicalName()).updateSummary(
+          store.getClassItem(stored.getClassName()).updateSummary(
             store);
           store.updateSummary();
 
@@ -156,10 +156,10 @@ public class WjrPresenter implements WjrDisplayHandler {
           GWT.log("Run WjrMethodItem succeeded.");
 
           WjrMethodItem stored =
-            store.getMethodItem(result.getMethodCanonicalName());
+            store.getMethodItem(result.getClassAndMethodName());
           copyMethodItemAttributes(result, stored);
 
-          store.getClassItem(stored.getClassCanonicalName()).updateSummary(
+          store.getClassItem(stored.getClassName()).updateSummary(
             store);
           store.updateSummary();
           view.repaintTreeItemAncestors(store, stored);

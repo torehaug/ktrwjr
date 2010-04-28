@@ -13,7 +13,9 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.server.service;
+package bufferings.ktr.wjr.server.logic;
+
+import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -23,15 +25,31 @@ import org.junit.runner.Result;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 
+import bufferings.ktr.wjr.server.util.WjrUtils;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
 
+/**
+ * The test runner of the {@link WjrMethodItem}
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class WjrMethodRunner {
 
+  /**
+   * Runs the test method of {@link WjrMethodItem}.
+   * 
+   * @param methodItem
+   *          The information of the test method.
+   * @return The input methodItem with result.
+   * @throws NullPointerException
+   *           When the methodItem parameter is null.
+   */
   public WjrMethodItem runWjrMethod(WjrMethodItem methodItem) {
+    checkNotNull(methodItem, "The methodItem parameter is null.");
     try {
-      Class<?> clazz = loadClass(methodItem.getClassCanonicalName());
-      Runner runner = getRunner(clazz, methodItem.getMethodSimpleName());
+      Class<?> clazz = loadClass(methodItem.getClassName());
+      Runner runner = getRunner(clazz, methodItem.getMethodName());
       Result result = runTest(runner);
       return applyResult(methodItem, result);
     } catch (Exception e) {
@@ -41,29 +59,61 @@ public class WjrMethodRunner {
     }
   }
 
+  /**
+   * Gets the trace string from the exception.
+   * 
+   * If the parameter is null, returns empty string.
+   * 
+   * @param e
+   *          The exception.
+   * @return The trace string from the exception.
+   */
   protected String getTrace(Exception e) {
+    if (e == null) {
+      return "";
+    }
+
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     e.printStackTrace(writer);
-    StringBuffer buffer = stringWriter.getBuffer();
-    return buffer.toString();
+    return stringWriter.getBuffer().toString();
   }
 
-  protected Class<?> loadClass(String classCanonicalName) {
-    try {
-      return Thread.currentThread().getContextClassLoader().loadClass(
-        classCanonicalName);
-    } catch (ClassNotFoundException e1) {
-      throw new RuntimeException("Cannot load class("
-        + classCanonicalName
-        + ").", e1);
-    }
+  /**
+   * Loads the class from the class name.
+   * 
+   * @param className
+   *          The class name.
+   * @return The loaded class.
+   * @throws NullPointerException
+   *           When the className parameter is null.
+   * @throws RuntimeException
+   *           When the class is not found.
+   */
+  protected Class<?> loadClass(String className) {
+    return WjrUtils.loadClass(className);
   }
 
+  /**
+   * Gets the test runner of the given test method.
+   * 
+   * @param clazz
+   *          The class of the test method.
+   * @param methodName
+   *          The method name to run.
+   * @return The test runner of the given test method.
+   */
   protected Runner getRunner(Class<?> clazz, String methodName) {
     return Request.method(clazz, methodName).getRunner();
   }
 
+  /**
+   * Runs the test runner.
+   * 
+   * @param runner
+   *          The test runner.
+   * @return The test result.
+   */
   protected Result runTest(Runner runner) {
     Result result = new Result();
 
@@ -77,6 +127,15 @@ public class WjrMethodRunner {
     return result;
   }
 
+  /**
+   * Applys the result to the methodItem.
+   * 
+   * @param methodItem
+   *          The methodItem to be applied the result.
+   * @param result
+   *          The test result.
+   * @return The applied methodItem, which is the same instance as the input.
+   */
   protected WjrMethodItem applyResult(WjrMethodItem methodItem, Result result) {
     if (result.getFailureCount() > 0) {
       if (result.getFailures().get(0).getException() instanceof AssertionError) {

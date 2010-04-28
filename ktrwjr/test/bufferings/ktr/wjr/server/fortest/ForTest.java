@@ -13,29 +13,59 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package bufferings.ktr.wjr.server.service.fortest;
+package bufferings.ktr.wjr.server.fortest;
+
+import static org.junit.Assert.*;
+
+import java.util.logging.Logger;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class ForTest {
+  private static final Logger logger =
+    Logger.getLogger(ForTest.class.getSimpleName());
+
   @Test
-  public void normalMethod() {
+  public void successMethod() {
+    logger.info("successMethod");
+  }
+
+  @Test
+  public void failureMethod() {
+    logger.info("failureMethod");
+    assertTrue(false);
+  }
+
+  @Test
+  public void errorMethod() {
+    logger.info("errorMethod");
+    throw new RuntimeException();
   }
 
   @Test
   @Ignore
   public void ignoreMethod() {
+    logger.info("ignoreMethod");
   }
 
-  public static class ForTestInner {
+  public static class ForTestInnerStatic {
     @Test
-    public void normalMethod() {
+    public void successMethod() {
+      logger.info("ForTestInner#successMethod");
     }
 
     @Test
     @Ignore
     public void ignoreMethod() {
+      logger.info("ignoreMethod");
+    }
+  }
+
+  public class ForTestInnerNotStatic {
+    @Test
+    public void successMethod() {
+      logger.info("ForTestInner#successMethod");
     }
   }
 }

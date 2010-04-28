@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.server.service;
+package bufferings.ktr.wjr.server.logic;
 
 import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 
@@ -102,6 +102,10 @@ public class WjrAppEngineRecorder {
     recorded = true;
   }
 
+  public boolean isRecording() {
+    return recording;
+  }
+
   public String getRecordedLog() {
     checkState(recorded, "Recording hasn't been done.");
     return log.toString();
@@ -110,28 +114,24 @@ public class WjrAppEngineRecorder {
   public String getRecordedCpuTime() {
     checkState(recorded, "Recording hasn't been done.");
     if (!cpuTimeSupported) {
-      return null;
+      return "";
     }
 
     long duration = stopCpuTime - startCpuTime;
-    long microSeconds =
-      (long) quotaService.convertMegacyclesToCpuSeconds(duration);
     long milliSeconds =
-      TimeUnit.MILLISECONDS.convert(microSeconds, TimeUnit.MICROSECONDS);
+      (long) (quotaService.convertMegacyclesToCpuSeconds(duration) * 1000);
     return Long.toString(milliSeconds);
   }
 
   public String getRecordedApiTime() {
     checkState(recorded, "Recording hasn't been done.");
     if (!apiTimeSupported) {
-      return null;
+      return "";
     }
 
     long duration = stopApiTime - startApiTime;
-    long microSeconds =
-      (long) quotaService.convertMegacyclesToCpuSeconds(duration);
     long milliSeconds =
-      TimeUnit.MILLISECONDS.convert(microSeconds, TimeUnit.MICROSECONDS);
+      (long) (quotaService.convertMegacyclesToCpuSeconds(duration) * 1000);
     return Long.toString(milliSeconds);
   }
 

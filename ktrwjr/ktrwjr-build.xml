@@ -27,7 +27,7 @@
            destdir="${work.classes}"
            source="1.5"
            encoding="UTF-8"
-           classpath="war\WEB-INF\lib\junit-4.7.jar;war\WEB-INF\lib\gwt-log-3.0.1.jar;war\WEB-INF\lib\slim3-1.0.1.jar;${gwt.home}\gwt-user.jar;${gwt.home}\gwt-dev.jar;${gae.home}\user\appengine-api-1.0-sdk-1.3.2.jar"
+           classpath="war\WEB-INF\lib\junit-4.7.jar;war\WEB-INF\lib\slim3-1.0.1.jar;${gwt.home}\gwt-user.jar;${gwt.home}\gwt-dev.jar;${gae.home}\user\appengine-api-1.0-sdk-1.3.2.jar"
            memoryInitialSize="512m"
            memoryMaximumSize="512m"
            fork="true">
@@ -38,7 +38,6 @@
 
   <target name="create-lib" depends="prepare, compile">
     <jar jarfile="${work.lib}/${ant.project.name}.jar">
-      <zipfileset src="war/WEB-INF/lib/gwt-log-3.0.1.jar" />
       <fileset dir="${work.classes}" />
       <fileset dir="src" includes="**/*" excludes="**/package-info.java" />
       <manifest>
@@ -62,7 +61,7 @@
     <java failonerror="true"
           fork="true"
           classname="com.google.gwt.dev.Compiler"
-          classpath="${gwt.home}\gwt-user.jar;${gwt.home}\gwt-dev.jar;war\WEB-INF\lib\gwt-log-3.0.1.jar;">
+          classpath="${gwt.home}\gwt-user.jar;${gwt.home}\gwt-dev.jar;">
       <classpath>
         <pathelement location="src" />
         <pathelement location="war/WEB-INF/classes" />
@@ -88,8 +87,6 @@
       <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/war/ktrwjr"
                   dir="war"
                   includes="index.html,ktrwjr.css" />
-      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/licenses/gwt-log"
-                  dir="licenses/gwt-log" />
       <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/licenses/jqueryui"
                   dir="licenses/jqueryui" />
       <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/licenses/junit"

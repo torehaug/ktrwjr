@@ -25,27 +25,19 @@ import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
 public class WjrClassItemTest {
 
   @Test(expected = NullPointerException.class)
-  public void wjrClassItem_WillThrowNPE_WhenClassCanonicalNameIsNull() {
+  public void wjrClassItem_WillThrowNPE_WhenClassNameIsNull() {
     new WjrClassItem(null);
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void wjrClassItem_WillThrowIAE_WhenClassCanonicalNameIsEmpty() {
+  public void wjrClassItem_WillThrowIAE_WhenClassNameIsEmpty() {
     new WjrClassItem("");
   }
 
   @Test
-  public void wjrClassItem_CanConstruct_WithDefaultPackageClass() {
-    WjrClassItem classItem = new WjrClassItem("Foo");
-    assertThat(classItem.getClassCanonicalName(), is("Foo"));
-    assertThat(classItem.getClassSimpleName(), is("Foo"));
-  }
-
-  @Test
-  public void wjrClassItem_CanConstruct_WithCommonClass() {
+  public void wjrClassItem_CanConstruct() {
     WjrClassItem classItem = new WjrClassItem("bar.foo.Foo");
-    assertThat(classItem.getClassCanonicalName(), is("bar.foo.Foo"));
-    assertThat(classItem.getClassSimpleName(), is("Foo"));
+    assertThat(classItem.getClassName(), is("bar.foo.Foo"));
   }
 
   @Test
@@ -61,8 +53,7 @@ public class WjrClassItemTest {
 
     classItem.clearSummary();
 
-    assertThat(classItem.getClassCanonicalName(), is("foo.Foo"));
-    assertThat(classItem.getClassSimpleName(), is("Foo"));
+    assertThat(classItem.getClassName(), is("foo.Foo"));
 
     assertThat(classItem.getState(), is(State.NOT_YET));
     assertThat(classItem.getSuccessCount(), is(0));

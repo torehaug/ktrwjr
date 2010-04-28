@@ -13,45 +13,74 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.server.service;
+package bufferings.ktr.wjr.server.service;
 
 import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 import junit.runner.Version;
 import bufferings.ktr.wjr.client.service.KtrWjrService;
+import bufferings.ktr.wjr.server.logic.WjrAppEngineRecorder;
+import bufferings.ktr.wjr.server.logic.WjrMethodRunner;
+import bufferings.ktr.wjr.server.logic.WjrStoreLoader;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
+/**
+ * KtrWjr service class.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class KtrWjrServiceImpl implements KtrWjrService {
 
-  private static final String CLASSES_DIRECTORY = "WEB-INF/classes";
+  protected static final String CLASSES_DIRECTORY = "WEB-INF/classes";
 
-  protected WjrStoreLoader wjrStoreLoader = new WjrStoreLoader();
+  /**
+   * The loader class which loads WjrStore from classes.
+   */
+  protected WjrStoreLoader storeLoader = new WjrStoreLoader();
 
-  protected WjrMethodRunner wjrMethodRunner = new WjrMethodRunner();
+  /**
+   * The method runner class which runs the tests.
+   */
+  protected WjrMethodRunner methodRunner = new WjrMethodRunner();
 
-  protected WjrAppEngineRecorder wjrGAEInfo = new WjrAppEngineRecorder();
+  /**
+   * The app engine time and log record class.
+   */
+  protected WjrAppEngineRecorder appEngineRecorder = new WjrAppEngineRecorder();
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see bufferings.ktr.wjr.client.service.KtrWjrService#loadStore()
+   */
   public WjrStore loadStore() {
     checkState(isJUnit4Available(), "JUnit4 not found.");
-    checkNotNull(wjrStoreLoader, "The wjrStoreLoader field is null.");
-    return wjrStoreLoader.loadWjrStore(CLASSES_DIRECTORY);
+    return storeLoader.loadWjrStore(CLASSES_DIRECTORY);
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * bufferings.ktr.wjr.client.service.KtrWjrService#runTest(bufferings.ktr.
+   * wjr.shared.model.WjrMethodItem)
+   */
   public WjrMethodItem runTest(WjrMethodItem methodItem) {
     checkState(isJUnit4Available(), "JUnit4 not found.");
-    checkNotNull(wjrMethodRunner, "The wjrMethodRunner field is null.");
     checkNotNull(methodItem, "The methodItem parameter is null.");
 
-    wjrGAEInfo.startRecording(WjrConfig.getTimezone());
     try {
-      methodItem = wjrMethodRunner.runWjrMethod(methodItem);
+      appEngineRecorder.startRecording(KtrWjrConfig.getTimezone());
+      methodItem = methodRunner.runWjrMethod(methodItem);
     } finally {
-      wjrGAEInfo.stopRecording();
+      if (appEngineRecorder.isRecording()) {
+        appEngineRecorder.stopRecording();
+      }
     }
 
-    methodItem.setLog(wjrGAEInfo.getRecordedLog());
-    methodItem.setCpuTime(wjrGAEInfo.getRecordedCpuTime());
-    methodItem.setApiTime(wjrGAEInfo.getRecordedApiTime());
+    methodItem.setLog(appEngineRecorder.getRecordedLog());
+    methodItem.setCpuTime(appEngineRecorder.getRecordedCpuTime());
+    methodItem.setApiTime(appEngineRecorder.getRecordedApiTime());
     return methodItem;
   }
 

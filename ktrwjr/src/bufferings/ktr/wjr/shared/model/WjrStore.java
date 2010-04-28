@@ -25,7 +25,7 @@ import java.util.TreeMap;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * The store of test case models.
+ * The store of test case and method models.
  * 
  * @author bufferings[at]gmail.com
  */
@@ -56,13 +56,13 @@ public class WjrStore implements IsSerializable {
   protected Root root = new Root();
 
   /**
-   * The class items sorted by the class canonical name.
+   * The class items sorted by the className.
    */
   protected TreeMap<String, WjrClassItem> classItems =
     new TreeMap<String, WjrClassItem>();
 
   /**
-   * The method items sorted by the method canonical name.
+   * The method items sorted by the classAndMethodName.
    */
   protected TreeMap<String, WjrMethodItem> methodItems =
     new TreeMap<String, WjrMethodItem>();
@@ -70,25 +70,25 @@ public class WjrStore implements IsSerializable {
   /**
    * Adds the class item to the store.
    * 
-   * The class canonical name of the classItem must not already be stored.
+   * The class name of the classItem must not already be stored.
    * 
    * @param classItem
    *          The class item, cannot be null.
    * @throws NullPointerException
    *           When the classItem parameter is null.
    * @throws IllegalStateException
-   *           When the classCanonicalName has already exist.
+   *           When the className has already existed.
    */
   public void addClassItem(WjrClassItem classItem) {
     checkNotNull(classItem, "The classItem parameter is null.");
 
-    String classCanonicalName = classItem.getClassCanonicalName();
+    String className = classItem.getClassName();
     checkState(
-      !classItems.containsKey(classCanonicalName),
-      "The %s has already exist.",
-      classCanonicalName);
+      !classItems.containsKey(className),
+      "The %s has already existed.",
+      className);
 
-    classItems.put(classCanonicalName, classItem);
+    classItems.put(className, classItem);
   }
 
   /**
@@ -102,72 +102,70 @@ public class WjrStore implements IsSerializable {
    * @throws NullPointerException
    *           When the methodItem parameter is null.
    * @throws IllegalStateException
-   *           When the classCanonicalName is not found.
+   *           When the className is not found.
    * @throws IllegalStateException
-   *           When the methodCanonicalName has already exist.
+   *           When the classAndMethodName has already existed.
    */
   public void addMethodItem(WjrMethodItem methodItem) {
     checkNotNull(methodItem, "The methodItem parameter is null.");
 
-    String classCanonicalName = methodItem.getClassCanonicalName();
+    String className = methodItem.getClassName();
     checkState(
-      classItems.containsKey(classCanonicalName),
+      classItems.containsKey(className),
       "The %s is not found.",
-      classCanonicalName);
+      className);
 
-    String methodCanonicalName = methodItem.getMethodCanonicalName();
+    String classAndMethodName = methodItem.getClassAndMethodName();
     checkState(
-      !methodItems.containsKey(methodCanonicalName),
-      "The %s has already exist.",
-      methodCanonicalName);
+      !methodItems.containsKey(classAndMethodName),
+      "The %s has already existed.",
+      classAndMethodName);
 
-    methodItems.put(methodCanonicalName, methodItem);
+    methodItems.put(classAndMethodName, methodItem);
   }
 
   /**
    * Gets the class item from the store. If not found, the exception occurs.
    * 
-   * @param classCanonicalName
-   *          The class canonical name.
+   * @param className
+   *          The className.
    * @return The class item.
    * @throws NullPointerException
-   *           When the classCanonicalName parameter is null.
+   *           When the className parameter is null.
    * @throws IllegalStateException
-   *           When the class item is not found.
+   *           When the className is not found.
    */
-  public WjrClassItem getClassItem(String classCanonicalName) {
-    checkNotNull(
-      classCanonicalName,
-      "The classCanonicalName parameter is null.");
+  public WjrClassItem getClassItem(String className) {
+    checkNotNull(className, "The className parameter is null.");
     checkState(
-      classItems.containsKey(classCanonicalName),
+      classItems.containsKey(className),
       "The %s is not found.",
-      classCanonicalName);
+      className);
 
-    return classItems.get(classCanonicalName);
+    return classItems.get(className);
   }
 
   /**
    * Gets the method item from the store. If not found, the exception occurs.
    * 
-   * @param methodCanonicalName
-   *          The method canonical name.
+   * @param classAndMethodName
+   *          The classAndMethodName.
    * @return The method item.
    * @throws NullPointerException
-   *           When the methodCanonicalName parameter is null.
+   *           When the methodItemName parameter is null.
    * @throws IllegalStateException
-   *           When the method item is not found.
+   *           When the classAndMethodName is not found.
    */
-  public WjrMethodItem getMethodItem(String methodCanonicalName) {
+  public WjrMethodItem getMethodItem(String classAndMethodName) {
     checkNotNull(
-      methodCanonicalName,
-      "The methodCanonicalName parameter is null.");
+      classAndMethodName,
+      "The classAndMethodName parameter is null.");
     checkState(
-      methodItems.containsKey(methodCanonicalName),
+      methodItems.containsKey(classAndMethodName),
       "The %s is not found.",
-      methodCanonicalName);
+      classAndMethodName);
 
-    return methodItems.get(methodCanonicalName);
+    return methodItems.get(classAndMethodName);
   }
 
   /**
@@ -180,31 +178,28 @@ public class WjrStore implements IsSerializable {
   }
 
   /**
-   * Gets the method items belong to the classCanonicalName.
+   * Gets the method items belong to the className.
    * 
-   * @param classCanonicalName
-   *          The class canonical name.
+   * @param className
+   *          The className.
    * @return The list of the method items.
    * @throws NullPointerException
-   *           When the classCanonicalName parameter is null.
+   *           When the className parameter is null.
    * @throws IllegalStateException
-   *           The classItem of the classCanonicalName is not found.
+   *           The classItem of the className is not found.
    */
-  public List<WjrMethodItem> getMethodItems(String classCanonicalName) {
-    checkNotNull(
-      classCanonicalName,
-      "The classCanonicalName parameter is null.");
+  public List<WjrMethodItem> getMethodItems(String className) {
+    checkNotNull(className, "The className parameter is null.");
     checkState(
-      classItems.containsKey(classCanonicalName),
+      classItems.containsKey(className),
       "The %s is not found.",
-      classCanonicalName);
+      className);
 
     List<WjrMethodItem> items = new ArrayList<WjrMethodItem>();
 
-    SortedMap<String, WjrMethodItem> tailMap =
-      methodItems.tailMap(classCanonicalName);
+    SortedMap<String, WjrMethodItem> tailMap = methodItems.tailMap(className);
     for (WjrMethodItem item : tailMap.values()) {
-      if (item.getClassCanonicalName().equals(classCanonicalName)) {
+      if (item.getClassName().equals(className)) {
         items.add(item);
       } else {
         break;
@@ -283,13 +278,13 @@ public class WjrStore implements IsSerializable {
    * summary of classItems.
    */
   public void clearAllResultsAndSummaries() {
-    root.clearSummary();
     for (WjrMethodItem methodItem : methodItems.values()) {
       methodItem.clearResult();
     }
     for (WjrClassItem classItem : classItems.values()) {
       classItem.clearSummary();
     }
+    root.clearSummary();
   }
 
 }

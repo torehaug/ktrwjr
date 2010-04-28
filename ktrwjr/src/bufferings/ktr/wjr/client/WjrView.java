@@ -283,7 +283,7 @@ public class WjrView extends Composite implements WjrDisplay,
       treeItems.add(classTreeItem);
 
       List<WjrMethodItem> methodStoreItems =
-        store.getMethodItems(classStoreItem.getClassCanonicalName());
+        store.getMethodItems(classStoreItem.getClassName());
       storeItems.addAll(methodStoreItems);
       for (WjrMethodItem wjrMethodItem : methodStoreItems) {
         WjrTreeItem methodTreeItem = createTreeItem(wjrMethodItem);
@@ -445,16 +445,16 @@ public class WjrView extends Composite implements WjrDisplay,
   }
 
   private String getTreeItemTextFromClassItem(WjrClassItem classItem) {
-    return classItem.getClassCanonicalName();
+    return classItem.getClassName();
   }
 
   private String getTreeItemTextFromMethodItem(WjrMethodItem methodItem) {
-    StringBuilder sb = new StringBuilder(methodItem.getMethodSimpleName());
+    StringBuilder sb = new StringBuilder(methodItem.getMethodName());
 
     if (methodItem.getState() != State.NOT_YET
       && methodItem.getState() != State.RUNNING) {
 
-      sb.append(" (").append(getTimeString(methodItem)).append("api_ms)");
+      sb.append(" (").append(getTimeString(methodItem)).append(")");
     }
 
     return sb.toString();
@@ -464,13 +464,13 @@ public class WjrView extends Composite implements WjrDisplay,
     StringBuilder sb = new StringBuilder();
 
     String time = methodItem.getTime();
-    sb.append(time != null ? time : "-").append("ms ");
+    sb.append(!time.isEmpty() ? time : "-").append("ms ");
 
     String cpuTime = methodItem.getCpuTime();
-    sb.append(cpuTime != null ? cpuTime : "-").append("cpu_ms ");
+    sb.append(!cpuTime.isEmpty() ? cpuTime : "-").append("cpu_ms ");
 
     String apiTime = methodItem.getApiTime();
-    sb.append(apiTime != null ? apiTime : "-").append("api_ms");
+    sb.append(!apiTime.isEmpty() ? apiTime : "-").append("api_ms");
 
     return sb.toString();
   }

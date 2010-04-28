@@ -18,7 +18,7 @@ package bufferings.ktr.wjr.shared.model;
 import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 
 /**
- * Test case class method information.
+ * The test case class method information.
  * 
  * This class keeps the test method run result information.
  * 
@@ -32,25 +32,20 @@ public class WjrMethodItem extends WjrStoreItem {
   protected static final String CLASS_METHOD_SEPARATOR = "#";
 
   /**
-   * The class canonical name.
+   * The class name.
    */
-  protected String classCanonicalName;
-
-  /**
-   * The class simple name.
-   */
-  protected String classSimpleName;
-
-  /**
-   * The class canonical name and method name binded with
-   * {@link WjrMethodItem#CLASS_METHOD_SEPARATOR}
-   */
-  protected String methodCanonicalName;
+  protected String className;
 
   /**
    * The method name.
    */
-  protected String methodSimpleName;
+  protected String methodName;
+
+  /**
+   * The class name and the method name binded with
+   * {@link WjrMethodItem#CLASS_METHOD_SEPARATOR}.
+   */
+  protected String classAndMethodName;
 
   /**
    * The trace string of the run test. This cannot be null.
@@ -68,12 +63,13 @@ public class WjrMethodItem extends WjrStoreItem {
   protected String time = "";
 
   /**
-   * The cpu time the run test took. The unit is [cpums]. This cannot be null.
+   * The cpu time the run test took. The unit is [cpu_ms]. This cannot be null.
    */
   protected String cpuTime = "";
 
   /**
-   * The api time the run test took. The unit is [apims]. This cannot be null.
+   * The api time the run test took. The unit is [api_cpu_ms]. This cannot be
+   * null.
    */
   protected String apiTime = "";
 
@@ -85,69 +81,50 @@ public class WjrMethodItem extends WjrStoreItem {
   }
 
   /**
-   * Constructs with the class canonical name and the method name.
+   * Constructs with the class name and the method name.
    * 
-   * Both the class canonical name and the method name must not be null or
-   * empty.
-   * 
-   * @param classCanonicalName
-   *          The class canonical name.
+   * @param className
+   *          The class name.
    * @param methodName
    *          The method name.
    * @throws NullPointerException
-   *           When the classCanonicalName parameter is null.
+   *           When the className parameter is null.
    * @throws IllegalArgumentException
-   *           When the classCanonicalName parameter is empty.
+   *           When the className parameter is empty.
    * @throws NullPointerException
    *           When the methodName parameter is null.
    * @throws IllegalArgumentException
    *           When the methodName parameter is empty.
    */
-  public WjrMethodItem(String classCanonicalName, String methodName) {
-    checkNotNull(
-      classCanonicalName,
-      "The classCanonicalName parameter is null.");
-    checkArgument(
-      !classCanonicalName.isEmpty(),
-      "The classCanonicalName parameter is empty.");
+  public WjrMethodItem(String className, String methodName) {
+    checkNotNull(className, "The className parameter is null.");
+    checkArgument(!className.isEmpty(), "The className parameter is empty.");
     checkNotNull(methodName, "The methodName parameter is null.");
     checkArgument(!methodName.isEmpty(), "The methodName parameter is empty.");
 
-    int simpleNameStartPos = classCanonicalName.lastIndexOf('.') + 1;
-    this.classCanonicalName = classCanonicalName;
-    this.classSimpleName = classCanonicalName.substring(simpleNameStartPos);
-    this.methodCanonicalName =
-      classCanonicalName + CLASS_METHOD_SEPARATOR + methodName;
-    this.methodSimpleName = methodName;
+    this.className = className;
+    this.methodName = methodName;
+    this.classAndMethodName = className + CLASS_METHOD_SEPARATOR + methodName;
   }
 
   /**
-   * Gets the class canonical name.
+   * Gets the class name.
    * 
-   * @return The class canonical name.
+   * @return The class name.
    */
-  public String getClassCanonicalName() {
-    return classCanonicalName;
+  public String getClassName() {
+    return className;
   }
 
   /**
-   * Gets the class simple name.
-   * 
-   * @return The class simple name.
-   */
-  public String getClassSimpleName() {
-    return classSimpleName;
-  }
-
-  /**
-   * Gets the class canonical name and method name binded with
+   * Gets the class name and the method name binded with
    * {@link WjrMethodItem#CLASS_METHOD_SEPARATOR}
    * 
-   * @return The class canonical name and method name binded with
+   * @return The class item name and the method name binded with
    *         {@link WjrMethodItem#CLASS_METHOD_SEPARATOR}
    */
-  public String getMethodCanonicalName() {
-    return methodCanonicalName;
+  public String getClassAndMethodName() {
+    return classAndMethodName;
   }
 
   /**
@@ -155,8 +132,8 @@ public class WjrMethodItem extends WjrStoreItem {
    * 
    * @return The method name.
    */
-  public String getMethodSimpleName() {
-    return methodSimpleName;
+  public String getMethodName() {
+    return methodName;
   }
 
   /**
@@ -221,7 +198,7 @@ public class WjrMethodItem extends WjrStoreItem {
   }
 
   /**
-   * Gets the cpu time the run test took. The unit is [cpums]. This cannot be
+   * Gets the cpu time the run test took. The unit is [cpu_ms]. This cannot be
    * null.
    * 
    * @return The cpu time the run test took.
@@ -231,19 +208,19 @@ public class WjrMethodItem extends WjrStoreItem {
   }
 
   /**
-   * Sets the cpu time the run test took. The unit is [cpums]. If the cpuTime
+   * Sets the cpu time the run test took. The unit is [cpu_ms]. If the cpuTime
    * parameter is null, the empty string is set.
    * 
    * @param cpuTime
-   *          The cpu time the run test took. The unit is [cpums].
+   *          The cpu time the run test took. The unit is [cpu_ms].
    */
   public void setCpuTime(String cpuTime) {
     this.cpuTime = (cpuTime != null ? cpuTime : "");
   }
 
   /**
-   * Gets the api time the run test took. The unit is [apims]. This cannot be
-   * null.
+   * Gets the api time the run test took. The unit is [api_cpu_ms]. This cannot
+   * be null.
    * 
    * @return The api time the run test took.
    */
@@ -252,11 +229,11 @@ public class WjrMethodItem extends WjrStoreItem {
   }
 
   /**
-   * Sets the api time the run test took. The unit is [apims]. If the apiTime
-   * parameter is null, the empty string is set.
+   * Sets the api time the run test took. The unit is [api_cpu_ms]. If the
+   * apiTime parameter is null, the empty string is set.
    * 
    * @param apiTime
-   *          The api time the run test took. The unit is [apims].
+   *          The api time the run test took. The unit is [api_cpu_ms].
    */
   public void setApiTime(String apiTime) {
     this.apiTime = (apiTime != null ? apiTime : "");

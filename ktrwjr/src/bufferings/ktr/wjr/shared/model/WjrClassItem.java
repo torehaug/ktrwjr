@@ -20,10 +20,10 @@ import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 import java.util.List;
 
 /**
- * Test case class information.
+ * The test case class information.
  * 
  * This class keeps the summary of the test methods which are the children of
- * this test case class. The parent-child relationship of test classes and the
+ * this test case class. The parent-child relationship between test classes and
  * methods is defined in {@link WjrStore}.
  * 
  * @author bufferings[at]gmail.com
@@ -31,14 +31,9 @@ import java.util.List;
 public class WjrClassItem extends WjrSummaryItem {
 
   /**
-   * The class canonical name.
+   * The test class name.
    */
-  protected String classCanonicalName;
-
-  /**
-   * The class simple name.
-   */
-  protected String classSimpleName;
+  protected String className;
 
   /**
    * Constructor for only GWT-RPC serialization.
@@ -48,46 +43,29 @@ public class WjrClassItem extends WjrSummaryItem {
   }
 
   /**
-   * Constructs with the class canonical name.
+   * Constructs with the class name.
    * 
-   * The class canonical name must not be null or empty.
-   * 
-   * @param classCanonicalName
-   *          The class canonical name.
+   * @param className
+   *          The class name.
    * @throws NullPointerException
-   *           When the classCanonicalName parameter is null.
+   *           When the className parameter is null.
    * @throws IllegalArgumentException
-   *           When the classCanonicalName parameter is empty.
+   *           When the className parameter is empty.
    */
-  public WjrClassItem(String classCanonicalName) {
-    checkNotNull(
-      classCanonicalName,
-      "The classCanonicalName parameter is null.");
-    checkArgument(
-      !classCanonicalName.isEmpty(),
-      "The classCanonicalName parameter is empty.");
+  public WjrClassItem(String className) {
+    checkNotNull(className, "The className parameter is null.");
+    checkArgument(!className.isEmpty(), "The className parameter is empty.");
 
-    int simpleNameStartPos = classCanonicalName.lastIndexOf('.') + 1;
-    this.classCanonicalName = classCanonicalName;
-    this.classSimpleName = classCanonicalName.substring(simpleNameStartPos);
+    this.className = className;
   }
 
   /**
-   * Gets the class canonical name.
+   * Gets the class item name.
    * 
-   * @return The class canonical name.
+   * @return The class item name.
    */
-  public String getClassCanonicalName() {
-    return classCanonicalName;
-  }
-
-  /**
-   * Gets the class simple name.
-   * 
-   * @return The class simple name.
-   */
-  public String getClassSimpleName() {
-    return classSimpleName;
+  public String getClassName() {
+    return className;
   }
 
   /*
@@ -98,7 +76,7 @@ public class WjrClassItem extends WjrSummaryItem {
    * .wjr.shared.model.WjrStore)
    */
   protected List<? extends WjrStoreItem> fetchChildren(WjrStore store) {
-    return store.getMethodItems(classCanonicalName);
+    return store.getMethodItems(className);
   }
 
 }
