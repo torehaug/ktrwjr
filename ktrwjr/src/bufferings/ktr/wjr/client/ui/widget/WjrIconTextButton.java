@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client.ui.widget;
+package bufferings.ktr.wjr.client.ui.widget;
 
 import static bufferings.ktr.wjr.client.ui.widget.JQueryUI.*;
 
@@ -24,6 +24,11 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The icon and text button with JQueryUI theme
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class WjrIconTextButton extends WjrAbstractButton implements HasText {
 
   private static WjrIconTextButtonUiBinder uiBinder =
@@ -39,19 +44,41 @@ public class WjrIconTextButton extends WjrAbstractButton implements HasText {
   @UiField
   protected Label textLabel;
 
+  /**
+   * Instanciates the WjrIconTextButton.
+   */
   public WjrIconTextButton() {
     initWidget(uiBinder.createAndBindUi(this));
   }
 
+  /**
+   * Sets the icon style name.
+   * 
+   * If the styleName is null, the empty icon is used.
+   * 
+   * @param styleName
+   *          The icon style name.
+   */
   public void setIcon(String styleName) {
+    styleName = (styleName != null ? styleName : UI_ICON_EMPTY);
     iconLabel.setStyleName(join(UI_ICON, styleName));
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.google.gwt.user.client.ui.HasText#getText()
+   */
   @Override
   public String getText() {
     return textLabel.getText();
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
+   */
   @Override
   public void setText(String text) {
     textLabel.setText(text);

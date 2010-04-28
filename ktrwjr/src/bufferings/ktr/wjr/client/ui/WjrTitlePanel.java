@@ -13,13 +13,18 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client.ui;
+package bufferings.ktr.wjr.client.ui;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The title panel which shows the title string.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class WjrTitlePanel extends Composite {
 
   private static WjrTitlePanelUiBinder uiBinder =

@@ -13,24 +13,45 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client.ui.widget;
+package bufferings.ktr.wjr.client.ui.widget;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The no border focus panel.
+ * 
+ * This class is used by WjrTree and WjrListBox. If you want to use key to
+ * operate the selection, the focus is needed. So I used the focusable panel in
+ * the back end of them. But the focusable panel has borders, and I want not to
+ * show borders, so I prepared this class.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class WjrNoBorderFocusPanel extends FocusPanel {
 
+  /**
+   * Instanciates the WjrNoBorderFocusPanel.
+   */
   public WjrNoBorderFocusPanel() {
     super();
     initialize();
   }
 
+  /**
+   * Instanciates the WjrNoBorderFocusPanel with child.
+   * 
+   * @parma child The child to add.
+   */
   public WjrNoBorderFocusPanel(Widget child) {
     super(child);
     initialize();
   }
 
+  /**
+   * Hides the focus border.
+   */
   protected void initialize() {
     DOM.setStyleAttribute(getElement(), "outline", "0px");
     DOM.setElementAttribute(getElement(), "hideFocus", "true");

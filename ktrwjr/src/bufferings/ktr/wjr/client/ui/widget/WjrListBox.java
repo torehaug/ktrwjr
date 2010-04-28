@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client.ui.widget;
+package bufferings.ktr.wjr.client.ui.widget;
 
 import static bufferings.ktr.wjr.client.ui.widget.JQueryUI.*;
 import static bufferings.ktr.wjr.shared.util.Preconditions.*;
@@ -37,6 +37,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The simple list box with JQueryUI theme.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class WjrListBox extends Composite {
 
   protected static final int OTHER_KEY_DOWN = 63233;
@@ -53,6 +58,11 @@ public class WjrListBox extends Composite {
     String itemStyle();
   }
 
+  /**
+   * Hoverable and clickable label.
+   * 
+   * @author bufferings[at]gmail.com
+   */
   protected static class ItemLabel extends Label implements HasClickHandlers {
 
     public ItemLabel() {
@@ -64,7 +74,7 @@ public class WjrListBox extends Composite {
       switch (DOM.eventGetType(event)) {
       case Event.ONMOUSEOVER:
         if (getTitle().length() > 0) {// Title is never null, it's only empty
-                                      // when not set.
+          // when not set.
           addStyleName(UI_STATE_HOVER);
         }
         break;
@@ -88,6 +98,9 @@ public class WjrListBox extends Composite {
 
   protected boolean lastWasKeyDown;
 
+  /**
+   * Instanciates the WjrListBox.
+   */
   public WjrListBox() {
     Resources.INSTANCE.css().ensureInjected();
 
@@ -96,6 +109,14 @@ public class WjrListBox extends Composite {
     sinkEvents(Event.ONMOUSEDOWN | Event.ONCLICK | Event.KEYEVENTS);
   }
 
+  /**
+   * Adds the item.
+   * 
+   * @param item
+   *          The item to add.
+   * @throws NullPointerException
+   *           If the item parameter is null.
+   */
   public void addItem(String item) {
     checkNotNull(item, "The item parameter is null.");
 
@@ -107,10 +128,20 @@ public class WjrListBox extends Composite {
     mainPanel.add(label);
   }
 
+  /**
+   * Clears the all items.
+   */
   public void clear() {
     mainPanel.clear();
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.google.gwt.user.client.ui.Composite#onBrowserEvent(com.google.gwt.user
+   * .client.Event)
+   */
   @Override
   public void onBrowserEvent(Event event) {
     int eventType = DOM.eventGetType(event);
@@ -119,7 +150,7 @@ public class WjrListBox extends Composite {
     case Event.ONKEYDOWN:
       if (curSelection == null) {
         if (mainPanel.getWidgetCount() > 0) {
-          onSelection(mainPanel.getWidget(0));
+          setSelection(mainPanel.getWidget(0));
         }
         super.onBrowserEvent(event);
         return;
@@ -176,7 +207,13 @@ public class WjrListBox extends Composite {
     super.onBrowserEvent(event);
   }
 
-  protected void onSelection(Widget item) {
+  /**
+   * Sets the selected item.
+   * 
+   * @param item
+   *          The item to select.
+   */
+  protected void setSelection(Widget item) {
     if (curSelection != null) {
       curSelection.setStyleName(Resources.INSTANCE.css().itemStyle());
     }
@@ -189,20 +226,20 @@ public class WjrListBox extends Composite {
     }
   }
 
-  protected boolean elementClicked(Element hElem) {
+  private boolean elementClicked(Element hElem) {
     ArrayList<Element> chain = new ArrayList<Element>();
     collectElementChain(chain, getElement(), hElem);
 
     Widget item = findItemByChain(chain, 0);
     if (item != null) {
-      onSelection(item);
+      setSelection(item);
       return true;
     }
 
     return false;
   }
 
-  protected void collectElementChain(ArrayList<Element> chain, Element hRoot,
+  private void collectElementChain(ArrayList<Element> chain, Element hRoot,
       Element hElem) {
     if ((hElem == null) || (hElem == hRoot)) {
       return;
@@ -212,7 +249,7 @@ public class WjrListBox extends Composite {
     chain.add(hElem);
   }
 
-  protected Widget findItemByChain(ArrayList<Element> chain, int idx) {
+  private Widget findItemByChain(ArrayList<Element> chain, int idx) {
     if (idx == chain.size()) {
       return null;
     }
@@ -228,7 +265,7 @@ public class WjrListBox extends Composite {
     return findItemByChain(chain, idx + 1);
   }
 
-  protected void keyboardNavigation(Event event) {
+  private void keyboardNavigation(Event event) {
     int code = DOM.eventGetKeyCode(event);
 
     switch (standardizeKeycode(code)) {
@@ -246,18 +283,18 @@ public class WjrListBox extends Composite {
   private void moveSelectionDown(Widget sel) {
     int idx = mainPanel.getWidgetIndex(sel);
     if (idx < mainPanel.getWidgetCount() - 1) {
-      onSelection(mainPanel.getWidget(idx + 1));
+      setSelection(mainPanel.getWidget(idx + 1));
     }
   }
 
   private void moveSelectionUp(Widget sel) {
     int idx = mainPanel.getWidgetIndex(sel);
     if (idx > 0) {
-      onSelection(mainPanel.getWidget(idx - 1));
+      setSelection(mainPanel.getWidget(idx - 1));
     }
   }
 
-  protected boolean isArrowKey(int code) {
+  private boolean isArrowKey(int code) {
     switch (code) {
     case OTHER_KEY_DOWN:
     case OTHER_KEY_UP:
@@ -269,7 +306,7 @@ public class WjrListBox extends Composite {
     }
   }
 
-  protected int standardizeKeycode(int code) {
+  private int standardizeKeycode(int code) {
     switch (code) {
     case OTHER_KEY_DOWN:
       code = KeyCodes.KEY_DOWN;

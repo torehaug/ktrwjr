@@ -13,18 +13,23 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client.service;
+package bufferings.ktr.wjr.client.service;
 
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+/**
+ * The service async.
+ * 
+ * @author bufferings[at]gmail.com
+ * @see KtrWjrService
+ */
 public interface KtrWjrServiceAsync {
 
   void loadStore(AsyncCallback<WjrStore> callback);
 
-  void runTest(WjrMethodItem methodItem,
-      AsyncCallback<WjrMethodItem> callback);
+  void runTest(WjrMethodItem methodItem, AsyncCallback<WjrMethodItem> callback);
 
 }

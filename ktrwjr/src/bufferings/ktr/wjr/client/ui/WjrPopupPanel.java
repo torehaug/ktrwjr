@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client.ui;
+package bufferings.ktr.wjr.client.ui;
 
 import static bufferings.ktr.wjr.client.ui.widget.JQueryUI.*;
 
@@ -26,14 +26,31 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
+/**
+ * Popup panel which is shown while the test is running.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class WjrPopupPanel extends Composite implements HasText {
 
+  /**
+   * Whether the panel is showing or not.
+   */
   protected boolean isShowing = false;
 
+  /**
+   * Whether the panel is hiding or not.
+   */
   protected boolean isHiding = false;
 
+  /**
+   * The label.
+   */
   protected Label label;
 
+  /**
+   * Instanciates the WjrPopupPanel.
+   */
   public WjrPopupPanel() {
     HorizontalPanel mainPanel = new HorizontalPanel();
     mainPanel.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
@@ -65,6 +82,9 @@ public class WjrPopupPanel extends Composite implements HasText {
     getElement().getStyle().setPropertyPx("top", top);
   }
 
+  /**
+   * Shows the panel.
+   */
   public void show() {
     if (isVisible() || isShowing) {
       return;
@@ -74,10 +94,16 @@ public class WjrPopupPanel extends Composite implements HasText {
     showAnimation(getElement().getId());
   }
 
+  /**
+   * The callback method of the show jsni.
+   */
   protected void showCallback() {
     isShowing = false;
   }
 
+  /**
+   * Hides the panel.
+   */
   public void hide() {
     if (!isVisible() || isHiding) {
       return;
@@ -86,27 +112,52 @@ public class WjrPopupPanel extends Composite implements HasText {
     hideAnimation(getElement().getId());
   }
 
+  /**
+   * The callback method of the hide jsni.
+   */
   protected void hideCallback() {
     isHiding = false;
   }
 
+  /**
+   * Shows animation.
+   * 
+   * @param id
+   *          The element id.
+   */
   private native void showAnimation(String id)/*-{
     var options = {}
     var callback = this.@bufferings.ktr.wjr.client.ui.WjrPopupPanel::showCallback()();
     $wnd.$("#" + id).show('slide', options, 500, callback);
   }-*/;
 
+  /**
+   * Hides animation.
+   * 
+   * @param id
+   *          The element id.
+   */
   public native void hideAnimation(String id)/*-{
     var options = {}
     var callback = this.@bufferings.ktr.wjr.client.ui.WjrPopupPanel::hideCallback()();
     $wnd.$("#" + id).hide('slide', options, 500, callback);
   }-*/;
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.google.gwt.user.client.ui.HasText#getText()
+   */
   @Override
   public String getText() {
     return label.getText();
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
+   */
   @Override
   public void setText(String text) {
     label.setText(text);

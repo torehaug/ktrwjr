@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client.ui;
+package bufferings.ktr.wjr.client.ui;
 
 import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 import bufferings.ktr.wjr.client.ui.widget.WjrIconButton;
@@ -28,15 +28,50 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The tree panel which shows the testcases and some buttons.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class WjrTreePanel extends Composite {
 
+  /**
+   * The event handler of WjrTreePanel.
+   * 
+   * @author bufferings[at]gmail.com
+   */
+
   public static interface Handler {
+    /**
+     * Called when the clear button is clicked.
+     * 
+     * @param event
+     *          The event information.
+     */
     public void onClearButtonClicked(ClickEvent event);
 
+    /**
+     * Called when the reload button is clicked.
+     * 
+     * @param event
+     *          The event information.
+     */
     public void onReloadButtonClicked(ClickEvent event);
 
+    /**
+     * Called when the checkAll button is clicked.
+     * 
+     * @param event
+     *          The event information.
+     */
     public void onCheckAllButtonClicked(ClickEvent event);
 
+    /**
+     * Called when the uncheckAll button is clicked.
+     * 
+     * @param event
+     *          The event information.
+     */
     public void onUncheckAllButtonClicked(ClickEvent event);
   }
 
@@ -46,6 +81,9 @@ public class WjrTreePanel extends Composite {
   interface WjrTreePanelUiBinder extends UiBinder<Widget, WjrTreePanel> {
   }
 
+  /**
+   * The event handler of this class.
+   */
   protected Handler handler;
 
   @UiField
@@ -69,25 +107,56 @@ public class WjrTreePanel extends Composite {
   @UiField
   protected WjrTree tree;
 
+  /**
+   * Instanciates the WjrTreePanel with the event handler.
+   * 
+   * @param handler
+   *          The event handler of this class.
+   * @throws NullPointerException
+   *           If the handler parameter is null.
+   */
   public WjrTreePanel(Handler handler) {
     this.handler = checkNotNull(handler, "The handler parameter is null.");
     initWidget(uiBinder.createAndBindUi(this));
   }
 
+  /**
+   * Gets the tree composite.
+   * 
+   * @return The tree composite.
+   */
   public WjrTree getTree() {
     return tree;
   }
 
+  /**
+   * Called when the clear button is clicked.
+   * 
+   * @param event
+   *          The event information.
+   */
   @UiHandler("clearButton")
   public void onClearButtonClicked(ClickEvent event) {
     handler.onClearButtonClicked(event);
   }
 
+  /**
+   * Called when the reload button is clicked.
+   * 
+   * @param event
+   *          The event information.
+   */
   @UiHandler("reloadButton")
   public void onReloadButtonClicked(ClickEvent event) {
     handler.onReloadButtonClicked(event);
   }
 
+  /**
+   * Called when the checkAll button is clicked.
+   * 
+   * @param event
+   *          The event information.
+   */
   @UiHandler("checkAllButton")
   public void onCheckAllButtonClicked(ClickEvent event) {
     for (int i = 0; i < tree.getItemCount(); i++) {
@@ -96,6 +165,12 @@ public class WjrTreePanel extends Composite {
     handler.onCheckAllButtonClicked(event);
   }
 
+  /**
+   * Called when the uncheckAll button is clicked.
+   * 
+   * @param event
+   *          The event information.
+   */
   @UiHandler("uncheckAllButton")
   public void onUncheckAllButtonClicked(ClickEvent event) {
     for (int i = 0; i < tree.getItemCount(); i++) {
@@ -104,6 +179,14 @@ public class WjrTreePanel extends Composite {
     handler.onUncheckAllButtonClicked(event);
   }
 
+  /**
+   * Checks or unchecks the treeItem and its children recursively.
+   * 
+   * @param treeItem
+   *          The treeItem.
+   * @param value
+   *          True if check, false if uncheck.
+   */
   protected void checkRecursive(WjrTreeItem treeItem, boolean value) {
     treeItem.setChecked(value, false);
     for (int i = 0; i < treeItem.getChildCount(); i++) {
@@ -111,6 +194,12 @@ public class WjrTreePanel extends Composite {
     }
   }
 
+  /**
+   * Called when the expandAll button is clicked.
+   * 
+   * @param event
+   *          The event information.
+   */
   @UiHandler("expandAllButton")
   public void onExpandAllButtonClicked(ClickEvent event) {
     for (int i = 0; i < tree.getItemCount(); i++) {
@@ -119,6 +208,12 @@ public class WjrTreePanel extends Composite {
     }
   }
 
+  /**
+   * Expands the treeItem and its children recursively.
+   * 
+   * @param treeItem
+   *          The treeItem.
+   */
   protected void expandRecursive(WjrTreeItem treeItem) {
     treeItem.setState(true);
     for (int i = 0; i < treeItem.getChildCount(); i++) {
@@ -126,6 +221,12 @@ public class WjrTreePanel extends Composite {
     }
   }
 
+  /**
+   * Called when the collapseAll button is clicked.
+   * 
+   * @param event
+   *          The event information.
+   */
   @UiHandler("collapseAllButton")
   public void onCollapseAllButtonClicked(ClickEvent event) {
     for (int i = 0; i < tree.getItemCount(); i++) {
@@ -134,6 +235,12 @@ public class WjrTreePanel extends Composite {
     }
   }
 
+  /**
+   * Collapses the treeItem and its children recursively.
+   * 
+   * @param treeItem
+   *          The treeItem.
+   */
   protected void collapseRecursive(WjrTreeItem treeItem) {
     for (int i = 0; i < treeItem.getChildCount(); i++) {
       collapseRecursive(treeItem.getChild(i));
@@ -141,26 +248,62 @@ public class WjrTreePanel extends Composite {
     treeItem.setState(false);
   }
 
+  /**
+   * Sets the clear button disabled.
+   * 
+   * @param disabled
+   *          True if disabled, false if not.
+   */
   public void setClearButtonDisabled(boolean disabled) {
     clearButton.setDisabled(disabled);
   }
 
+  /**
+   * Sets the reload button disabled.
+   * 
+   * @param disabled
+   *          True if disabled, false if not.
+   */
   public void setReloadButtonDisabled(boolean disabled) {
     reloadButton.setDisabled(disabled);
   }
 
+  /**
+   * Sets the checkAll button disabled.
+   * 
+   * @param disabled
+   *          True if disabled, false if not.
+   */
   public void setCheckAllButtonDisabled(boolean disabled) {
     checkAllButton.setDisabled(disabled);
   }
 
+  /**
+   * Sets the uncheckAll button disabled.
+   * 
+   * @param disabled
+   *          True if disabled, false if not.
+   */
   public void setUncheckAllButtonDisabled(boolean disabled) {
     uncheckAllButton.setDisabled(disabled);
   }
 
+  /**
+   * Sets the expandAll button disabled.
+   * 
+   * @param disabled
+   *          True if disabled, false if not.
+   */
   public void setExpandAllButtonDisabled(boolean disabled) {
     expandAllButton.setDisabled(disabled);
   }
 
+  /**
+   * Sets the collapseAll button disabled.
+   * 
+   * @param disabled
+   *          True if disabled, false if not.
+   */
   public void setCollapseAllButtonDisabled(boolean disabled) {
     collapseAllButton.setDisabled(disabled);
   }

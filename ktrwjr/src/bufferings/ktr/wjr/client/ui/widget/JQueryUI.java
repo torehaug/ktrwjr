@@ -13,10 +13,15 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client.ui.widget;
+package bufferings.ktr.wjr.client.ui.widget;
 
 import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 
+/**
+ * JQueryUI constants.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class JQueryUI {
 
   public static final String UI_WIDGET = "ui-widget";
@@ -41,11 +46,21 @@ public class JQueryUI {
   public static final String UI_ICON_NOTICE = "ui-icon-notice";
   public static final String UI_ICON_CLOSE = "ui-icon-close";
   public static final String UI_ICON_MINUS = "ui-icon-minus";
-  public static final String UI_ICON_ARRORREFRESH_1_W = "ui-icon-arrowrefresh-1-w";
+  public static final String UI_ICON_ARRORREFRESH_1_W =
+    "ui-icon-arrowrefresh-1-w";
 
   public static final String UI_ICON_PLAY = "ui-icon-play";
   public static final String UI_ICON_PAUSE = "ui-icon-pause";
 
+  /**
+   * Joins the css class names with whitespace.
+   * 
+   * @param args
+   *          The css class names.
+   * @return The joinded css class names.
+   * @throws NullPointerException
+   *           If the args is null or the args contains null value.
+   */
   public static String join(String... args) {
     checkNotNull(args, "The args parameter is null.");
 

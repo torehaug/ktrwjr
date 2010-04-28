@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client.ui;
+package bufferings.ktr.wjr.client.ui;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
@@ -24,6 +24,11 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The result panel which shows the result summary of the tests.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class WjrResultPanel extends Composite {
 
   private static WjrResultPanelUiBinder uiBinder =
@@ -55,16 +60,31 @@ public class WjrResultPanel extends Composite {
   @UiField
   Label resultBar;
 
+  /**
+   * Instanciates the WjrResultPanel.
+   */
   public WjrResultPanel() {
     initWidget(uiBinder.createAndBindUi(this));
-    updateResults(0,0,0,0);
+    updateResults(0, 0, 0, 0);
   }
 
+  /**
+   * Updates the result.
+   * 
+   * @param runsCount
+   *          The run tests count.
+   * @param totalCount
+   *          The total tests count.
+   * @param errorsCount
+   *          The error tests count.
+   * @param failuresCount
+   *          The failure tests count.
+   */
   public void updateResults(int runsCount, int totalCount, int errorsCount,
       int failuresCount) {
-    runsLabel.setText(getRunsLabelString(runsCount, totalCount));
-    errorsLabel.setText(getErrorsLabelString(errorsCount));
-    failuresLabel.setText(getFailuresLabelString(failuresCount));
+    runsLabel.setText(createRunsLabelString(runsCount, totalCount));
+    errorsLabel.setText(createErrorsLabelString(errorsCount));
+    failuresLabel.setText(createFailuresLabelString(failuresCount));
 
     if (errorsCount > 0 || failuresCount > 0) {
       resultBar.setStyleName(resultBarStyle.fail());
@@ -75,7 +95,16 @@ public class WjrResultPanel extends Composite {
     }
   }
 
-  protected String getRunsLabelString(int runsCount, int totalCount) {
+  /**
+   * Creates the runs label string from run tests count and total test count.
+   * 
+   * @param runsCount
+   *          The run tests count.
+   * @param totalCount
+   *          The total count.
+   * @return
+   */
+  protected String createRunsLabelString(int runsCount, int totalCount) {
     return new StringBuilder()
       .append("Runs: ")
       .append(runsCount)
@@ -84,14 +113,28 @@ public class WjrResultPanel extends Composite {
       .toString();
   }
 
-  protected String getErrorsLabelString(int errorsCount) {
+  /**
+   * Creates the errors label string from error tests count.
+   * 
+   * @param errorsCount
+   *          The error tests count.
+   * @return The errors label string.
+   */
+  protected String createErrorsLabelString(int errorsCount) {
     return new StringBuilder()
       .append("Errors: ")
       .append(errorsCount)
       .toString();
   }
 
-  protected String getFailuresLabelString(int failuresCount) {
+  /**
+   * Creates the failures label string from failure tests count.
+   * 
+   * @param failuresCount
+   *          The failure tests count.
+   * @return The failures label string.
+   */
+  protected String createFailuresLabelString(int failuresCount) {
     return new StringBuilder()
       .append("Failures: ")
       .append(failuresCount)

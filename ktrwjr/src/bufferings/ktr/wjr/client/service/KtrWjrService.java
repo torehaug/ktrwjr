@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client.service;
+package bufferings.ktr.wjr.client.service;
 
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
@@ -21,9 +21,26 @@ import bufferings.ktr.wjr.shared.model.WjrStore;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+/**
+ * The KtrWjr service.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 @RemoteServiceRelativePath("ktrwjr.s3gwt")
 public interface KtrWjrService extends RemoteService {
-  public WjrStore loadStore();
 
-  public WjrMethodItem runTest(WjrMethodItem methodItem);
+  /**
+   * Loads the WjrStore.
+   * 
+   * @return The loaded store.
+   */
+  public WjrStore loadStore() throws Exception;
+
+  /**
+   * Runs the test.
+   * 
+   * @param methodItem
+   *          The methodItem to run.
+   */
+  public WjrMethodItem runTest(WjrMethodItem methodItem) throws Exception;
 }

@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client.ui.widget;
+package bufferings.ktr.wjr.client.ui.widget;
 
 import static bufferings.ktr.wjr.client.ui.widget.JQueryUI.*;
 
@@ -42,6 +42,11 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The tree item composite with JQueryUI theme.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class WjrTreeItem extends Composite implements
     HasValueChangeHandlers<WjrTreeItem>, HasSelectionHandlers<WjrTreeItem> {
 
@@ -55,6 +60,11 @@ public class WjrTreeItem extends Composite implements
     String itemPanel();
   }
 
+  /**
+   * Hoverable simple panel.
+   * 
+   * @author bufferings[at]gmail.com
+   */
   protected static class ItemPanel extends SimplePanel {
 
     public ItemPanel() {
@@ -89,8 +99,6 @@ public class WjrTreeItem extends Composite implements
   @UiField
   protected ItemPanel itemPanel;
 
-  protected boolean open = false;
-
   @UiField
   protected CheckBox checkBox;
 
@@ -100,26 +108,60 @@ public class WjrTreeItem extends Composite implements
   @UiField
   protected Label textLabel;
 
+  /**
+   * The parent tree item.
+   */
   protected WjrTreeItem parent;
 
+  /**
+   * The children tree items.
+   */
   protected List<WjrTreeItem> children = new ArrayList<WjrTreeItem>();
 
+  /**
+   * Whether if this tree item is open or not.
+   */
+  protected boolean open = false;
+
+  /**
+   * Whether if this tree item is selected or not.
+   */
   protected boolean selected = false;
 
+  /**
+   * Instanciate the WjrTreeItem.
+   */
   public WjrTreeItem() {
     initWidget(uiBinder.createAndBindUi(this));
     checkBox.setTabIndex(-1);
   }
 
+  /**
+   * Gets whether if this tree item is open or not.
+   * 
+   * @return True if open, false if not.
+   */
   public boolean getState() {
     return open;
   }
 
+  /**
+   * Sets whether if this tree item is open or not.
+   * 
+   * @param open
+   *          True if open, false if not.
+   */
   public void setState(boolean open) {
     this.open = open;
     updateState();
   }
 
+  /**
+   * Updates the state.
+   * 
+   * If this item has no children, the toggle icon is not shown. If this item
+   * has one or more children, the icon that represents the open state is shown.
+   */
   protected void updateState() {
     if (getChildCount() == 0) {
       toggleIconLabel.setStyleName(join(UI_ICON, UI_ICON_EMPTY));
@@ -137,18 +179,42 @@ public class WjrTreeItem extends Composite implements
     }
   }
 
+  /**
+   * Gets the parent item.
+   * 
+   * @return The parent item.
+   */
   public WjrTreeItem getParentItem() {
     return parent;
   }
 
+  /**
+   * Sets the parent item.
+   * 
+   * @param ktrWjrTreeItem
+   *          The parent item.
+   */
   public void setParentItem(WjrTreeItem ktrWjrTreeItem) {
     parent = ktrWjrTreeItem;
   }
 
+  /**
+   * Gets the check box value.
+   * 
+   * @return True if checked, false if not.
+   */
   public boolean isChecked() {
     return checkBox.getValue();
   }
 
+  /**
+   * Sets the check box value.
+   * 
+   * @param checked
+   *          True if checked, false if not.
+   * @param fireEvent
+   *          True if you want to fire {@link ValueChangeEvent}, false if not.
+   */
   public void setChecked(boolean checked, boolean fireEvent) {
     checkBox.setValue(checked);
     if (fireEvent) {
@@ -156,10 +222,23 @@ public class WjrTreeItem extends Composite implements
     }
   }
 
+  /**
+   * Gets whether if this tree item is selected or not.
+   * 
+   * @return True if selected, false if not.
+   */
   public boolean isSelected() {
     return selected;
   }
 
+  /**
+   * Sets whether if this tree item is selected or not.
+   * 
+   * @param selected
+   *          True if selected, false if not.
+   * @param fireEvent
+   *          True if you want to fire {@link SelectionEvent}, false if not.
+   */
   public void setSelected(boolean selected, boolean fireEvent) {
     if (this.selected != selected) {
       this.selected = selected;
@@ -169,19 +248,52 @@ public class WjrTreeItem extends Composite implements
     }
   }
 
+  /**
+   * Sets the css style when this item is selected.
+   * 
+   * The selected style is decided by logic class, because the style is
+   * dependent on the model state.
+   * 
+   * @param selectedStyle
+   *          The selected css class name. If the value is null, the empty
+   *          string value is used instead.
+   */
   public void setSelectedStyle(String selectedStyle) {
+    selectedStyle = (selectedStyle != null ? selectedStyle : "");
     itemPanel.setStyleName(join(style.itemPanel(), selectedStyle));
   }
 
+  /**
+   * Sets the item text.
+   * 
+   * @param text
+   *          The item text. If the value is null, the empty string value is
+   *          used instead.
+   */
   public void setText(String text) {
+    text = (text != null ? text : "");
     textLabel.setText(text);
     itemPanel.setTitle(text);
   }
 
+  /**
+   * Sets the icon css style of JQueryUI.
+   * 
+   * @param icon
+   *          The icon css class of JQueryUI. The value is null, the empty icon
+   *          is used instead.
+   */
   public void setIcon(String icon) {
+    icon = (icon != null ? icon : UI_ICON_EMPTY);
     iconLabel.setStyleName(join(UI_ICON, icon));
   }
 
+  /**
+   * Adds the child item.
+   * 
+   * @param item
+   *          The child item.
+   */
   public void addItem(WjrTreeItem item) {
     if (item.getParentItem() != null) {
       item.getParentItem().removeItem(this);
@@ -196,6 +308,13 @@ public class WjrTreeItem extends Composite implements
     }
   }
 
+  /**
+   * Gets the child item by the index.
+   * 
+   * @param index
+   *          The index of child you want to get.
+   * @return Null if not found, the child item if found.
+   */
   public WjrTreeItem getChild(int index) {
     if ((index < 0) || (index >= getChildCount())) {
       return null;
@@ -203,14 +322,35 @@ public class WjrTreeItem extends Composite implements
     return children.get(index);
   }
 
+  /**
+   * Gets the children count.
+   * 
+   * @return The children count.
+   */
   public int getChildCount() {
     return children.size();
   }
 
+  /**
+   * Gets the child index.
+   * 
+   * @param child
+   *          The child you want to get the index of.
+   * @return the index of the first occurrence of the specified element in this
+   *         list, or -1 if this list does not contain the element
+   */
   public int getChildIndex(WjrTreeItem child) {
     return children.indexOf(child);
   }
 
+  /**
+   * Removes the child item.
+   * 
+   * If the item is not a child of this item, do nothing.
+   * 
+   * @param item
+   *          The child item you want to remove from this item.
+   */
   public void removeItem(WjrTreeItem item) {
     if (!children.contains(item)) {
       return;
@@ -226,12 +366,21 @@ public class WjrTreeItem extends Composite implements
     }
   }
 
+  /**
+   * Removes all children items.
+   */
   public void removeItems() {
     while (getChildCount() > 0) {
       removeItem(getChild(0));
     }
   }
 
+  /**
+   * Handles check box value change event.
+   * 
+   * @param event
+   *          The event information.
+   */
   @UiHandler("checkBox")
   protected void handleCheckBoxValueChange(ValueChangeEvent<Boolean> event) {
     boolean value = event.getValue();
@@ -240,6 +389,17 @@ public class WjrTreeItem extends Composite implements
     ValueChangeEvent.fire(this, this);
   }
 
+  /**
+   * Propagates the check box value to children recursively.
+   * 
+   * When the parent item is checked, then all its children will be checked.
+   * When the parent item is unchecked, then all its children will be unchecked.
+   * 
+   * @param ktrWjrTreeItem
+   *          The parent item.
+   * @param value
+   *          True if checked, false if unchecked.
+   */
   protected void propagateCheckBoxValueToChildren(WjrTreeItem ktrWjrTreeItem,
       boolean value) {
     for (int i = 0; i < ktrWjrTreeItem.getChildCount(); i++) {
@@ -249,6 +409,16 @@ public class WjrTreeItem extends Composite implements
     }
   }
 
+  /**
+   * Propagates the check box value to parent recursively.
+   * 
+   * When the child item is checked and all other children of the parent are
+   * checked, the parent will be checked. When the child item is unchecked and
+   * the parent is checked, the parent will be unchecked.
+   * 
+   * @param ktrWjrTreeItem
+   *          The child item.
+   */
   protected void propagateCheckBoxValueToParent(WjrTreeItem ktrWjrTreeItem) {
     WjrTreeItem parent = ktrWjrTreeItem.getParentItem();
     if (parent != null) {
@@ -265,12 +435,26 @@ public class WjrTreeItem extends Composite implements
     }
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @seecom.google.gwt.event.logical.shared.HasValueChangeHandlers#
+   * addValueChangeHandler
+   * (com.google.gwt.event.logical.shared.ValueChangeHandler)
+   */
   @Override
   public HandlerRegistration addValueChangeHandler(
       ValueChangeHandler<WjrTreeItem> handler) {
     return addHandler(handler, ValueChangeEvent.getType());
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler
+   * (com.google.gwt.event.logical.shared.SelectionHandler)
+   */
   @Override
   public HandlerRegistration addSelectionHandler(
       SelectionHandler<WjrTreeItem> handler) {

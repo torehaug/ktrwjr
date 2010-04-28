@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client;
+package bufferings.ktr.wjr.client;
 
 import bufferings.ktr.wjr.client.service.KtrWjrService;
 import bufferings.ktr.wjr.client.service.KtrWjrServiceAsync;
@@ -23,10 +23,20 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
+/**
+ * The entry point class of Kotori Web JUnit Runner.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class KtrWjr implements EntryPoint {
 
   private static final String LOADING_ELEMENT_ID = "loading";
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
+   */
   @Override
   public void onModuleLoad() {
     KtrWjrServiceAsync rpcService = GWT.create(KtrWjrService.class);

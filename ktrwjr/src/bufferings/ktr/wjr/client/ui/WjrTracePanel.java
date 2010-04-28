@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client.ui;
+package bufferings.ktr.wjr.client.ui;
 
 import bufferings.ktr.wjr.client.ui.widget.WjrListBox;
 import bufferings.ktr.wjr.client.ui.widget.WjrTabPanel;
@@ -25,6 +25,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The trace panel which shows the trace and the log.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class WjrTracePanel extends Composite {
 
   private static WjrTracePanelUiBinder uiBinder =
@@ -40,6 +45,9 @@ public class WjrTracePanel extends Composite {
 
   protected WjrListBox logList;
 
+  /**
+   * Instanciates the WjrTracePanel.
+   */
   public WjrTracePanel() {
     initWidget(uiBinder.createAndBindUi(this));
 
@@ -55,6 +63,12 @@ public class WjrTracePanel extends Composite {
     tabPanel.add(logSp, "Log");
   }
 
+  /**
+   * Sets the trace info.
+   * 
+   * @param trace
+   *          The trace info.
+   */
   public void setTrace(String trace) {
     traceList.clear();
     if (trace == null) {
@@ -67,6 +81,12 @@ public class WjrTracePanel extends Composite {
     }
   }
 
+  /**
+   * Sets the log info.
+   * 
+   * @param log
+   *          The log info.
+   */
   public void setLog(String log) {
     logList.clear();
     if (log == null) {

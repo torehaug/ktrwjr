@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client.ui.widget;
+package bufferings.ktr.wjr.client.ui.widget;
 
 import static bufferings.ktr.wjr.client.ui.widget.JQueryUI.*;
 import static bufferings.ktr.wjr.shared.util.Preconditions.*;
@@ -48,6 +48,11 @@ import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.WidgetCollection;
 
+/**
+ * The tab panel with JQueryUI theme.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
     IndexedPanel, HasBeforeSelectionHandlers<Integer>,
     HasSelectionHandlers<Integer> {
@@ -83,6 +88,9 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
 
   protected int selectedIndex = -1;
 
+  /**
+   * Instanciate the WjrTabPanel.
+   */
   public WjrTabPanel() {
     initWidget(uiBinder.createAndBindUi(this));
 
@@ -90,20 +98,52 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
     children = new WidgetCollection(panel);
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers#
+   * addBeforeSelectionHandler
+   * (com.google.gwt.event.logical.shared.BeforeSelectionHandler)
+   */
   public HandlerRegistration addBeforeSelectionHandler(
       BeforeSelectionHandler<Integer> handler) {
     return addHandler(handler, BeforeSelectionEvent.getType());
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler
+   * (com.google.gwt.event.logical.shared.SelectionHandler)
+   */
   public HandlerRegistration addSelectionHandler(
       SelectionHandler<Integer> handler) {
     return addHandler(handler, SelectionEvent.getType());
   }
 
+  /**
+   * Adds the tab item.
+   * 
+   * @param child
+   *          The child tab contents widget.
+   * @param text
+   *          The tab text.
+   */
   public void add(Widget child, String text) {
     insert(child, text, getWidgetCount());
   }
 
+  /**
+   * Inserts the tab item.
+   * 
+   * @param child
+   *          The child tab contents widget.
+   * @param text
+   *          The tab text.
+   * @param beforeIndex
+   *          The index to insert into.
+   */
   public void insert(final Widget child, String text, int beforeIndex) {
     checkArgument(
       (beforeIndex >= 0) && (beforeIndex <= getWidgetCount()),
@@ -136,6 +176,9 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
     }
   }
 
+  /**
+   * Clears all the tabs and the contents.
+   */
   public void clear() {
     Iterator<Widget> it = iterator();
     while (it.hasNext()) {
@@ -144,27 +187,59 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
     }
   }
 
+  /**
+   * Gets the selected index.
+   * 
+   * @return The selected index.
+   */
   public int getSelectedIndex() {
     return selectedIndex;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.google.gwt.user.client.ui.IndexedPanel#getWidget(int)
+   */
   public Widget getWidget(int index) {
     checkIndex(index);
     return children.get(index);
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.google.gwt.user.client.ui.IndexedPanel#getWidgetCount()
+   */
   public int getWidgetCount() {
     return children.size();
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.google.gwt.user.client.ui.IndexedPanel#getWidgetIndex(com.google.gwt
+   * .user.client.ui.Widget)
+   */
   public int getWidgetIndex(Widget child) {
     return children.indexOf(child);
   }
 
+  /**
+   * Gets the iterator of children widgets.
+   * 
+   * @return The iterator of children widgets.
+   */
   public Iterator<Widget> iterator() {
     return children.iterator();
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.google.gwt.user.client.ui.IndexedPanel#remove(int)
+   */
   public boolean remove(int index) {
     if ((index < 0) || (index >= getWidgetCount())) {
       return false;
@@ -188,6 +263,15 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
     return true;
   }
 
+  /**
+   * Removes the widget.
+   * 
+   * If the widget is not a child of this composite, then return false.
+   * 
+   * @param w
+   *          The widget to remove.
+   * @return False if the widget is not present, true if present.
+   */
   public boolean remove(Widget w) {
     int index = children.indexOf(w);
     if (index == -1) {
@@ -196,6 +280,12 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
     return remove(index);
   }
 
+  /**
+   * Selects the tab and show its contents.
+   * 
+   * @param index
+   *          The index of the tab to show.
+   */
   public void selectTab(int index) {
     checkIndex(index);
     if (index == selectedIndex) {
@@ -226,16 +316,36 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
     SelectionEvent.fire(this, index);
   }
 
+  /**
+   * Selects the tab from the contents.
+   * 
+   * @param child
+   *          The contents to show.
+   */
   public void selectTab(Widget child) {
     selectTab(getWidgetIndex(child));
   }
 
+  /**
+   * Checks the index is valid.
+   * 
+   * @param index
+   *          The index to check.
+   * @throws IllegalArgumentException
+   *           if the index is out of bounds.
+   */
   protected void checkIndex(int index) {
     checkArgument(
       (index >= 0) && (index < getWidgetCount()),
       "Index out of bounds");
   }
 
+  /**
+   * Layouts the content widget.
+   * 
+   * @param child
+   *          The content widget.
+   */
   protected void layoutChild(Widget child) {
     panel.setWidgetLeftRight(child, PADDING, Unit.PX, PADDING, Unit.PX);
     panel.setWidgetTopBottom(child, BAR_HEIGHT + PADDING, Unit.PX, 0, Unit.PX);
@@ -243,8 +353,19 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
     child.setVisible(false);
   }
 
+  /**
+   * The label for tab with JQueryUI style.
+   * 
+   * @author bufferings[at]gmail.com
+   */
   protected class Tab extends Label {
 
+    /**
+     * Instanciates the Tab
+     * 
+     * @param label
+     *          the text to show.
+     */
     public Tab(String label) {
       super(label);
       setStyleName(join(UI_WIDGET, UI_STATE_DEFAULT, UI_CORNER_TOP));
@@ -252,6 +373,13 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
       sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.google.gwt.user.client.ui.Widget#onBrowserEvent(com.google.gwt.user
+     * .client.Event)
+     */
     public void onBrowserEvent(Event event) {
       switch (DOM.eventGetType(event)) {
       case Event.ONMOUSEOVER:
@@ -264,10 +392,23 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
       super.onBrowserEvent(event);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.google.gwt.user.client.ui.Label#addClickHandler(com.google.gwt.event
+     * .dom.client.ClickHandler)
+     */
     public HandlerRegistration addClickHandler(ClickHandler handler) {
       return addDomHandler(handler, ClickEvent.getType());
     }
 
+    /**
+     * Sets the selected style.
+     * 
+     * @param selected
+     *          The selected value.
+     */
     public void setSelected(boolean selected) {
       if (selected) {
         addStyleName(UI_STATE_ACTIVE);

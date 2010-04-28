@@ -13,17 +13,25 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client.ui.widget;
+package bufferings.ktr.wjr.client.ui.widget;
 
 import java.util.ArrayList;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Tree;
 
+/**
+ * The tree composite with JQueryUI theme.
+ * 
+ * @author bufferings[at]gmail.com
+ * @see Tree
+ */
 public class WjrTree extends Composite {
 
   protected static final int OTHER_KEY_DOWN = 63233;
@@ -31,6 +39,14 @@ public class WjrTree extends Composite {
   protected static final int OTHER_KEY_RIGHT = 63235;
   protected static final int OTHER_KEY_UP = 63232;
 
+  /**
+   * The root tree item. This is used only inside this class.
+   * 
+   * The item self showing panel is invlisible, and children panel's margin is
+   * 0.
+   * 
+   * @author bufferings[at]gmail.com
+   */
   protected static class Root extends WjrTreeItem {
     public Root() {
       captionPanel.setVisible(false);
@@ -73,42 +89,88 @@ public class WjrTree extends Composite {
     return code;
   }
 
+  /**
+   * The root item.
+   */
   protected Root root;
 
+  /**
+   * Current selected item.
+   */
   protected WjrTreeItem curSelection;
 
   protected boolean lastWasKeyDown;
 
+  /**
+   * Instanciates the WjrTree.
+   */
   public WjrTree() {
     root = new Root();
     initWidget(new WjrNoBorderFocusPanel(root));
     sinkEvents(Event.ONMOUSEDOWN | Event.ONCLICK | Event.KEYEVENTS);
   }
 
+  /**
+   * Adds the item to the root.
+   * 
+   * @param item
+   *          The item to add.
+   */
   public void addItem(WjrTreeItem item) {
     root.addItem(item);
   }
 
+  /**
+   * Removes the item from the root.
+   * 
+   * If the item is not a child of the root, do nothing.
+   * 
+   * @param item
+   *          The item to remove.
+   */
   public void removeItem(WjrTreeItem item) {
     root.removeItem(item);
   }
 
+  /**
+   * Removes all items from the root.
+   */
   public void removeItems() {
     root.removeItems();
   }
 
+  /**
+   * Gets the child item by the index.
+   * 
+   * @param index
+   *          The index of child you want to get.
+   * @return Null if not found, the child item if found.
+   */
   public WjrTreeItem getItem(int index) {
     return root.getChild(index);
   }
 
+  /**
+   * Gets the items count.
+   * 
+   * @return The items count.
+   */
   public int getItemCount() {
     return root.getChildCount();
   }
 
+  /**
+   * Gets the selected item.
+   * 
+   * @return The item to select.
+   */
   public WjrTreeItem getSelectedItem() {
     return curSelection;
   }
 
+  /**
+   * Ensures the selected item visible.
+   */
   public void ensureSelectedItemVisible() {
     if (curSelection == null) {
       return;
@@ -121,23 +183,25 @@ public class WjrTree extends Composite {
     }
   }
 
+  /**
+   * Sets the selected item and fire the selection event.
+   * 
+   * @param item
+   *          The item to select.
+   */
   public void setSelectedItem(WjrTreeItem item) {
     setSelectedItem(item, true);
   }
 
+  /**
+   * Sets the selected item.
+   * 
+   * @param item
+   *          The item to select.
+   * @param fireEvents
+   *          True if you want to fire {@link SelectionEvent}, false if not.
+   */
   public void setSelectedItem(WjrTreeItem item, boolean fireEvents) {
-    if (item == null) {
-      if (curSelection != null) {
-        curSelection.setSelected(false, fireEvents);
-        curSelection = null;
-      }
-      return;
-    }
-
-    onSelection(item, fireEvents);
-  }
-
-  protected void onSelection(WjrTreeItem item, boolean fireEvents) {
     if (item == root) {
       return;
     }
@@ -152,6 +216,13 @@ public class WjrTree extends Composite {
     }
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.google.gwt.user.client.ui.Composite#onBrowserEvent(com.google.gwt.user
+   * .client.Event)
+   */
   @Override
   public void onBrowserEvent(Event event) {
     int eventType = DOM.eventGetType(event);
@@ -160,7 +231,7 @@ public class WjrTree extends Composite {
     case Event.ONKEYDOWN:
       if (curSelection == null) {
         if (getItemCount() > 0) {
-          onSelection(getItem(0), true);
+          setSelectedItem(getItem(0), true);
         }
         super.onBrowserEvent(event);
         return;
@@ -261,7 +332,7 @@ public class WjrTree extends Composite {
         maybeUpdateSelection(item, newState);
         return true;
       } else if (DOM.isOrHasChild(item.getElement(), hElem)) {
-        onSelection(item, true);
+        setSelectedItem(item, true);
         return true;
       }
     }
@@ -269,36 +340,29 @@ public class WjrTree extends Composite {
     return false;
   }
 
-  protected boolean isKeyboardNavigationEnabled(WjrTreeItem currentItem) {
-    return true;
-  }
-
   private void keyboardNavigation(Event event) {
-    // Handle keyboard events if keyboard navigation is enabled
-    if (isKeyboardNavigationEnabled(curSelection)) {
-      int code = DOM.eventGetKeyCode(event);
+    int code = DOM.eventGetKeyCode(event);
 
-      switch (standardizeKeycode(code)) {
-      case KeyCodes.KEY_UP: {
-        moveSelectionUp(curSelection);
-        break;
-      }
-      case KeyCodes.KEY_DOWN: {
-        moveSelectionDown(curSelection, true);
-        break;
-      }
-      case KeyCodes.KEY_LEFT: {
-        maybeCollapseTreeItem();
-        break;
-      }
-      case KeyCodes.KEY_RIGHT: {
-        maybeExpandTreeItem();
-        break;
-      }
-      default: {
-        return;
-      }
-      }
+    switch (standardizeKeycode(code)) {
+    case KeyCodes.KEY_UP: {
+      moveSelectionUp(curSelection);
+      break;
+    }
+    case KeyCodes.KEY_DOWN: {
+      moveSelectionDown(curSelection, true);
+      break;
+    }
+    case KeyCodes.KEY_LEFT: {
+      maybeCollapseTreeItem();
+      break;
+    }
+    case KeyCodes.KEY_RIGHT: {
+      maybeExpandTreeItem();
+      break;
+    }
+    default: {
+      return;
+    }
     }
   }
 
@@ -365,23 +429,20 @@ public class WjrTree extends Composite {
 
     if (!dig || !sel.getState()) {
       if (idx < parent.getChildCount() - 1) {
-        onSelection(parent.getChild(idx + 1), true);
+        setSelectedItem(parent.getChild(idx + 1), true);
       } else {
         moveSelectionDown(parent, false);
       }
     } else if (sel.getChildCount() > 0) {
-      onSelection(sel.getChild(0), true);
+      setSelectedItem(sel.getChild(0), true);
     }
   }
 
-  /**
-   * Moves the selected item up one.
-   */
   private void moveSelectionUp(WjrTreeItem sel) {
     // Find a parent that is visible
     WjrTreeItem topClosedParent = getTopClosedParent(sel);
     if (topClosedParent != null) {
-      onSelection(topClosedParent, true);
+      setSelectedItem(topClosedParent, true);
       return;
     }
 
@@ -393,9 +454,9 @@ public class WjrTree extends Composite {
 
     if (idx > 0) {
       WjrTreeItem sibling = parent.getChild(idx - 1);
-      onSelection(findDeepestOpenChild(sibling), true);
+      setSelectedItem(findDeepestOpenChild(sibling), true);
     } else {
-      onSelection(parent, true);
+      setSelectedItem(parent, true);
     }
   }
 

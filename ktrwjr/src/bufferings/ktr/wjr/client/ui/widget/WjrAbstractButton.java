@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client.ui.widget;
+package bufferings.ktr.wjr.client.ui.widget;
 
 import static bufferings.ktr.wjr.client.ui.widget.JQueryUI.*;
 
@@ -25,15 +25,33 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 
+/**
+ * The button base with JQueryUI theme
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public abstract class WjrAbstractButton extends Composite implements
     HasClickHandlers {
 
+  /**
+   * Whether this is disabled or not.
+   */
   protected boolean disabled = false;
 
+  /**
+   * Instanciates the WjrAbstractButton.
+   */
   public WjrAbstractButton() {
     sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.google.gwt.user.client.ui.Composite#onBrowserEvent(com.google.gwt.user
+   * .client.Event)
+   */
   public void onBrowserEvent(Event event) {
     switch (DOM.eventGetType(event)) {
     case Event.ONMOUSEOVER:
@@ -50,15 +68,33 @@ public abstract class WjrAbstractButton extends Composite implements
     super.onBrowserEvent(event);
   }
 
+  /**
+   * Sets whether this is disabled or not.
+   * 
+   * @param disabled
+   *          Whether this is disabled or not.
+   */
   public void setDisabled(boolean disabled) {
     this.disabled = disabled;
     setStyleName(this.getElement(), UI_STATE_DISABLED, disabled);
   }
 
+  /**
+   * Gets whether this is disabled or not.
+   * 
+   * @return Whether this is disabled or not.
+   */
   public boolean isDisabled() {
     return disabled;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google
+   * .gwt.event.dom.client.ClickHandler)
+   */
   public HandlerRegistration addClickHandler(ClickHandler handler) {
     return addDomHandler(handler, ClickEvent.getType());
   }
