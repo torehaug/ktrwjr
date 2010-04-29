@@ -18,6 +18,10 @@ package bufferings.ktr.wjr.server.service;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Test;
 
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
@@ -30,31 +34,38 @@ public class KtrWjrServiceServletTest {
   @Test
   public final void loadStore_WillCallDelegate() {
     final WjrStore store = new WjrStore();
-
+    final Map<String, List<String>> map = new HashMap<String, List<String>>();
+    
     servlet.delegate = new KtrWjrServiceImpl() {
+
       @Override
-      public WjrStore loadStore() {
+      public WjrStore loadStore(Map<String, List<String>> parameterMap) {
+        assertThat(parameterMap, is(map));
         return store;
       }
+
     };
 
-    assertThat(servlet.loadStore(), is(store));
+    assertThat(servlet.loadStore(map), is(store));
   }
 
   @Test
   public final void runTest_WillCallDelegate() {
     final WjrMethodItem in = new WjrMethodItem("foo.Foo", "barMethod1");
     final WjrMethodItem out = new WjrMethodItem("foo.Foo", "barMethod2");
+    final Map<String, List<String>> map = new HashMap<String, List<String>>();
 
     servlet.delegate = new KtrWjrServiceImpl() {
       @Override
-      public WjrMethodItem runTest(WjrMethodItem methodItem) {
+      public WjrMethodItem runTest(WjrMethodItem methodItem,
+          Map<String, List<String>> parameterMap) {
         assertThat(methodItem, is(in));
+        assertThat(parameterMap, is(map));
         return out;
       }
     };
 
-    assertThat(servlet.runTest(in), is(out));
+    assertThat(servlet.runTest(in, map), is(out));
   }
 
 }

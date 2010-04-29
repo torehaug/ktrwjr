@@ -16,6 +16,10 @@
 package bufferings.ktr.wjr.server.service;
 
 import static bufferings.ktr.wjr.shared.util.Preconditions.*;
+
+import java.util.List;
+import java.util.Map;
+
 import junit.runner.Version;
 import bufferings.ktr.wjr.client.service.KtrWjrService;
 import bufferings.ktr.wjr.server.logic.WjrAppEngineRecorder;
@@ -51,7 +55,7 @@ public class KtrWjrServiceImpl implements KtrWjrService {
   /**
    * {@inheritDoc}
    */
-  public WjrStore loadStore() {
+  public WjrStore loadStore(Map<String, List<String>> parameterMap) {
     checkState(isJUnit4Available(), "JUnit4 not found.");
     return storeLoader.loadWjrStore(CLASSES_DIRECTORY);
   }
@@ -59,12 +63,13 @@ public class KtrWjrServiceImpl implements KtrWjrService {
   /**
    * {@inheritDoc}
    */
-  public WjrMethodItem runTest(WjrMethodItem methodItem) {
+  public WjrMethodItem runTest(WjrMethodItem methodItem,
+      Map<String, List<String>> parameterMap) {
     checkState(isJUnit4Available(), "JUnit4 not found.");
     checkNotNull(methodItem, "The methodItem parameter is null.");
 
     try {
-      appEngineRecorder.startRecording(KtrWjrConfig.getTimezone());
+      appEngineRecorder.startRecording(KtrWjrConfig.getTimezone(parameterMap));
       methodItem = methodRunner.runWjrMethod(methodItem);
     } finally {
       if (appEngineRecorder.isRecording()) {

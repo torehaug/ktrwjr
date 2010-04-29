@@ -15,11 +15,10 @@
  */
 package bufferings.ktr.wjr.server.service;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
+import java.util.Map;
+
+import bufferings.ktr.wjr.server.util.WjrUtils;
 
 /**
  * Configuration property class.
@@ -31,115 +30,31 @@ import java.util.logging.Logger;
  */
 public class KtrWjrConfig {
 
-  private static final Logger logger =
-    Logger.getLogger(KtrWjrConfig.class.getSimpleName());
+  protected static final String KEY_TIMEZONE = "tz";
 
-  protected static final String RESOURCE_FILE = "ktrwjr.properties";
-
-  protected static final String KEY_TIMEZONE = "timezone";
-
-  /**
-   * The singleton instance.
-   */
-  protected static KtrWjrConfig instance;
-
-  /**
-   * Gets the singleton instance. If the instance is null, it will be
-   * constructed.
-   * 
-   * @return The singleton instance.
-   */
-  protected static KtrWjrConfig get() {
-    if (instance != null) {
-      return instance;
-    }
-
-    KtrWjrConfig config = new KtrWjrConfig();
-    Properties props = loadProperties(RESOURCE_FILE);
-    if (props.containsKey(KEY_TIMEZONE)) {
-      config.timezone = props.getProperty(KEY_TIMEZONE);
-    }
-
-    instance = config;
-    logger.info("The configuration is " + instance.toString());
-    return config;
-  }
-
-  /**
-   * Loads the property from the property file.
-   * 
-   * @param resourceFile
-   *          The resource file name.
-   * @return Loaded properties.
-   */
-  protected static Properties loadProperties(String resourceFileName) {
-    if (resourceFileName == null || resourceFileName.isEmpty()) {
-      return new Properties();
-    }
-
-    InputStream is = null;
-    try {
-      ClassLoader cl = Thread.currentThread().getContextClassLoader();
-      is = cl.getResourceAsStream(resourceFileName);
-      if (is != null) {
-        try {
-          Properties properties = new Properties();
-          properties.load(is);
-          return properties;
-        } catch (IOException e) {
-          logger.log(
-            Level.WARNING,
-            "Fails to load configuration resource file .(file="
-              + resourceFileName
-              + ")",
-            e);
-          return new Properties();
-        }
-      } else {
-        logger.log(
-          Level.WARNING,
-          "Configuration resource file not found.(file="
-            + resourceFileName
-            + ")");
-        return new Properties();
-      }
-    } finally {
-      if (is != null) {
-        try {
-          is.close();
-        } catch (Exception e) {
-          // ignore
-        }
-      }
-    }
-  }
+  protected static final String DEFAULT_TIMEZONE = "PST";
 
   /**
    * Gets the timezone property for logs.
    * 
+   * If the timezone parameter is not set, the
+   * {@link KtrWjrConfig#DEFAULT_TIMEZONE} is used.
+   * 
+   * @param parameterMap
+   *          GET parameter map.
    * @return The timezone property for logs.
    */
-  public static String getTimezone() {
-    return get().timezone;
-  }
+  public static String getTimezone(Map<String, List<String>> parameterMap) {
+    if (parameterMap == null) {
+      return DEFAULT_TIMEZONE;
+    }
 
-  /**
-   * The timezone property for logs. The default value is GMT.
-   */
-  protected String timezone = "GMT";
+    List<String> tz = parameterMap.get(KEY_TIMEZONE);
+    if (tz == null || tz.size() == 0) {
+      return DEFAULT_TIMEZONE;
+    }
 
-  /**
-   * Closed for singleton.(Open for testing.)
-   */
-  protected KtrWjrConfig() {
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String toString() {
-    return KtrWjrConfig.class.getSimpleName() + "(timezone=" + timezone + ")";
+    return WjrUtils.toString(tz.get(0), DEFAULT_TIMEZONE);
   }
 
 }

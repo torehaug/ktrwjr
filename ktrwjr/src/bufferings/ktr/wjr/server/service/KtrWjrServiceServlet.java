@@ -15,6 +15,9 @@
  */
 package bufferings.ktr.wjr.server.service;
 
+import java.util.List;
+import java.util.Map;
+
 import bufferings.ktr.wjr.client.service.KtrWjrService;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
@@ -42,15 +45,15 @@ public class KtrWjrServiceServlet extends RemoteServiceServlet implements
   /**
    * {@inheritDoc}
    */
-  public WjrStore loadStore() {
-    return delegate.loadStore();
+  public WjrStore loadStore(Map<String, List<String>> params) {
+    return delegate.loadStore(params);
   }
 
   /**
    * {@inheritDoc}
    */
-  public WjrMethodItem runTest(WjrMethodItem methodItem) {
-    return delegate.runTest(methodItem);
+  public WjrMethodItem runTest(WjrMethodItem methodItem, Map<String, List<String>> params) {
+    return delegate.runTest(methodItem, params);
   }
 
 }

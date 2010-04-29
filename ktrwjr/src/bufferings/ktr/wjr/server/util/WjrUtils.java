@@ -17,6 +17,8 @@ package bufferings.ktr.wjr.server.util;
 
 import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 
+import java.util.TimeZone;
+
 /**
  * Utility methods.
  * 
@@ -47,6 +49,32 @@ public class WjrUtils {
         + className
         + ").", e1);
     }
+  }
+
+  /**
+   * Convert the object to string.
+   * 
+   * @param o
+   *          The object to convert to string.
+   * @param def
+   *          The default value if the object is null.
+   * @return The converted string.
+   */
+  public static String toString(Object o, String def) {
+    return o == null ? def : o.toString();
+  }
+
+  /**
+   * Gets the time zone form id.
+   * 
+   * @param timeZoneId
+   *          The time zone id.
+   * @return The time zone.
+   * @throws NullPointerException
+   *           When the timeZoneId is null.
+   */
+  public static TimeZone getTimeZone(String timeZoneId) {
+    return TimeZone.getTimeZone(timeZoneId);
   }
 
   private WjrUtils() {

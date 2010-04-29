@@ -73,5 +73,21 @@ public class WjrUtilsTest {
       WjrUtils.loadClass(ForTestInherit.class.getName()).getName(),
       is(ForTestInherit.class.getName()));
   }
+  
+  @Test(expected=NullPointerException.class)
+  public void getTimeZone_WillThrowNPE_WithNullId(){
+    WjrUtils.getTimeZone(null);
+  }
 
+  @Test
+  public void getTimeZone_WillGMT_WithInvalidId(){
+    assertThat(WjrUtils.getTimeZone("").getID(), is("GMT"));
+    assertThat(WjrUtils.getTimeZone("Invalid").getID(), is("GMT"));
+  }
+
+  @Test
+  public void getTimeZone_CanGetTimeZone_WithValidId(){
+    assertThat(WjrUtils.getTimeZone("JST").getID(), is("JST"));
+    assertThat(WjrUtils.getTimeZone("PST").getID(), is("PST"));
+  }
 }

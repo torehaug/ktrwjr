@@ -15,6 +15,9 @@
  */
 package bufferings.ktr.wjr.client.service;
 
+import java.util.List;
+import java.util.Map;
+
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
@@ -28,8 +31,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface KtrWjrServiceAsync {
 
-  void loadStore(AsyncCallback<WjrStore> callback);
+  void loadStore(Map<String, List<String>> parameterMap,
+      AsyncCallback<WjrStore> callback);
 
-  void runTest(WjrMethodItem methodItem, AsyncCallback<WjrMethodItem> callback);
+  void runTest(WjrMethodItem methodItem, Map<String, List<String>> parameterMap,
+      AsyncCallback<WjrMethodItem> callback);
 
 }

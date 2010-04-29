@@ -15,15 +15,21 @@
  */
 package bufferings.ktr.wjr.client;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import bufferings.ktr.wjr.client.service.KtrWjrServiceAsync;
+import bufferings.ktr.wjr.server.util.WjrUtils;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
 
@@ -60,6 +66,11 @@ public class WjrPresenter implements WjrDisplayHandler {
   protected boolean cancelRequested = false;
 
   /**
+   * The GET parameters for user configuration.
+   */
+  protected Map<String, List<String>> parameterMap;
+
+  /**
    * Constructs the presenter.
    * 
    * @param rpcService
@@ -83,7 +94,7 @@ public class WjrPresenter implements WjrDisplayHandler {
    */
   public void go(HasWidgets container, Element loadingElem) {
     view.go(this, container, loadingElem);
-    rpcService.loadStore(new AsyncCallback<WjrStore>() {
+    rpcService.loadStore(getParameterMap(), new AsyncCallback<WjrStore>() {
 
       @Override
       public void onFailure(Throwable caught) {
@@ -103,7 +114,7 @@ public class WjrPresenter implements WjrDisplayHandler {
    */
   @Override
   public void onLoadStore() {
-    rpcService.loadStore(new AsyncCallback<WjrStore>() {
+    rpcService.loadStore(getParameterMap(), new AsyncCallback<WjrStore>() {
 
       @Override
       public void onFailure(Throwable caught) {
@@ -179,13 +190,14 @@ public class WjrPresenter implements WjrDisplayHandler {
 
     rpcService.runTest(
       methodItems.get(currentIndex),
+      getParameterMap(),
       new AsyncCallback<WjrMethodItem>() {
-        
+
         @Override
         public void onFailure(Throwable caught) {
-          GWT.log("Run WjrMethodItem failed.", caught);
-
           WjrMethodItem stored = methodItems.get(currentIndex);
+          GWT.log("Run " + stored.getMethodName() + " failed.", caught);
+
           stored.setState(State.ERROR);
           stored.setTrace(getTrace(caught));
 
@@ -210,7 +222,7 @@ public class WjrPresenter implements WjrDisplayHandler {
 
         @Override
         public void onSuccess(WjrMethodItem result) {
-          GWT.log("Run WjrMethodItem succeeded.");
+          GWT.log("Run " + result.getMethodName() + " succeeded.");
 
           WjrMethodItem stored =
             store.getMethodItem(result.getClassAndMethodName());
@@ -263,5 +275,58 @@ public class WjrPresenter implements WjrDisplayHandler {
           view.notifyRunningFinished();
         }
       });
+  }
+
+  /**
+   * Gets the parameter map from the query string.
+   * 
+   * If the parameter map is already made, that instance is used.
+   * 
+   * I want to use the method {@link Window.Location#getParameterMap()}, but it
+   * returns immutable map and list. The immutable map and list cannot be used
+   * in the GWT-RPC. So I create the {@link WjrUtils#buildListParamMap(String)},
+   * which is the same logic as
+   * {@link Window.Location#buildListParamMap(String)} but returns not immutable
+   * map.
+   * 
+   * @return The properties.
+   */
+  protected Map<String, List<String>> getParameterMap() {
+    if (parameterMap != null) {
+      return parameterMap;
+    }
+
+    parameterMap = buildListParamMap(Window.Location.getQueryString());
+    return parameterMap;
+  }
+
+  /**
+   * Builds the not immutable map from String to List<String> that we'll return
+   * in getParameterMap().
+   * 
+   * @return a map from the queryString.
+   * @see Window.Location#buildListParamMap(String)
+   */
+  protected Map<String, List<String>> buildListParamMap(String queryString) {
+    Map<String, List<String>> out = new HashMap<String, List<String>>();
+
+    if (queryString != null && queryString.length() > 1) {
+      String qs = queryString.substring(1);
+
+      for (String kvPair : qs.split("&")) {
+        String[] kv = kvPair.split("=", 2);
+        if (kv[0].length() == 0) {
+          continue;
+        }
+
+        List<String> values = out.get(kv[0]);
+        if (values == null) {
+          values = new ArrayList<String>();
+          out.put(kv[0], values);
+        }
+        values.add(kv.length > 1 ? URL.decodeComponent(kv[1]) : "");
+      }
+    }
+    return out;
   }
 }

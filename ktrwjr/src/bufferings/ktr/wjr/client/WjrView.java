@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bufferings.ktr.wjr.client.ui.WjrButtonPanel;
+import bufferings.ktr.wjr.client.ui.WjrDialogPanel;
 import bufferings.ktr.wjr.client.ui.WjrPopupPanel;
 import bufferings.ktr.wjr.client.ui.WjrResultPanel;
 import bufferings.ktr.wjr.client.ui.WjrTracePanel;
@@ -45,9 +46,7 @@ import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -115,6 +114,11 @@ public class WjrView extends Composite implements WjrDisplay,
    * The popup panel which is shown while the process is running.
    */
   protected WjrPopupPanel popup;
+
+  /**
+   * The dialog panel which shows the error message.
+   */
+  protected WjrDialogPanel dialog;
 
   /**
    * The tree items to associate with the store items.
@@ -202,6 +206,9 @@ public class WjrView extends Composite implements WjrDisplay,
     this.handler = handler;
     this.container = container;
     this.loadingElem = loadingElem;
+
+    dialog = new WjrDialogPanel("Kotori Web JUnit Runner");
+    popup = new WjrPopupPanel();
   }
 
   /**
@@ -217,10 +224,7 @@ public class WjrView extends Composite implements WjrDisplay,
    */
   @Override
   public void notifyLoadingFailed(Throwable caught) {
-    // TODO show messages
-    DialogBox dialog = new DialogBox();
-    dialog.add(new Label(caught.toString()));
-    dialog.show();
+    dialog.show("Cannot load the tests.", caught);
     finishLoading(new WjrStore());
   }
 
@@ -234,7 +238,6 @@ public class WjrView extends Composite implements WjrDisplay,
    */
   private void finishLoading(WjrStore store) {
     initWidget(uiBinder.createAndBindUi(WjrView.this));
-    popup = new WjrPopupPanel();
 
     setData(store);
     updateRunButtonDisabled();
@@ -257,14 +260,8 @@ public class WjrView extends Composite implements WjrDisplay,
    */
   @Override
   public void notifyReloadingFailed(Throwable caught) {
-    if (loading) {
-      DialogBox dialog = new DialogBox();
-      dialog.add(new Label(caught.toString()));
-      dialog.show();
-      finishReloading();
-    }
-
-    // TODO show messages
+    dialog.show("Cannot load the tests.", caught);
+    finishReloading();
   }
 
   /**

@@ -15,6 +15,9 @@
  */
 package bufferings.ktr.wjr.client.service;
 
+import java.util.List;
+import java.util.Map;
+
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
@@ -32,15 +35,17 @@ public interface KtrWjrService extends RemoteService {
   /**
    * Loads the WjrStore.
    * 
+   * @param parameterMap GET parameter map for user configuration.
    * @return The loaded store.
    */
-  public WjrStore loadStore();
+  public WjrStore loadStore(Map<String, List<String>> parameterMap);
 
   /**
    * Runs the test.
    * 
    * @param methodItem
    *          The methodItem to run.
+   * @param parameterMap GET parameter map for user configuration.
    */
-  public WjrMethodItem runTest(WjrMethodItem methodItem);
+  public WjrMethodItem runTest(WjrMethodItem methodItem, Map<String, List<String>> parameterMap);
 }

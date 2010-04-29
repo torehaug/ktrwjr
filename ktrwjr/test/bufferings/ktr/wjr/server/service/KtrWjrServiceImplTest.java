@@ -18,6 +18,11 @@ package bufferings.ktr.wjr.server.service;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Test;
 import org.slim3.tester.ServletTestCase;
 
@@ -39,7 +44,7 @@ public class KtrWjrServiceImplTest extends ServletTestCase {
       }
 
     };
-    service.loadStore();
+    service.loadStore(null);
   }
 
   @Test
@@ -57,7 +62,7 @@ public class KtrWjrServiceImplTest extends ServletTestCase {
 
     };
 
-    assertThat(service.loadStore(), is(store));
+    assertThat(service.loadStore(null), is(store));
   }
 
   @Test(expected = IllegalStateException.class)
@@ -70,13 +75,13 @@ public class KtrWjrServiceImplTest extends ServletTestCase {
       }
 
     };
-    service.runTest(new WjrMethodItem("foo.Foo", "forMethod"));
+    service.runTest(new WjrMethodItem("foo.Foo", "forMethod"), null);
   }
 
   @Test(expected = NullPointerException.class)
   public void runTest_WillThrowNPE_WhenMethodItemIsNull() {
     KtrWjrServiceImpl service = new KtrWjrServiceImpl();
-    service.runTest(null);
+    service.runTest(null, null);
   }
 
   @Test
@@ -114,23 +119,82 @@ public class KtrWjrServiceImplTest extends ServletTestCase {
       @Override
       public void startRecording(String timeZoneId) {
         called.append("1");
-        assertThat(timeZoneId, is("JST"));
-        super.startRecording(timeZoneId);
+        assertThat(timeZoneId, is("PST"));
       }
 
       @Override
       public void stopRecording() {
         called.append("3");
-        super.stopRecording();
+      }
+
+      @Override
+      public boolean isRecording() {
+        return true;
       }
 
     };
 
-    assertThat(service.runTest(methodItem), is(methodItem));
+    assertThat(service.runTest(methodItem, null), is(methodItem));
     assertThat(called.toString(), is("123"));
     assertThat(methodItem.getApiTime(), is("APITIME"));
     assertThat(methodItem.getCpuTime(), is("CPUTIME"));
     assertThat(methodItem.getLog(), is("LOG"));
+  }
+
+  @Test
+  public void runTest_WillCallMethodRunnerAndAppEngineRecorder_WithParameter() {
+    KtrWjrServiceImpl service = new KtrWjrServiceImpl();
+    final WjrMethodItem methodItem = new WjrMethodItem("foo.Foo", "fooMethod");
+    final StringBuilder called = new StringBuilder();
+    service.methodRunner = new WjrMethodRunner() {
+
+      @Override
+      public WjrMethodItem runWjrMethod(WjrMethodItem param) {
+        return param;
+      }
+
+    };
+    service.appEngineRecorder = new WjrAppEngineRecorder() {
+
+      @Override
+      public String getRecordedApiTime() {
+        return "";
+      }
+
+      @Override
+      public String getRecordedCpuTime() {
+        return "";
+      }
+
+      @Override
+      public String getRecordedLog() {
+        return "";
+      }
+
+      @Override
+      public void startRecording(String timeZoneId) {
+        assertThat(timeZoneId, is("JST"));
+        called.append("1");
+      }
+
+      @Override
+      public void stopRecording() {
+      }
+
+      @Override
+      public boolean isRecording() {
+        return true;
+      }
+
+    };
+
+    Map<String, List<String>> map = new HashMap<String, List<String>>();
+    List<String> list = new ArrayList<String>();
+    list.add("JST");
+    map.put("tz", list);
+
+    service.runTest(methodItem, map);
+    assertThat(called.toString(), is("1"));
   }
 
   @Test
