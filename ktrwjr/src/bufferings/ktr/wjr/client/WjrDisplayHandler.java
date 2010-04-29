@@ -13,15 +13,32 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client;
+package bufferings.ktr.wjr.client;
 
+/**
+ * Handling the view event.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public interface WjrDisplayHandler {
 
+  /**
+   * Called when the run button is clicked.
+   */
   public void onRunButtonClick();
 
+  /**
+   * Called when the cancel button is clicked.
+   */
   public void onCancelButtonClick();
 
+  /**
+   * Called when the clear button is clicked.
+   */
   public void onClearButtonClick();
 
+  /**
+   * Called when view want to load the store.
+   */
   public void onLoadStore();
 }

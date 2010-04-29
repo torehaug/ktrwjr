@@ -71,6 +71,10 @@ public class WjrTree extends Composite {
     }
   }
 
+  /**
+   * Normalized key codes. Also switches KEY_RIGHT and KEY_LEFT in RTL
+   * languages.
+   */
   protected static int standardizeKeycode(int code) {
     switch (code) {
     case OTHER_KEY_DOWN:
@@ -99,10 +103,13 @@ public class WjrTree extends Composite {
    */
   protected WjrTreeItem curSelection;
 
+  /**
+   * For controling key events.
+   */
   protected boolean lastWasKeyDown;
 
   /**
-   * Instanciates the WjrTree.
+   * Constructs the WjrTree.
    */
   public WjrTree() {
     root = new Root();
@@ -216,12 +223,8 @@ public class WjrTree extends Composite {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * com.google.gwt.user.client.ui.Composite#onBrowserEvent(com.google.gwt.user
-   * .client.Event)
+  /**
+   * {@inheritDoc}
    */
   @Override
   public void onBrowserEvent(Event event) {

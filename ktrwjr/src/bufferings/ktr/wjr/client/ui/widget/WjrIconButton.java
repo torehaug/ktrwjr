@@ -36,11 +36,14 @@ public class WjrIconButton extends WjrAbstractButton {
   interface WjrIconButtonUiBinder extends UiBinder<Widget, WjrIconButton> {
   }
 
+  /**
+   * The label to show the icon.
+   */
   @UiField
   protected Label iconLabel;
 
   /**
-   * Instanciates the WjrIconButton.
+   * Constructs the WjrIconButton.
    */
   public WjrIconButton() {
     super();

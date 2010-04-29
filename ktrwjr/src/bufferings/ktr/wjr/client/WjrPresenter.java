@@ -27,23 +27,60 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
 
+/**
+ * The presenter of Kotori Web JUnit Runner.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class WjrPresenter implements WjrDisplayHandler {
 
+  /**
+   * The KtrWjr rpc service(async).
+   */
   protected KtrWjrServiceAsync rpcService;
 
+  /**
+   * The view.
+   */
   protected WjrDisplay view;
 
+  /**
+   * The test store.
+   */
   protected WjrStore store;
 
+  /**
+   * Whether the test is running or not.
+   */
   protected boolean running = false;
 
+  /**
+   * Whether the cancel running tests is requested or not.
+   */
   protected boolean cancelRequested = false;
 
+  /**
+   * Constructs the presenter.
+   * 
+   * @param rpcService
+   *          The rpc service.
+   * @param view
+   *          The view.
+   */
   public WjrPresenter(KtrWjrServiceAsync rpcService, WjrDisplay view) {
     this.rpcService = rpcService;
     this.view = view;
   }
 
+  /**
+   * Starts the application.
+   * 
+   * @param container
+   *          The container of the view.
+   * @param loadingElem
+   *          The loading element, which is removed from DOM after loading
+   *          finished.
+   */
   public void go(HasWidgets container, Element loadingElem) {
     view.go(this, container, loadingElem);
     rpcService.loadStore(new AsyncCallback<WjrStore>() {
@@ -61,6 +98,9 @@ public class WjrPresenter implements WjrDisplayHandler {
     });
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void onLoadStore() {
     rpcService.loadStore(new AsyncCallback<WjrStore>() {
@@ -80,12 +120,18 @@ public class WjrPresenter implements WjrDisplayHandler {
     });
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void onClearButtonClick() {
     store.clearAllResultsAndSummaries();
     view.repaintAllTreeItems(store);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void onRunButtonClick() {
     List<WjrMethodItem> checkedMethods = view.getCheckedMethodItems();
@@ -108,6 +154,9 @@ public class WjrPresenter implements WjrDisplayHandler {
     runWjrMethodItem(checkedMethods, 0);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void onCancelButtonClick() {
     if (!running) {
@@ -117,28 +166,36 @@ public class WjrPresenter implements WjrDisplayHandler {
     cancelRequested = true;
   }
 
-  protected void runWjrMethodItem(final List<WjrMethodItem> checkedMethods,
+  /**
+   * Runs the test method.
+   * 
+   * @param methodItems
+   *          The methods to run.
+   * @param currentIndex
+   *          The index
+   */
+  protected void runWjrMethodItem(final List<WjrMethodItem> methodItems,
       final int currentIndex) {
 
     rpcService.runTest(
-      checkedMethods.get(currentIndex),
+      methodItems.get(currentIndex),
       new AsyncCallback<WjrMethodItem>() {
+        
         @Override
         public void onFailure(Throwable caught) {
           GWT.log("Run WjrMethodItem failed.", caught);
 
-          WjrMethodItem stored = checkedMethods.get(currentIndex);
+          WjrMethodItem stored = methodItems.get(currentIndex);
           stored.setState(State.ERROR);
           stored.setTrace(getTrace(caught));
 
-          store.getClassItem(stored.getClassName()).updateSummary(
-            store);
+          store.getClassItem(stored.getClassName()).updateSummary(store);
           store.updateSummary();
 
           view.repaintTreeItemAncestors(store, stored);
 
           int nextIndex = currentIndex + 1;
-          if (checkedMethods.size() <= nextIndex) {
+          if (methodItems.size() <= nextIndex) {
             onRunSuccess();
             return;
           }
@@ -148,7 +205,7 @@ public class WjrPresenter implements WjrDisplayHandler {
             return;
           }
 
-          runWjrMethodItem(checkedMethods, nextIndex);
+          runWjrMethodItem(methodItems, nextIndex);
         }
 
         @Override
@@ -159,13 +216,12 @@ public class WjrPresenter implements WjrDisplayHandler {
             store.getMethodItem(result.getClassAndMethodName());
           copyMethodItemAttributes(result, stored);
 
-          store.getClassItem(stored.getClassName()).updateSummary(
-            store);
+          store.getClassItem(stored.getClassName()).updateSummary(store);
           store.updateSummary();
           view.repaintTreeItemAncestors(store, stored);
 
           int nextIndex = currentIndex + 1;
-          if (checkedMethods.size() <= nextIndex) {
+          if (methodItems.size() <= nextIndex) {
             onRunSuccess();
             return;
           }
@@ -175,7 +231,7 @@ public class WjrPresenter implements WjrDisplayHandler {
             return;
           }
 
-          runWjrMethodItem(checkedMethods, nextIndex);
+          runWjrMethodItem(methodItems, nextIndex);
         }
 
         private void copyMethodItemAttributes(WjrMethodItem from,
@@ -197,7 +253,7 @@ public class WjrPresenter implements WjrDisplayHandler {
         }
 
         private void onRunCancel() {
-          for (WjrMethodItem item : checkedMethods) {
+          for (WjrMethodItem item : methodItems) {
             if (item.getState() == State.RUNNING) {
               item.setState(State.NOT_YET);
             }

@@ -32,10 +32,8 @@ public class KtrWjr implements EntryPoint {
 
   private static final String LOADING_ELEMENT_ID = "loading";
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
+  /**
+   * {@inheritDoc}
    */
   @Override
   public void onModuleLoad() {

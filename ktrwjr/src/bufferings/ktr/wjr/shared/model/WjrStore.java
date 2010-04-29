@@ -37,12 +37,8 @@ public class WjrStore implements IsSerializable {
    * @author bufferings[at]gmail.com
    */
   protected static class Root extends WjrSummaryItem {
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * bufferings.ktr.wjr.shared.model.WjrSummaryItem#fetchChildren(bufferings
-     * .ktr.wjr.shared.model.WjrStore)
+    /**
+     * {@inheritDoc}
      */
     @Override
     protected List<? extends WjrStoreItem> fetchChildren(WjrStore store) {

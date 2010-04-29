@@ -47,13 +47,28 @@ public class WjrListBox extends Composite {
   protected static final int OTHER_KEY_DOWN = 63233;
   protected static final int OTHER_KEY_UP = 63232;
 
+  /**
+   * The resource client bundle for the WjrListBox.
+   * 
+   * @author bufferings[at]gmail.com
+   */
   protected interface Resources extends ClientBundle {
     Resources INSTANCE = GWT.create(Resources.class);
 
+    /**
+     * The css resource.
+     * 
+     * @return The css resource.
+     */
     @Source("WjrListBox.css")
     Css css();
   }
 
+  /**
+   * CssResource used in the WjrListBox.
+   * 
+   * @author bufferings[at]gmail.com
+   */
   protected interface Css extends CssResource {
     String itemStyle();
   }
@@ -63,12 +78,19 @@ public class WjrListBox extends Composite {
    * 
    * @author bufferings[at]gmail.com
    */
-  protected static class ItemLabel extends Label implements HasClickHandlers {
+  protected static class HoverableAndClickableLabel extends Label implements
+      HasClickHandlers {
 
-    public ItemLabel() {
+    /**
+     * Constructs the HoverableAndClickableLabel.
+     */
+    public HoverableAndClickableLabel() {
       sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void onBrowserEvent(Event event) {
       super.onBrowserEvent(event);
       switch (DOM.eventGetType(event)) {
@@ -84,22 +106,37 @@ public class WjrListBox extends Composite {
       }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public HandlerRegistration addClickHandler(ClickHandler handler) {
       return addDomHandler(handler, ClickEvent.getType());
     }
   }
 
+  /**
+   * The main panel.
+   */
   protected FlowPanel mainPanel;
 
+  /**
+   * The row items.
+   */
   protected List<Label> children = new ArrayList<Label>();
 
+  /**
+   * The current selected row item.
+   */
   protected Widget curSelection;
 
+  /**
+   * For controling key events.
+   */
   protected boolean lastWasKeyDown;
 
   /**
-   * Instanciates the WjrListBox.
+   * Constructs the WjrListBox.
    */
   public WjrListBox() {
     Resources.INSTANCE.css().ensureInjected();
@@ -120,7 +157,7 @@ public class WjrListBox extends Composite {
   public void addItem(String item) {
     checkNotNull(item, "The item parameter is null.");
 
-    Label label = new ItemLabel();
+    Label label = new HoverableAndClickableLabel();
     label.setText(item);
     label.setStyleName(Resources.INSTANCE.css().itemStyle());
     label.setTitle(item.trim());
@@ -135,12 +172,8 @@ public class WjrListBox extends Composite {
     mainPanel.clear();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * com.google.gwt.user.client.ui.Composite#onBrowserEvent(com.google.gwt.user
-   * .client.Event)
+  /**
+   * {@inheritDoc}
    */
   @Override
   public void onBrowserEvent(Event event) {

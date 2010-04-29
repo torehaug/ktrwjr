@@ -48,22 +48,16 @@ public class KtrWjrServiceImpl implements KtrWjrService {
    */
   protected WjrAppEngineRecorder appEngineRecorder = new WjrAppEngineRecorder();
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see bufferings.ktr.wjr.client.service.KtrWjrService#loadStore()
+  /**
+   * {@inheritDoc}
    */
   public WjrStore loadStore() {
     checkState(isJUnit4Available(), "JUnit4 not found.");
     return storeLoader.loadWjrStore(CLASSES_DIRECTORY);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * bufferings.ktr.wjr.client.service.KtrWjrService#runTest(bufferings.ktr.
-   * wjr.shared.model.WjrMethodItem)
+  /**
+   * {@inheritDoc}
    */
   public WjrMethodItem runTest(WjrMethodItem methodItem) {
     checkState(isJUnit4Available(), "JUnit4 not found.");

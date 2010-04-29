@@ -29,18 +29,17 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * The tree panel which shows the testcases and some buttons.
+ * The tree panel which shows the test cases and some icon buttons.
  * 
  * @author bufferings[at]gmail.com
  */
 public class WjrTreePanel extends Composite {
 
   /**
-   * The event handler of WjrTreePanel.
+   * The event handler of the WjrTreePanel.
    * 
    * @author bufferings[at]gmail.com
    */
-
   public static interface Handler {
     /**
      * Called when the clear button is clicked.
@@ -59,7 +58,7 @@ public class WjrTreePanel extends Composite {
     public void onReloadButtonClicked(ClickEvent event);
 
     /**
-     * Called when the checkAll button is clicked.
+     * Called when the check-all button is clicked.
      * 
      * @param event
      *          The event information.
@@ -67,7 +66,7 @@ public class WjrTreePanel extends Composite {
     public void onCheckAllButtonClicked(ClickEvent event);
 
     /**
-     * Called when the uncheckAll button is clicked.
+     * Called when the uncheck-all button is clicked.
      * 
      * @param event
      *          The event information.
@@ -82,33 +81,54 @@ public class WjrTreePanel extends Composite {
   }
 
   /**
-   * The event handler of this class.
+   * The event handler of the WjrTreePanel.
    */
   protected Handler handler;
 
+  /**
+   * The check-all button.
+   */
   @UiField
   protected WjrIconButton checkAllButton;
 
+  /**
+   * The uncheck-all button.
+   */
   @UiField
   protected WjrIconButton uncheckAllButton;
 
+  /**
+   * The expand-all button.
+   */
   @UiField
   protected WjrIconButton expandAllButton;
 
+  /**
+   * The collapse-all button.
+   */
   @UiField
   protected WjrIconButton collapseAllButton;
 
+  /**
+   * The clear button.
+   */
   @UiField
   protected WjrIconButton clearButton;
 
+  /**
+   * The reload button.
+   */
   @UiField
   protected WjrIconButton reloadButton;
 
+  /**
+   * The tree composite.
+   */
   @UiField
   protected WjrTree tree;
 
   /**
-   * Instanciates the WjrTreePanel with the event handler.
+   * Constructs the WjrTreePanel with the event handler.
    * 
    * @param handler
    *          The event handler of this class.

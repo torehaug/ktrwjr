@@ -28,14 +28,14 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * The button panel of the run button.
+ * The button panel of the run and the cancel button.
  * 
  * @author bufferings[at]gmail.com
  */
 public class WjrButtonPanel extends Composite {
 
   /**
-   * The event handler of WjrButtonPanel.
+   * The event handler of the WjrButtonPanel.
    * 
    * @author bufferings[at]gmail.com
    */
@@ -44,6 +44,7 @@ public class WjrButtonPanel extends Composite {
      * Called when the button is clicked.
      * 
      * @param event
+     *          The event information.
      */
     public void onButtonClicked(ClickEvent event);
   }
@@ -55,15 +56,18 @@ public class WjrButtonPanel extends Composite {
   }
 
   /**
-   * The event handler of this class.
+   * The event handler of the WjrButtonPanel.
    */
   protected Handler handler;
 
+  /**
+   * The button, which acts as "Run" button and as "Cancel" button.
+   */
   @UiField
   protected WjrIconTextButton button;
 
   /**
-   * Instanciates the WjrButtonPanel with the event handler.
+   * Constructs the WjrButtonPanel with the event handler.
    * 
    * @param handler
    *          The event handler of this class.

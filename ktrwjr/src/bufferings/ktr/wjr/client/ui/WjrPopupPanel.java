@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
- * Popup panel which is shown while the test is running.
+ * The popup panel which is shown while the process is running.
  * 
  * @author bufferings[at]gmail.com
  */
@@ -49,7 +49,7 @@ public class WjrPopupPanel extends Composite implements HasText {
   protected Label label;
 
   /**
-   * Instanciates the WjrPopupPanel.
+   * Constructs the WjrPopupPanel.
    */
   public WjrPopupPanel() {
     HorizontalPanel mainPanel = new HorizontalPanel();
@@ -71,6 +71,21 @@ public class WjrPopupPanel extends Composite implements HasText {
     RootPanel.get().add(this);
   }
 
+  /**
+   * Start showing the panel.
+   */
+  public void show() {
+    if (isVisible() || isShowing) {
+      return;
+    }
+    isShowing = true;
+    adjustPosition();
+    showAnimation(getElement().getId());
+  }
+
+  /**
+   * Adjusts the position of the panel.
+   */
   private void adjustPosition() {
     int left = 13;
     int top = (Window.getClientHeight() - 48);
@@ -83,26 +98,14 @@ public class WjrPopupPanel extends Composite implements HasText {
   }
 
   /**
-   * Shows the panel.
-   */
-  public void show() {
-    if (isVisible() || isShowing) {
-      return;
-    }
-    isShowing = true;
-    adjustPosition();
-    showAnimation(getElement().getId());
-  }
-
-  /**
-   * The callback method of the show jsni.
+   * The callback method of the showing jsni.
    */
   protected void showCallback() {
     isShowing = false;
   }
 
   /**
-   * Hides the panel.
+   * Start hiding the panel.
    */
   public void hide() {
     if (!isVisible() || isHiding) {
@@ -113,14 +116,14 @@ public class WjrPopupPanel extends Composite implements HasText {
   }
 
   /**
-   * The callback method of the hide jsni.
+   * The callback method of the hiding jsni.
    */
   protected void hideCallback() {
     isHiding = false;
   }
 
   /**
-   * Shows animation.
+   * Starts the showing animation.
    * 
    * @param id
    *          The element id.
@@ -132,7 +135,7 @@ public class WjrPopupPanel extends Composite implements HasText {
   }-*/;
 
   /**
-   * Hides animation.
+   * Starts the hiding animation.
    * 
    * @param id
    *          The element id.
@@ -143,20 +146,16 @@ public class WjrPopupPanel extends Composite implements HasText {
     $wnd.$("#" + id).hide('slide', options, 500, callback);
   }-*/;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.google.gwt.user.client.ui.HasText#getText()
+  /**
+   * {@inheritDoc}
    */
   @Override
   public String getText() {
     return label.getText();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
+  /**
+   * {@inheritDoc}
    */
   @Override
   public void setText(String text) {

@@ -68,12 +68,8 @@ public class WjrClassItem extends WjrSummaryItem {
     return className;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * bufferings.ktr.wjr.shared.model.WjrSummaryItem#getChildren(bufferings.ktr
-   * .wjr.shared.model.WjrStore)
+  /**
+   * {@inheritDoc}
    */
   protected List<? extends WjrStoreItem> fetchChildren(WjrStore store) {
     return store.getMethodItems(className);

@@ -34,23 +34,19 @@ public abstract class WjrAbstractButton extends Composite implements
     HasClickHandlers {
 
   /**
-   * Whether this is disabled or not.
+   * Whether this button is disabled or not.
    */
   protected boolean disabled = false;
 
   /**
-   * Instanciates the WjrAbstractButton.
+   * Constructs the WjrAbstractButton.
    */
   public WjrAbstractButton() {
     sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * com.google.gwt.user.client.ui.Composite#onBrowserEvent(com.google.gwt.user
-   * .client.Event)
+  /**
+   * {@inheritDoc}
    */
   public void onBrowserEvent(Event event) {
     switch (DOM.eventGetType(event)) {
@@ -88,12 +84,8 @@ public abstract class WjrAbstractButton extends Composite implements
     return disabled;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google
-   * .gwt.event.dom.client.ClickHandler)
+  /**
+   * {@inheritDoc}
    */
   public HandlerRegistration addClickHandler(ClickHandler handler) {
     return addDomHandler(handler, ClickEvent.getType());

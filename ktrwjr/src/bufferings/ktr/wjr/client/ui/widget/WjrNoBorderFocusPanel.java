@@ -20,11 +20,11 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * The no border focus panel.
+ * The focus panel with no border.
  * 
  * This class is used by WjrTree and WjrListBox. If you want to use key to
  * operate the selection, the focus is needed. So I used the focusable panel in
- * the back end of them. But the focusable panel has borders, and I want not to
+ * the back end of them. The focusable panel has borders, but I want not to
  * show borders, so I prepared this class.
  * 
  * @author bufferings[at]gmail.com
@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class WjrNoBorderFocusPanel extends FocusPanel {
 
   /**
-   * Instanciates the WjrNoBorderFocusPanel.
+   * Constructs the WjrNoBorderFocusPanel.
    */
   public WjrNoBorderFocusPanel() {
     super();
@@ -40,7 +40,7 @@ public class WjrNoBorderFocusPanel extends FocusPanel {
   }
 
   /**
-   * Instanciates the WjrNoBorderFocusPanel with child.
+   * Constructs the WjrNoBorderFocusPanel with child.
    * 
    * @parma child The child to add.
    */

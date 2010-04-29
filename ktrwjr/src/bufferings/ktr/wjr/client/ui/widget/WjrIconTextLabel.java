@@ -38,14 +38,20 @@ public class WjrIconTextLabel extends Composite implements HasText {
   interface WjrIconLabelUiBinder extends UiBinder<Widget, WjrIconTextLabel> {
   }
 
+  /**
+   * The label to show the icon.
+   */
   @UiField
   protected Label iconLabel;
 
+  /**
+   * The label to show the text.
+   */
   @UiField
   protected Label textLabel;
 
   /**
-   * Instanciates the WjrIconTextLabel.
+   * Constructs the WjrIconTextLabel.
    */
   public WjrIconTextLabel() {
     initWidget(uiBinder.createAndBindUi(this));
@@ -64,20 +70,16 @@ public class WjrIconTextLabel extends Composite implements HasText {
     iconLabel.setStyleName(join(UI_ICON, styleName));
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.google.gwt.user.client.ui.HasText#getText()
+  /**
+   * {@inheritDoc}
    */
   @Override
   public String getText() {
     return textLabel.getText();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
+  /**
+   * {@inheritDoc}
    */
   @Override
   public void setText(String text) {

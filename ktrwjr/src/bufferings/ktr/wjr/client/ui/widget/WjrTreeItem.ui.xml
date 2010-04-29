@@ -35,7 +35,7 @@
           ui:field="toggleIconLabel"
           styleName="ui-icon ui-icon-empty" />
       </g:cell>
-      <k:WjrTreeItem.ItemPanel
+      <k:WjrTreeItem.HoverableSimplePanel
         ui:field="itemPanel"
         styleName="{style.itemPanel}">
         <g:HorizontalPanel
@@ -61,7 +61,7 @@
               wordWrap="false" />
           </g:cell>
         </g:HorizontalPanel>
-      </k:WjrTreeItem.ItemPanel>
+      </k:WjrTreeItem.HoverableSimplePanel>
     </g:HorizontalPanel>
 
     <g:FlowPanel

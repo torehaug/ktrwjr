@@ -34,7 +34,7 @@ public interface KtrWjrService extends RemoteService {
    * 
    * @return The loaded store.
    */
-  public WjrStore loadStore() throws Exception;
+  public WjrStore loadStore();
 
   /**
    * Runs the test.
@@ -42,5 +42,5 @@ public interface KtrWjrService extends RemoteService {
    * @param methodItem
    *          The methodItem to run.
    */
-  public WjrMethodItem runTest(WjrMethodItem methodItem) throws Exception;
+  public WjrMethodItem runTest(WjrMethodItem methodItem);
 }

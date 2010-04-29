@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
- package bufferings.ktr.wjr.client;
+package bufferings.ktr.wjr.client;
 
 import static bufferings.ktr.wjr.client.ui.widget.JQueryUI.*;
 import static bufferings.ktr.wjr.shared.util.Preconditions.*;
@@ -50,6 +50,13 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The view of the Kotori Web JUnit Runner.
+ * 
+ * This class controls all the view components of KtrWjr.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class WjrView extends Composite implements WjrDisplay,
     SelectionHandler<WjrTreeItem>, ValueChangeHandler<WjrTreeItem> {
 
@@ -64,108 +71,82 @@ public class WjrView extends Composite implements WjrDisplay,
   interface WjrViewUiBinder extends UiBinder<Widget, WjrView> {
   }
 
+  /**
+   * The view event handler.
+   */
   protected WjrDisplayHandler handler;
 
+  /**
+   * The container widget of this view.
+   */
   protected HasWidgets container;
 
+  /**
+   * The "loading" element, which is remove from the DOM when the first loading
+   * is completed.
+   */
   protected Element loadingElem;
 
+  /**
+   * The result panel which shows the result summary of the tests.
+   */
   @UiField
   protected WjrResultPanel resultPanel;
 
+  /**
+   * The tree panel which shows the test cases and some icon buttons.
+   */
   @UiField
   protected WjrTreePanel treePanel;
 
+  /**
+   * The button panel of the run and the cancel button.
+   */
   @UiField
   protected WjrButtonPanel buttonPanel;
 
+  /**
+   * The trace panel which shows the trace and the log.
+   */
   @UiField
   protected WjrTracePanel tracePanel;
 
+  /**
+   * The popup panel which is shown while the process is running.
+   */
   protected WjrPopupPanel popup;
 
+  /**
+   * The tree items to associate with the store items.
+   */
   protected List<WjrTreeItem> treeItems = new ArrayList<WjrTreeItem>();
 
+  /**
+   * The store items to associate with the tree items. The store items is read
+   * only.
+   */
   protected List<WjrStoreItem> storeItems = new ArrayList<WjrStoreItem>();
 
+  /**
+   * Whether loading the store or not.
+   */
   boolean loading = false;
 
+  /**
+   * Whether running the tests or not.
+   */
   boolean running = false;
 
+  /**
+   * Whether canceled running the tests or not.
+   */
   boolean canceled = false;
 
-  @Override
-  public void go(WjrDisplayHandler handler, HasWidgets container,
-      Element loadingElem) {
-    checkNotNull(handler, "The handler parameter is null.");
-    checkNotNull(container, "The container parameter is null.");
-    this.handler = handler;
-    this.container = container;
-    this.loadingElem = loadingElem;
-  }
-
-  @Override
-  public void notifyLoadingSucceeded(WjrStore store) {
-    finishLoading(store);
-  }
-
-  @Override
-  public void notifyLoadingFailed(Throwable caught) {
-    DialogBox dialog = new DialogBox();
-    dialog.add(new Label(caught.toString()));
-    dialog.show();
-    finishLoading(new WjrStore());
-  }
-
-  private void finishLoading(WjrStore store) {
-    initWidget(uiBinder.createAndBindUi(WjrView.this));
-    popup = new WjrPopupPanel();
-
-    setData(store);
-    updateRunButtonDisabled();
-    updateTreeButtonsDisabled();
-
-    loadingElem.removeFromParent();
-    container.add(this);
-  }
-
-  private void startReloading() {
-    if (!loading) {
-      loading = true;
-      setData(new WjrStore());
-      updateRunButtonDisabled();
-      updateTreeButtonsDisabled();
-
-      popup.setText(LOADING_POPUP_TEXT);
-      popup.show();
-      handler.onLoadStore();
-    }
-  }
-
-  @Override
-  public void notifyReloadingSucceeded() {
-    finishReloading();
-  }
-
-  @Override
-  public void notifyReloadingFailed(Throwable caught) {
-    if (loading) {
-      DialogBox dialog = new DialogBox();
-      dialog.add(new Label(caught.toString()));
-      dialog.show();
-      finishReloading();
-    }
-  }
-
-  private void finishReloading() {
-    if (loading) {
-      loading = false;
-      updateRunButtonDisabled();
-      updateTreeButtonsDisabled();
-      popup.hide();
-    }
-  }
-
+  /**
+   * UiFactory method which creates WjrButtonPanel and handles its events.
+   * 
+   * @return The instance of the WjrButtonPanel.
+   */
   @UiFactory
   protected WjrButtonPanel createWjrButtonPanel() {
     return new WjrButtonPanel(new WjrButtonPanel.Handler() {
@@ -180,66 +161,11 @@ public class WjrView extends Composite implements WjrDisplay,
     });
   }
 
-  private void startRunning() {
-    if (!running) {
-      running = true;
-      canceled = false;
-      buttonPanel.changeToCancelButton();
-      updateTreeButtonsDisabled();
-      popup.setText(RUNNING_POPUP_TEXT);
-      popup.show();
-      handler.onRunButtonClick();
-    }
-  }
-
-  private void cancelRunning() {
-    if (running && !canceled) {
-      canceled = true;
-      updateRunButtonDisabled();
-      popup.setText(CANCELING_POPUP_TEXT);
-      handler.onCancelButtonClick();
-    }
-  }
-
-  @Override
-  public void notifyRunningFinished() {
-    if (running) {
-      running = false;
-      canceled = false;
-      buttonPanel.changeToRunButton();
-      popup.hide();
-      updateRunButtonDisabled();
-      updateTreeButtonsDisabled();
-    }
-  }
-
-  private void updateTreeButtonsDisabled() {
-    if (treeItems.size() == 0) {
-      treePanel.setCheckAllButtonDisabled(true);
-      treePanel.setUncheckAllButtonDisabled(true);
-      treePanel.setExpandAllButtonDisabled(true);
-      treePanel.setCollapseAllButtonDisabled(true);
-      treePanel.setClearButtonDisabled(true);
-      if (loading) {
-        treePanel.setReloadButtonDisabled(true);
-      } else {
-        treePanel.setReloadButtonDisabled(false);
-      }
-    } else {
-      treePanel.setCheckAllButtonDisabled(false);
-      treePanel.setUncheckAllButtonDisabled(false);
-      treePanel.setExpandAllButtonDisabled(false);
-      treePanel.setCollapseAllButtonDisabled(false);
-      if (running) {
-        treePanel.setClearButtonDisabled(true);
-        treePanel.setReloadButtonDisabled(true);
-      } else {
-        treePanel.setClearButtonDisabled(false);
-        treePanel.setReloadButtonDisabled(false);
-      }
-    }
-  }
-
+  /**
+   * UiFactory method which creates WjrTreePanel and handles its events.
+   * 
+   * @return The instance of the WjrTreePanel.
+   */
   @UiFactory
   protected WjrTreePanel createWjrTreePanel() {
     return new WjrTreePanel(new WjrTreePanel.Handler() {
@@ -265,6 +191,100 @@ public class WjrView extends Composite implements WjrDisplay,
     });
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void go(WjrDisplayHandler handler, HasWidgets container,
+      Element loadingElem) {
+    checkNotNull(handler, "The handler parameter is null.");
+    checkNotNull(container, "The container parameter is null.");
+    this.handler = handler;
+    this.container = container;
+    this.loadingElem = loadingElem;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void notifyLoadingSucceeded(WjrStore store) {
+    finishLoading(store);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void notifyLoadingFailed(Throwable caught) {
+    // TODO show messages
+    DialogBox dialog = new DialogBox();
+    dialog.add(new Label(caught.toString()));
+    dialog.show();
+    finishLoading(new WjrStore());
+  }
+
+  /**
+   * Performs the post-processing of loading.
+   * 
+   * Hides the loading element and shows the KtrWjr panels.
+   * 
+   * @param store
+   *          The test store.
+   */
+  private void finishLoading(WjrStore store) {
+    initWidget(uiBinder.createAndBindUi(WjrView.this));
+    popup = new WjrPopupPanel();
+
+    setData(store);
+    updateRunButtonDisabled();
+    updateTreeButtonsDisabled();
+
+    loadingElem.removeFromParent();
+    container.add(this);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void notifyReloadingSucceeded() {
+    finishReloading();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void notifyReloadingFailed(Throwable caught) {
+    if (loading) {
+      DialogBox dialog = new DialogBox();
+      dialog.add(new Label(caught.toString()));
+      dialog.show();
+      finishReloading();
+    }
+
+    // TODO show messages
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void notifyRunningFinished() {
+    if (running) {
+      running = false;
+      canceled = false;
+      buttonPanel.changeToRunButton();
+      popup.hide();
+      updateRunButtonDisabled();
+      updateTreeButtonsDisabled();
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setData(WjrStore store) {
     treeItems.clear();
@@ -295,14 +315,9 @@ public class WjrView extends Composite implements WjrDisplay,
     }
   }
 
-  private WjrTreeItem createTreeItem(WjrStoreItem storeItem) {
-    WjrTreeItem treeItem = new WjrTreeItem();
-    treeItem.addSelectionHandler(this);
-    treeItem.addValueChangeHandler(this);
-    repaintTreeItem(treeItem, storeItem);
-    return treeItem;
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<WjrMethodItem> getCheckedMethodItems() {
     List<WjrMethodItem> ret = new ArrayList<WjrMethodItem>();
@@ -317,6 +332,9 @@ public class WjrView extends Composite implements WjrDisplay,
     return ret;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void repaintAllTreeItems(WjrStore store) {
     updateResultPanel(store);
@@ -325,6 +343,9 @@ public class WjrView extends Composite implements WjrDisplay,
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void repaintTreeItemAncestors(WjrStore store, WjrMethodItem methodItem) {
     updateResultPanel(store);
@@ -337,24 +358,9 @@ public class WjrView extends Composite implements WjrDisplay,
       .indexOf(parentTreeItem)));
   }
 
-  private void updateResultPanel(WjrStore store) {
-    resultPanel.updateResults(
-      store.getTotalCount() - store.getNotYetCount(),
-      store.getTotalCount(),
-      store.getErrorCount(),
-      store.getFailureCount());
-  }
-
-  private void repaintTreeItem(WjrTreeItem treeItem, WjrStoreItem storeItem) {
-    treeItem.setText(getTreeItemText(storeItem));
-    treeItem.setIcon(getTreeItemIcon(storeItem));
-    if (treeItem.isSelected()) {
-      treeItem.setSelectedStyle(getTreeItemSelectedStyle(storeItem));
-      tracePanel.setTrace(getTreeItemTrace(storeItem));
-      tracePanel.setLog(getTreeItemLog(storeItem));
-    }
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void onSelection(SelectionEvent<WjrTreeItem> event) {
     WjrTreeItem treeItem = event.getSelectedItem();
@@ -371,11 +377,149 @@ public class WjrView extends Composite implements WjrDisplay,
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void onValueChange(ValueChangeEvent<WjrTreeItem> event) {
     updateRunButtonDisabled();
   }
 
+  /**
+   * Starts reloading the test store.
+   */
+  private void startReloading() {
+    if (!loading) {
+      loading = true;
+      setData(new WjrStore());
+      updateRunButtonDisabled();
+      updateTreeButtonsDisabled();
+
+      popup.setText(LOADING_POPUP_TEXT);
+      popup.show();
+      handler.onLoadStore();
+    }
+  }
+
+  /**
+   * Performs the post-processing of reloading.
+   */
+  private void finishReloading() {
+    if (loading) {
+      loading = false;
+      updateRunButtonDisabled();
+      updateTreeButtonsDisabled();
+      popup.hide();
+    }
+  }
+
+  /**
+   * Starts running the test methods.
+   */
+  private void startRunning() {
+    if (!running) {
+      running = true;
+      canceled = false;
+      buttonPanel.changeToCancelButton();
+      updateTreeButtonsDisabled();
+      popup.setText(RUNNING_POPUP_TEXT);
+      popup.show();
+      handler.onRunButtonClick();
+    }
+  }
+
+  /**
+   * Cancel running the test methods.
+   */
+  private void cancelRunning() {
+    if (running && !canceled) {
+      canceled = true;
+      updateRunButtonDisabled();
+      popup.setText(CANCELING_POPUP_TEXT);
+      handler.onCancelButtonClick();
+    }
+  }
+
+  /**
+   * Updates the tree panel buttons' disabled.
+   */
+  private void updateTreeButtonsDisabled() {
+    if (treeItems.size() == 0) {
+      treePanel.setCheckAllButtonDisabled(true);
+      treePanel.setUncheckAllButtonDisabled(true);
+      treePanel.setExpandAllButtonDisabled(true);
+      treePanel.setCollapseAllButtonDisabled(true);
+      treePanel.setClearButtonDisabled(true);
+      if (loading) {
+        treePanel.setReloadButtonDisabled(true);
+      } else {
+        treePanel.setReloadButtonDisabled(false);
+      }
+    } else {
+      treePanel.setCheckAllButtonDisabled(false);
+      treePanel.setUncheckAllButtonDisabled(false);
+      treePanel.setExpandAllButtonDisabled(false);
+      treePanel.setCollapseAllButtonDisabled(false);
+      if (running) {
+        treePanel.setClearButtonDisabled(true);
+        treePanel.setReloadButtonDisabled(true);
+      } else {
+        treePanel.setClearButtonDisabled(false);
+        treePanel.setReloadButtonDisabled(false);
+      }
+    }
+  }
+
+  /**
+   * Create the tree item from the test store item.
+   * 
+   * @param storeItem
+   *          The test store item.
+   * @return The tree item.
+   */
+  private WjrTreeItem createTreeItem(WjrStoreItem storeItem) {
+    WjrTreeItem treeItem = new WjrTreeItem();
+    treeItem.addSelectionHandler(this);
+    treeItem.addValueChangeHandler(this);
+    repaintTreeItem(treeItem, storeItem);
+    return treeItem;
+  }
+
+  /**
+   * Updates the result panel from the test store.
+   * 
+   * @param store
+   *          The test store.
+   */
+  private void updateResultPanel(WjrStore store) {
+    resultPanel.updateResults(
+      store.getTotalCount() - store.getNotYetCount(),
+      store.getTotalCount(),
+      store.getErrorCount(),
+      store.getFailureCount());
+  }
+
+  /**
+   * Repaints the tree item by the store item.
+   * 
+   * @param treeItem
+   *          The tree item.
+   * @param storeItem
+   *          The test store item.
+   */
+  private void repaintTreeItem(WjrTreeItem treeItem, WjrStoreItem storeItem) {
+    treeItem.setText(getTreeItemText(storeItem));
+    treeItem.setIcon(getTreeItemIcon(storeItem));
+    if (treeItem.isSelected()) {
+      treeItem.setSelectedStyle(getTreeItemSelectedStyle(storeItem));
+      tracePanel.setTrace(getTreeItemTrace(storeItem));
+      tracePanel.setLog(getTreeItemLog(storeItem));
+    }
+  }
+
+  /**
+   * Updates the run (or cancel) button disabled.
+   */
   private void updateRunButtonDisabled() {
     if (loading) {
       buttonPanel.setButtonDisabled(true);
@@ -397,6 +541,13 @@ public class WjrView extends Composite implements WjrDisplay,
     buttonPanel.setButtonDisabled(!checked);
   }
 
+  /**
+   * Gets the tree item icon from the test store item.
+   * 
+   * @param storeItem
+   *          The test store item.
+   * @return The tree item icon css class of JQueryUI.
+   */
   private String getTreeItemIcon(WjrStoreItem storeItem) {
     switch (storeItem.getState()) {
     case SUCCESS:
@@ -418,6 +569,13 @@ public class WjrView extends Composite implements WjrDisplay,
     }
   }
 
+  /**
+   * Gets the tree item selected style from the test store item.
+   * 
+   * @param storeItem
+   *          The test store item.
+   * @return The tree item selected css class name of JQueryUI.
+   */
   private String getTreeItemSelectedStyle(WjrStoreItem storeItem) {
     switch (storeItem.getState()) {
     case SUCCESS:
@@ -436,6 +594,13 @@ public class WjrView extends Composite implements WjrDisplay,
     }
   }
 
+  /**
+   * Gets the tree item text from the test store item.
+   * 
+   * @param storeItem
+   *          The test store item.
+   * @return The tree item text.
+   */
   private String getTreeItemText(WjrStoreItem storeItem) {
     if (storeItem instanceof WjrClassItem) {
       return getTreeItemTextFromClassItem((WjrClassItem) storeItem);
@@ -444,10 +609,24 @@ public class WjrView extends Composite implements WjrDisplay,
     }
   }
 
+  /**
+   * Gets the tree item text from the test class item.
+   * 
+   * @param classItem
+   *          The test class item.
+   * @return The tree item text.
+   */
   private String getTreeItemTextFromClassItem(WjrClassItem classItem) {
     return classItem.getClassName();
   }
 
+  /**
+   * Gets the tree item text from the test method item.
+   * 
+   * @param methodItem
+   *          The test method item.
+   * @return The tree item text.
+   */
   private String getTreeItemTextFromMethodItem(WjrMethodItem methodItem) {
     StringBuilder sb = new StringBuilder(methodItem.getMethodName());
 
@@ -460,6 +639,13 @@ public class WjrView extends Composite implements WjrDisplay,
     return sb.toString();
   }
 
+  /**
+   * Gets the time string from the test method item.
+   * 
+   * @param methodItem
+   *          The test method item.
+   * @return The time string.
+   */
   private String getTimeString(WjrMethodItem methodItem) {
     StringBuilder sb = new StringBuilder();
 
@@ -475,6 +661,13 @@ public class WjrView extends Composite implements WjrDisplay,
     return sb.toString();
   }
 
+  /**
+   * Gets the tree item log from the test store item.
+   * 
+   * @param storeItem
+   *          The test store item.
+   * @return The tree item log.
+   */
   private String getTreeItemLog(WjrStoreItem storeItem) {
     if (storeItem instanceof WjrClassItem) {
       return "";
@@ -490,6 +683,13 @@ public class WjrView extends Composite implements WjrDisplay,
     }
   }
 
+  /**
+   * Gets the tree item trace from the test store item.
+   * 
+   * @param storeItem
+   *          The test store item.
+   * @return The tree item trace.
+   */
   private String getTreeItemTrace(WjrStoreItem storeItem) {
     if (storeItem instanceof WjrClassItem) {
       return "";

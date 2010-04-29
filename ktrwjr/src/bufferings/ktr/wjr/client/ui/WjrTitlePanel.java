@@ -33,6 +33,9 @@ public class WjrTitlePanel extends Composite {
   interface WjrTitlePanelUiBinder extends UiBinder<Widget, WjrTitlePanel> {
   }
 
+  /**
+   * Constructs the WjrTitlePanel.
+   */
   public WjrTitlePanel() {
     initWidget(uiBinder.createAndBindUi(this));
   }

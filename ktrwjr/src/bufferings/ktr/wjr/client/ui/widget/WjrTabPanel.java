@@ -63,9 +63,25 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
   interface WjrTabPanelUiBinder extends UiBinder<Widget, WjrTabPanel> {
   }
 
-  interface MyStyle extends CssResource {
+  /**
+   * CssResource used in the WjrTabPanel.
+   * 
+   * @author bufferings[at]gmail.com
+   */
+  protected interface MyStyle extends CssResource {
+
+    /**
+     * The tab selected style.
+     * 
+     * @return The tab selected style.
+     */
     String tabSelected();
 
+    /**
+     * The tab unselected style.
+     * 
+     * @return The tab unselected style.
+     */
     String tabUnselected();
   }
 
@@ -73,23 +89,41 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
 
   protected static final double BAR_HEIGHT = 35;
 
+  /**
+   * The css style.
+   */
   @UiField
   protected MyStyle style;
 
+  /**
+   * The layout panel to control tabs and contents.
+   */
   @UiField
   protected LayoutPanel panel;
 
+  /**
+   * The tab bar panel.
+   */
   @UiField
   protected HorizontalPanel tabBar;
 
+  /**
+   * The tab widgets
+   */
   protected ArrayList<Tab> tabs;
 
+  /**
+   * The content widgets.
+   */
   protected WidgetCollection children;
 
+  /**
+   * The tab selected index.
+   */
   protected int selectedIndex = -1;
 
   /**
-   * Instanciate the WjrTabPanel.
+   * Constructs the WjrTabPanel.
    */
   public WjrTabPanel() {
     initWidget(uiBinder.createAndBindUi(this));
@@ -98,24 +132,16 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
     children = new WidgetCollection(panel);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers#
-   * addBeforeSelectionHandler
-   * (com.google.gwt.event.logical.shared.BeforeSelectionHandler)
+  /**
+   * {@inheritDoc}
    */
   public HandlerRegistration addBeforeSelectionHandler(
       BeforeSelectionHandler<Integer> handler) {
     return addHandler(handler, BeforeSelectionEvent.getType());
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler
-   * (com.google.gwt.event.logical.shared.SelectionHandler)
+  /**
+   * {@inheritDoc}
    */
   public HandlerRegistration addSelectionHandler(
       SelectionHandler<Integer> handler) {
@@ -196,31 +222,23 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
     return selectedIndex;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.google.gwt.user.client.ui.IndexedPanel#getWidget(int)
+  /**
+   * {@inheritDoc}
    */
   public Widget getWidget(int index) {
     checkIndex(index);
     return children.get(index);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.google.gwt.user.client.ui.IndexedPanel#getWidgetCount()
+  /**
+   * {@inheritDoc}
    */
   public int getWidgetCount() {
     return children.size();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * com.google.gwt.user.client.ui.IndexedPanel#getWidgetIndex(com.google.gwt
-   * .user.client.ui.Widget)
+  /**
+   * {@inheritDoc}
    */
   public int getWidgetIndex(Widget child) {
     return children.indexOf(child);
@@ -235,10 +253,8 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
     return children.iterator();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.google.gwt.user.client.ui.IndexedPanel#remove(int)
+  /**
+   * {@inheritDoc}
    */
   public boolean remove(int index) {
     if ((index < 0) || (index >= getWidgetCount())) {
@@ -361,7 +377,7 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
   protected class Tab extends Label {
 
     /**
-     * Instanciates the Tab
+     * Constructs the Tab
      * 
      * @param label
      *          the text to show.
@@ -373,12 +389,8 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
       sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.google.gwt.user.client.ui.Widget#onBrowserEvent(com.google.gwt.user
-     * .client.Event)
+    /**
+     * {@inheritDoc}
      */
     public void onBrowserEvent(Event event) {
       switch (DOM.eventGetType(event)) {
@@ -392,12 +404,8 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
       super.onBrowserEvent(event);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.google.gwt.user.client.ui.Label#addClickHandler(com.google.gwt.event
-     * .dom.client.ClickHandler)
+    /**
+     * {@inheritDoc}
      */
     public HandlerRegistration addClickHandler(ClickHandler handler) {
       return addDomHandler(handler, ClickEvent.getType());

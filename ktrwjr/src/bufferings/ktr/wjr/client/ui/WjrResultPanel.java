@@ -37,31 +37,66 @@ public class WjrResultPanel extends Composite {
   interface WjrResultPanelUiBinder extends UiBinder<Widget, WjrResultPanel> {
   }
 
-  interface ResultBarStyle extends CssResource {
+  /**
+   * The result bar style css resource.
+   * 
+   * @author bufferings[at]gmail.com
+   */
+  protected interface ResultBarStyle extends CssResource {
+    /**
+     * The style when the result is not yet state.
+     * 
+     * @return The style when the result is not yet state.
+     */
     String notyet();
 
+    /**
+     * The style when the result is fail state.
+     * 
+     * @return The style when the result is fail state.
+     */
     String fail();
 
+    /**
+     * The style when the result is succeed state.
+     * 
+     * @return The style when the result is succeed state.
+     */
     String succeed();
   }
 
+  /**
+   * The style of the result bar.
+   */
   @UiField
-  ResultBarStyle resultBarStyle;
-
-  @UiField
-  HasText runsLabel;
-
-  @UiField
-  HasText errorsLabel;
-
-  @UiField
-  HasText failuresLabel;
-
-  @UiField
-  Label resultBar;
+  protected ResultBarStyle resultBarStyle;
 
   /**
-   * Instanciates the WjrResultPanel.
+   * The label to show the run tests count.
+   */
+  @UiField
+  protected HasText runsLabel;
+
+  /**
+   * The label to show the error tests count.
+   */
+  @UiField
+  protected HasText errorsLabel;
+
+  /**
+   * The label to show the failure tests count.
+   */
+  @UiField
+  protected HasText failuresLabel;
+
+  /**
+   * The label to show the result state.
+   */
+  @UiField
+  protected Label resultBar;
+
+  /**
+   * Constructs the WjrResultPanel.
    */
   public WjrResultPanel() {
     initWidget(uiBinder.createAndBindUi(this));

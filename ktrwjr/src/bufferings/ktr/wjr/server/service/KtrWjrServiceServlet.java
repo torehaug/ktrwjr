@@ -39,21 +39,15 @@ public class KtrWjrServiceServlet extends RemoteServiceServlet implements
    */
   protected KtrWjrServiceImpl delegate = new KtrWjrServiceImpl();
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see bufferings.ktr.wjr.client.service.KtrWjrService#loadStore()
+  /**
+   * {@inheritDoc}
    */
   public WjrStore loadStore() {
     return delegate.loadStore();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * bufferings.ktr.wjr.client.service.KtrWjrService#runTest(bufferings.ktr.
-   * wjr.shared.model.WjrMethodItem)
+  /**
+   * {@inheritDoc}
    */
   public WjrMethodItem runTest(WjrMethodItem methodItem) {
     return delegate.runTest(methodItem);

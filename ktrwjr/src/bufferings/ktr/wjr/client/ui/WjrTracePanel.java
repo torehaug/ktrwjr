@@ -38,15 +38,24 @@ public class WjrTracePanel extends Composite {
   interface WjrTracePanelUiBinder extends UiBinder<Widget, WjrTracePanel> {
   }
 
+  /**
+   * The tab panel.
+   */
   @UiField
   protected WjrTabPanel tabPanel;
 
+  /**
+   * The list to show the trace.
+   */
   protected WjrListBox traceList;
 
+  /**
+   * The list to show the logs.
+   */
   protected WjrListBox logList;
 
   /**
-   * Instanciates the WjrTracePanel.
+   * Constructs the WjrTracePanel.
    */
   public WjrTracePanel() {
     initWidget(uiBinder.createAndBindUi(this));

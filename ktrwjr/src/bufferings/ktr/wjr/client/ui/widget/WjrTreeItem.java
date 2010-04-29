@@ -56,7 +56,17 @@ public class WjrTreeItem extends Composite implements
   interface WjrTreeItemUiBinder extends UiBinder<Widget, WjrTreeItem> {
   }
 
+  /**
+   * CssResource used in the WjrTreeItem.
+   * 
+   * @author bufferings[at]gmail.com
+   */
   protected interface MyStyle extends CssResource {
+    /**
+     * The item panel basic style.
+     * 
+     * @return The item panel basic style.
+     */
     String itemPanel();
   }
 
@@ -65,12 +75,18 @@ public class WjrTreeItem extends Composite implements
    * 
    * @author bufferings[at]gmail.com
    */
-  protected static class ItemPanel extends SimplePanel {
+  protected static class HoverableSimplePanel extends SimplePanel {
 
-    public ItemPanel() {
+    /**
+     * Constructs the ItemPanel.
+     */
+    public HoverableSimplePanel() {
       sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void onBrowserEvent(Event event) {
       super.onBrowserEvent(event);
       switch (DOM.eventGetType(event)) {
@@ -84,27 +100,51 @@ public class WjrTreeItem extends Composite implements
     }
   }
 
+  /**
+   * The css style.
+   */
   @UiField
   protected MyStyle style;
 
+  /**
+   * The panel to control self visible(for only the tree root).
+   */
   @UiField
   protected HorizontalPanel captionPanel;// for tree root
 
+  /**
+   * The panel to control children visible.
+   */
   @UiField
   protected FlowPanel childrenPanel;
 
+  /**
+   * The icon label to show the toggle icon.
+   */
   @UiField
   protected Label toggleIconLabel;
 
+  /**
+   * The panel to show selected state.
+   */
   @UiField
-  protected ItemPanel itemPanel;
+  protected HoverableSimplePanel itemPanel;
 
+  /**
+   * The check box of the item.
+   */
   @UiField
   protected CheckBox checkBox;
 
+  /**
+   * The icon label to show item's icon.
+   */
   @UiField
   protected Label iconLabel;
 
+  /**
+   * The label to show item's name.
+   */
   @UiField
   protected Label textLabel;
 
@@ -129,7 +169,7 @@ public class WjrTreeItem extends Composite implements
   protected boolean selected = false;
 
   /**
-   * Instanciate the WjrTreeItem.
+   * Constructs the WjrTreeItem.
    */
   public WjrTreeItem() {
     initWidget(uiBinder.createAndBindUi(this));
@@ -435,12 +475,8 @@ public class WjrTreeItem extends Composite implements
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @seecom.google.gwt.event.logical.shared.HasValueChangeHandlers#
-   * addValueChangeHandler
-   * (com.google.gwt.event.logical.shared.ValueChangeHandler)
+  /**
+   * {@inheritDoc}
    */
   @Override
   public HandlerRegistration addValueChangeHandler(
@@ -448,12 +484,8 @@ public class WjrTreeItem extends Composite implements
     return addHandler(handler, ValueChangeEvent.getType());
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler
-   * (com.google.gwt.event.logical.shared.SelectionHandler)
+  /**
+   * {@inheritDoc}
    */
   @Override
   public HandlerRegistration addSelectionHandler(

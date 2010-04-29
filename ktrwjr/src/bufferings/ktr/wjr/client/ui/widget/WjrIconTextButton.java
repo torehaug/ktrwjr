@@ -38,14 +38,20 @@ public class WjrIconTextButton extends WjrAbstractButton implements HasText {
       UiBinder<Widget, WjrIconTextButton> {
   }
 
+  /**
+   * The label to show the icon.
+   */
   @UiField
   protected Label iconLabel;
 
+  /**
+   * The label to show the text.
+   */
   @UiField
   protected Label textLabel;
 
   /**
-   * Instanciates the WjrIconTextButton.
+   * Constructs the WjrIconTextButton.
    */
   public WjrIconTextButton() {
     initWidget(uiBinder.createAndBindUi(this));
@@ -64,20 +70,16 @@ public class WjrIconTextButton extends WjrAbstractButton implements HasText {
     iconLabel.setStyleName(join(UI_ICON, styleName));
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.google.gwt.user.client.ui.HasText#getText()
+  /**
+   * {@inheritDoc}
    */
   @Override
   public String getText() {
     return textLabel.getText();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
+  /**
+   * {@inheritDoc}
    */
   @Override
   public void setText(String text) {
