@@ -247,7 +247,6 @@ public class WjrAppEngineRecorder {
     /**
      * {@inheritDoc}
      */
-    @Override
     public void log(Environment arg0, LogRecord arg1) {
       log.append(formatLog(arg1));
       originalDelegate.log(arg0, arg1);
@@ -276,7 +275,6 @@ public class WjrAppEngineRecorder {
     /**
      * {@inheritDoc}
      */
-    @Override
     public Future<byte[]> makeAsyncCall(Environment arg0, String arg1,
         String arg2, byte[] arg3, ApiConfig arg4) {
       return originalDelegate.makeAsyncCall(arg0, arg1, arg2, arg3, arg4);
@@ -285,7 +283,6 @@ public class WjrAppEngineRecorder {
     /**
      * {@inheritDoc}
      */
-    @Override
     public byte[] makeSyncCall(Environment arg0, String arg1, String arg2,
         byte[] arg3) throws ApiProxyException {
       return originalDelegate.makeSyncCall(arg0, arg1, arg2, arg3);

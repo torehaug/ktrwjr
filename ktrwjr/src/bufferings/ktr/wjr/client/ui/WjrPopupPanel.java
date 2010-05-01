@@ -149,7 +149,6 @@ public class WjrPopupPanel extends Composite implements HasText {
   /**
    * {@inheritDoc}
    */
-  @Override
   public String getText() {
     return label.getText();
   }
@@ -157,7 +156,6 @@ public class WjrPopupPanel extends Composite implements HasText {
   /**
    * {@inheritDoc}
    */
-  @Override
   public void setText(String text) {
     label.setText(text);
   }

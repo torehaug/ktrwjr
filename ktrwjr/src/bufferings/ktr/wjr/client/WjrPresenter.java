@@ -96,12 +96,10 @@ public class WjrPresenter implements WjrDisplayHandler {
     view.go(this, container, loadingElem);
     rpcService.loadStore(getParameterMap(), new AsyncCallback<WjrStore>() {
 
-      @Override
       public void onFailure(Throwable caught) {
         view.notifyLoadingFailed(caught);
       }
 
-      @Override
       public void onSuccess(WjrStore result) {
         store = result;
         view.notifyLoadingSucceeded(store);
@@ -112,17 +110,14 @@ public class WjrPresenter implements WjrDisplayHandler {
   /**
    * {@inheritDoc}
    */
-  @Override
   public void onLoadStore() {
     rpcService.loadStore(getParameterMap(), new AsyncCallback<WjrStore>() {
 
-      @Override
       public void onFailure(Throwable caught) {
         view.setData(new WjrStore());
         view.notifyReloadingFailed(caught);
       }
 
-      @Override
       public void onSuccess(WjrStore result) {
         store = result;
         view.setData(store);
@@ -134,7 +129,6 @@ public class WjrPresenter implements WjrDisplayHandler {
   /**
    * {@inheritDoc}
    */
-  @Override
   public void onClearButtonClick() {
     store.clearAllResultsAndSummaries();
     view.repaintAllTreeItems(store);
@@ -143,7 +137,6 @@ public class WjrPresenter implements WjrDisplayHandler {
   /**
    * {@inheritDoc}
    */
-  @Override
   public void onRunButtonClick() {
     List<WjrMethodItem> checkedMethods = view.getCheckedMethodItems();
     if (checkedMethods.size() == 0) {
@@ -168,7 +161,6 @@ public class WjrPresenter implements WjrDisplayHandler {
   /**
    * {@inheritDoc}
    */
-  @Override
   public void onCancelButtonClick() {
     if (!running) {
       GWT.log("No tests are running.");
@@ -193,7 +185,6 @@ public class WjrPresenter implements WjrDisplayHandler {
       getParameterMap(),
       new AsyncCallback<WjrMethodItem>() {
 
-        @Override
         public void onFailure(Throwable caught) {
           WjrMethodItem stored = methodItems.get(currentIndex);
           GWT.log("Run " + stored.getMethodName() + " failed.", caught);
@@ -220,7 +211,6 @@ public class WjrPresenter implements WjrDisplayHandler {
           runWjrMethodItem(methodItems, nextIndex);
         }
 
-        @Override
         public void onSuccess(WjrMethodItem result) {
           GWT.log("Run " + result.getMethodName() + " succeeded.");
 

@@ -98,9 +98,9 @@ public class WjrMethodItem extends WjrStoreItem {
    */
   public WjrMethodItem(String className, String methodName) {
     checkNotNull(className, "The className parameter is null.");
-    checkArgument(!className.isEmpty(), "The className parameter is empty.");
+    checkArgument(className.length() > 0, "The className parameter is empty.");
     checkNotNull(methodName, "The methodName parameter is null.");
-    checkArgument(!methodName.isEmpty(), "The methodName parameter is empty.");
+    checkArgument(methodName.length() > 0, "The methodName parameter is empty.");
 
     this.className = className;
     this.methodName = methodName;

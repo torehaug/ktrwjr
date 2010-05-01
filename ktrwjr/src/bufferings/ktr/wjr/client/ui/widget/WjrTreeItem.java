@@ -478,7 +478,6 @@ public class WjrTreeItem extends Composite implements
   /**
    * {@inheritDoc}
    */
-  @Override
   public HandlerRegistration addValueChangeHandler(
       ValueChangeHandler<WjrTreeItem> handler) {
     return addHandler(handler, ValueChangeEvent.getType());
@@ -487,7 +486,6 @@ public class WjrTreeItem extends Composite implements
   /**
    * {@inheritDoc}
    */
-  @Override
   public HandlerRegistration addSelectionHandler(
       SelectionHandler<WjrTreeItem> handler) {
     return addHandler(handler, SelectionEvent.getType());

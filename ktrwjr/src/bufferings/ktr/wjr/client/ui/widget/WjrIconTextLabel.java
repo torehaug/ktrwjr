@@ -73,7 +73,6 @@ public class WjrIconTextLabel extends Composite implements HasText {
   /**
    * {@inheritDoc}
    */
-  @Override
   public String getText() {
     return textLabel.getText();
   }
@@ -81,7 +80,6 @@ public class WjrIconTextLabel extends Composite implements HasText {
   /**
    * {@inheritDoc}
    */
-  @Override
   public void setText(String text) {
     textLabel.setText(text);
   }

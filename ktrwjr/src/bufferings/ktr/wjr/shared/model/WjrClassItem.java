@@ -54,7 +54,7 @@ public class WjrClassItem extends WjrSummaryItem {
    */
   public WjrClassItem(String className) {
     checkNotNull(className, "The className parameter is null.");
-    checkArgument(!className.isEmpty(), "The className parameter is empty.");
+    checkArgument(className.length() > 0, "The className parameter is empty.");
 
     this.className = className;
   }

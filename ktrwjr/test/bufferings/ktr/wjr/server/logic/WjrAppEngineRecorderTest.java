@@ -234,27 +234,22 @@ public class WjrAppEngineRecorderTest {
   }
 
   private static class QuotaServiceAdapter implements QuotaService {
-    @Override
     public long convertCpuSecondsToMegacycles(double cpuSeconds) {
       return (long) (cpuSeconds * 1200);
     }
 
-    @Override
     public double convertMegacyclesToCpuSeconds(long megaCycles) {
       return (double) megaCycles / 1200d;
     }
 
-    @Override
     public long getApiTimeInMegaCycles() {
       return 0;
     }
 
-    @Override
     public long getCpuTimeInMegaCycles() {
       return 0;
     }
 
-    @Override
     public boolean supports(DataType type) {
       return false;
     }

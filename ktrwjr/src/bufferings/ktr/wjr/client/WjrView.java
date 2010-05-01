@@ -154,7 +154,7 @@ public class WjrView extends Composite implements WjrDisplay,
   @UiFactory
   protected WjrButtonPanel createWjrButtonPanel() {
     return new WjrButtonPanel(new WjrButtonPanel.Handler() {
-      @Override
+
       public void onButtonClicked(ClickEvent evt) {
         if (!running) {
           startRunning();
@@ -173,22 +173,18 @@ public class WjrView extends Composite implements WjrDisplay,
   @UiFactory
   protected WjrTreePanel createWjrTreePanel() {
     return new WjrTreePanel(new WjrTreePanel.Handler() {
-      @Override
       public void onCheckAllButtonClicked(ClickEvent event) {
         updateRunButtonDisabled();
       }
 
-      @Override
       public void onClearButtonClicked(ClickEvent event) {
         handler.onClearButtonClick();
       }
 
-      @Override
       public void onReloadButtonClicked(ClickEvent event) {
         startReloading();
       }
 
-      @Override
       public void onUncheckAllButtonClicked(ClickEvent event) {
         updateRunButtonDisabled();
       }
@@ -198,7 +194,6 @@ public class WjrView extends Composite implements WjrDisplay,
   /**
    * {@inheritDoc}
    */
-  @Override
   public void go(WjrDisplayHandler handler, HasWidgets container,
       Element loadingElem) {
     checkNotNull(handler, "The handler parameter is null.");
@@ -214,7 +209,6 @@ public class WjrView extends Composite implements WjrDisplay,
   /**
    * {@inheritDoc}
    */
-  @Override
   public void notifyLoadingSucceeded(WjrStore store) {
     finishLoading(store);
   }
@@ -222,7 +216,6 @@ public class WjrView extends Composite implements WjrDisplay,
   /**
    * {@inheritDoc}
    */
-  @Override
   public void notifyLoadingFailed(Throwable caught) {
     dialog.show("Cannot load the tests.", caught);
     finishLoading(new WjrStore());
@@ -250,7 +243,6 @@ public class WjrView extends Composite implements WjrDisplay,
   /**
    * {@inheritDoc}
    */
-  @Override
   public void notifyReloadingSucceeded() {
     finishReloading();
   }
@@ -258,7 +250,6 @@ public class WjrView extends Composite implements WjrDisplay,
   /**
    * {@inheritDoc}
    */
-  @Override
   public void notifyReloadingFailed(Throwable caught) {
     dialog.show("Cannot load the tests.", caught);
     finishReloading();
@@ -267,7 +258,6 @@ public class WjrView extends Composite implements WjrDisplay,
   /**
    * {@inheritDoc}
    */
-  @Override
   public void notifyRunningFinished() {
     if (running) {
       running = false;
@@ -282,7 +272,6 @@ public class WjrView extends Composite implements WjrDisplay,
   /**
    * {@inheritDoc}
    */
-  @Override
   public void setData(WjrStore store) {
     treeItems.clear();
     storeItems.clear();
@@ -315,7 +304,6 @@ public class WjrView extends Composite implements WjrDisplay,
   /**
    * {@inheritDoc}
    */
-  @Override
   public List<WjrMethodItem> getCheckedMethodItems() {
     List<WjrMethodItem> ret = new ArrayList<WjrMethodItem>();
     for (int i = 0, n = treeItems.size(); i < n; i++) {
@@ -332,7 +320,6 @@ public class WjrView extends Composite implements WjrDisplay,
   /**
    * {@inheritDoc}
    */
-  @Override
   public void repaintAllTreeItems(WjrStore store) {
     updateResultPanel(store);
     for (int i = 0, n = treeItems.size(); i < n; i++) {
@@ -343,7 +330,6 @@ public class WjrView extends Composite implements WjrDisplay,
   /**
    * {@inheritDoc}
    */
-  @Override
   public void repaintTreeItemAncestors(WjrStore store, WjrMethodItem methodItem) {
     updateResultPanel(store);
 
@@ -358,7 +344,6 @@ public class WjrView extends Composite implements WjrDisplay,
   /**
    * {@inheritDoc}
    */
-  @Override
   public void onSelection(SelectionEvent<WjrTreeItem> event) {
     WjrTreeItem treeItem = event.getSelectedItem();
     if (!treeItem.isSelected()) {
@@ -377,7 +362,6 @@ public class WjrView extends Composite implements WjrDisplay,
   /**
    * {@inheritDoc}
    */
-  @Override
   public void onValueChange(ValueChangeEvent<WjrTreeItem> event) {
     updateRunButtonDisabled();
   }
@@ -647,13 +631,13 @@ public class WjrView extends Composite implements WjrDisplay,
     StringBuilder sb = new StringBuilder();
 
     String time = methodItem.getTime();
-    sb.append(!time.isEmpty() ? time : "-").append("ms ");
+    sb.append(time.length() > 0 ? time : "-").append("ms ");
 
     String cpuTime = methodItem.getCpuTime();
-    sb.append(!cpuTime.isEmpty() ? cpuTime : "-").append("cpu_ms ");
+    sb.append(time.length() > 0 ? cpuTime : "-").append("cpu_ms ");
 
     String apiTime = methodItem.getApiTime();
-    sb.append(!apiTime.isEmpty() ? apiTime : "-").append("api_ms");
+    sb.append(time.length() > 0 ? apiTime : "-").append("api_ms");
 
     return sb.toString();
   }

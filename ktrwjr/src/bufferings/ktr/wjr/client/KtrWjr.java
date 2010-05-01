@@ -35,7 +35,6 @@ public class KtrWjr implements EntryPoint {
   /**
    * {@inheritDoc}
    */
-  @Override
   public void onModuleLoad() {
     KtrWjrServiceAsync rpcService = GWT.create(KtrWjrService.class);
     WjrPresenter presenter = new WjrPresenter(rpcService, new WjrView());

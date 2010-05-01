@@ -109,7 +109,6 @@ public class KtrWjrServiceImplTest extends ServletTestCase {
       @Override
       protected WjrMethodRunner getMethodRunner() {
         return new WjrMethodRunner() {
-          @Override
           public WjrMethodItem runWjrMethod(WjrMethodItem param) {
             called.append("2");
             assertThat(param, is(methodItem));
@@ -170,7 +169,6 @@ public class KtrWjrServiceImplTest extends ServletTestCase {
       @Override
       protected WjrMethodRunner getMethodRunner() {
         return new WjrMethodRunner() {
-          @Override
           public WjrMethodItem runWjrMethod(WjrMethodItem param) {
             return param;
           }
