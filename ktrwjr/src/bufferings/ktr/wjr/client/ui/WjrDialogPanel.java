@@ -62,7 +62,7 @@ public class WjrDialogPanel extends Composite {
     listBox.addItem(message);
     listBox.addItem("[The cause]");
     listBox.addItem(cause.toString());
-    for(StackTraceElement row :cause.getStackTrace()){
+    for (StackTraceElement row : cause.getStackTrace()) {
       listBox.addItem(row.toString());
     }
     showDialog(getElement().getId());
@@ -75,8 +75,8 @@ public class WjrDialogPanel extends Composite {
    *          The element id.
    */
   private native void showDialog(String id)/*-{
-    $wnd.$("#" + id).dialog('open');
-  }-*/;
+      $wnd.$("#" + id).dialog('open');
+    }-*/;
 
   /**
    * {@inheritDoc}
@@ -94,15 +94,15 @@ public class WjrDialogPanel extends Composite {
    *          The element id.
    */
   private native void initDialog(String id)/*-{
-    $wnd.$("#" + id).dialog({
-      autoOpen: false,
-      height: 300,
-      width: 400,
-      modal: true,
-      show: 'fade',
-      hide: 'fade',
-      dialogClass: 'alert',
-      buttons: { "Ok": function() { $wnd.$(this).dialog("close"); } }
-    });
-  }-*/;
+      $wnd.$("#" + id).dialog({
+        autoOpen: false,
+        height: 300,
+        width: 400,
+        modal: true,
+        show: 'fade',
+        hide: 'fade',
+        dialogClass: 'alert',
+        buttons: { "Ok": function() { $wnd.$(this).dialog("close"); } }
+      });
+    }-*/;
 }

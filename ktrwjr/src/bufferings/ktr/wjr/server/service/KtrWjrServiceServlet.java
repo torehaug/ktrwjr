@@ -52,7 +52,8 @@ public class KtrWjrServiceServlet extends RemoteServiceServlet implements
   /**
    * {@inheritDoc}
    */
-  public WjrMethodItem runTest(WjrMethodItem methodItem, Map<String, List<String>> params) {
+  public WjrMethodItem runTest(WjrMethodItem methodItem,
+      Map<String, List<String>> params) {
     return delegate.runTest(methodItem, params);
   }
 

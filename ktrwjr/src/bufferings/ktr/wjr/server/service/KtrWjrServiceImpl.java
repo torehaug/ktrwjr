@@ -20,10 +20,11 @@ import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 import java.util.List;
 import java.util.Map;
 
-import junit.runner.Version;
 import bufferings.ktr.wjr.client.service.KtrWjrService;
 import bufferings.ktr.wjr.server.logic.WjrAppEngineRecorder;
+import bufferings.ktr.wjr.server.logic.WjrJUnitLogicFactory;
 import bufferings.ktr.wjr.server.logic.WjrMethodRunner;
+import bufferings.ktr.wjr.server.logic.WjrParamParser;
 import bufferings.ktr.wjr.server.logic.WjrStoreLoader;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
@@ -38,26 +39,10 @@ public class KtrWjrServiceImpl implements KtrWjrService {
   protected static final String CLASSES_DIRECTORY = "WEB-INF/classes";
 
   /**
-   * The loader class which loads WjrStore from classes.
-   */
-  protected WjrStoreLoader storeLoader = new WjrStoreLoader();
-
-  /**
-   * The method runner class which runs the tests.
-   */
-  protected WjrMethodRunner methodRunner = new WjrMethodRunner();
-
-  /**
-   * The app engine time and log record class.
-   */
-  protected WjrAppEngineRecorder appEngineRecorder = new WjrAppEngineRecorder();
-
-  /**
    * {@inheritDoc}
    */
   public WjrStore loadStore(Map<String, List<String>> parameterMap) {
-    checkState(isJUnit4Available(), "JUnit4 not found.");
-    return storeLoader.loadWjrStore(CLASSES_DIRECTORY);
+    return getStoreLoader().loadWjrStore(CLASSES_DIRECTORY);
   }
 
   /**
@@ -65,11 +50,15 @@ public class KtrWjrServiceImpl implements KtrWjrService {
    */
   public WjrMethodItem runTest(WjrMethodItem methodItem,
       Map<String, List<String>> parameterMap) {
-    checkState(isJUnit4Available(), "JUnit4 not found.");
     checkNotNull(methodItem, "The methodItem parameter is null.");
 
+    WjrAppEngineRecorder appEngineRecorder = getAppEngineRecorder();
+    WjrParamParser paramParser = getParamParser();
+    WjrMethodRunner methodRunner = getMethodRunner();
+
+    String timeZoneId = paramParser.getTimeZoneId(parameterMap);
     try {
-      appEngineRecorder.startRecording(KtrWjrConfig.getTimezone(parameterMap));
+      appEngineRecorder.startRecording(timeZoneId);
       methodItem = methodRunner.runWjrMethod(methodItem);
     } finally {
       if (appEngineRecorder.isRecording()) {
@@ -84,11 +73,30 @@ public class KtrWjrServiceImpl implements KtrWjrService {
   }
 
   /**
-   * Check if the JUnit4 is available.
-   * 
-   * @return true if the JUnit4 is available, false if not
+   * Gets the store loader which loads WjrStore from classes.
    */
-  protected boolean isJUnit4Available() {
-    return Version.id().startsWith("4");
+  protected WjrStoreLoader getStoreLoader() {
+    return WjrJUnitLogicFactory.getStoreLoader();
+  }
+
+  /**
+   * Gets the method runner which runs the tests.
+   */
+  protected WjrMethodRunner getMethodRunner() {
+    return WjrJUnitLogicFactory.getMethodRunner();
+  }
+
+  /**
+   * Gets the app engine time and log recorder.
+   */
+  protected WjrAppEngineRecorder getAppEngineRecorder() {
+    return new WjrAppEngineRecorder();
+  }
+
+  /**
+   * Gets the parameter map parser.
+   */
+  protected WjrParamParser getParamParser() {
+    return new WjrParamParser();
   }
 }

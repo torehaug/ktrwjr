@@ -19,37 +19,38 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.lang.reflect.Method;
-import java.util.List;
 
 import org.junit.Test;
 import org.slim3.util.AppEngineUtil;
 
 import bufferings.ktr.wjr.server.fortest.ForTest;
-import bufferings.ktr.wjr.server.fortest.ForTestInherit;
 import bufferings.ktr.wjr.shared.model.WjrClassItem;
-import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
 public class WjrStoreLoaderTest {
 
-  private WjrStoreLoader storeLoader = new WjrStoreLoader();
+  private WjrStoreLoader storeLoader = new WjrStoreLoader() {
+    @Override
+    protected void checkAndStoreTestClass(WjrStore store, Class<?> clazz) {
+      store.addClassItem(new WjrClassItem(clazz.getName()));
+    }
+  };
 
-   @Test(expected = NullPointerException.class)
+  @Test(expected = NullPointerException.class)
   public void loadWjrStore_WillThrowNPE_WhenSearchRootDirPathIsNull() {
     storeLoader.loadWjrStore(null);
   }
 
-   @Test(expected = IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void loadWjrStore_WillThrowIAE_WhenSearchRootDirPathDoesNotExist() {
-     if (AppEngineUtil.isServer()) {
-       storeLoader.loadWjrStore("NOTEXIST-WEB-INF/web.xml");
-     } else {
-       storeLoader.loadWjrStore("war/NOTEXIST-WEB-INF/web.xml");
-     }
+    if (AppEngineUtil.isServer()) {
+      storeLoader.loadWjrStore("NOTEXIST-WEB-INF/web.xml");
+    } else {
+      storeLoader.loadWjrStore("war/NOTEXIST-WEB-INF/web.xml");
+    }
   }
 
-   @Test(expected = IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void loadWjrStore_WillThrowIAE_WhenSearchRootDirPathIsNotDir() {
     if (AppEngineUtil.isServer()) {
       storeLoader.loadWjrStore("WEB-INF/web.xml");
@@ -57,7 +58,7 @@ public class WjrStoreLoaderTest {
       storeLoader.loadWjrStore("war/WEB-INF/web.xml");
     }
   }
-  
+
   @Test
   public void loadWjrStore_CanLoadWjrStore() {
     WjrStore store;
@@ -102,7 +103,7 @@ public class WjrStoreLoaderTest {
         new File("war/WEB-INF/classes/bufferings/ktr/wjr/server/fortest");
     }
     File[] children = storeLoader.listClassFiles(parentDir);
-    assertThat(children.length, is(4));
+    assertThat(children.length, is(8));
     // ForTest,ForTestInnerStatic,ForTestInnerNotStatic,ForTestInherit
     for (File child : children) {
       assertThat(child.isFile(), is(true));
@@ -162,92 +163,4 @@ public class WjrStoreLoaderTest {
       assertThat(ret, is(ForTest.ForTestInnerStatic.class.getName()));
     }
   }
-
-  @Test
-  public void checkAndStoreTestClass_CanStoreTest_WithCommonClass() {
-    WjrStore store = new WjrStore();
-    storeLoader.checkAndStoreTestClass(store, ForTest.class);
-
-    List<WjrClassItem> classItems = store.getClassItems();
-    assertThat(classItems.size(), is(1));
-    assertThat(classItems.get(0).getClassName(), is(ForTest.class.getName()));
-
-    List<WjrMethodItem> methodItems =
-      store.getMethodItems(ForTest.class.getName());
-    assertThat(methodItems.size(), is(3));
-    assertThat(methodItems.get(0).getMethodName(), is("errorMethod"));
-    assertThat(methodItems.get(1).getMethodName(), is("failureMethod"));
-    assertThat(methodItems.get(2).getMethodName(), is("successMethod"));
-  }
-
-  @Test
-  public void checkAndStoreTestClass_CanStoreTest_WithInheritClass() {
-    WjrStore store = new WjrStore();
-    storeLoader.checkAndStoreTestClass(store, ForTestInherit.class);
-
-    List<WjrClassItem> classItems = store.getClassItems();
-    assertThat(classItems.size(), is(1));
-    assertThat(classItems.get(0).getClassName(), is(ForTestInherit.class
-      .getName()));
-
-    List<WjrMethodItem> methodItems =
-      store.getMethodItems(ForTestInherit.class.getName());
-    assertThat(methodItems.size(), is(3));
-    assertThat(methodItems.get(0).getMethodName(), is("errorMethod"));
-    assertThat(methodItems.get(1).getMethodName(), is("failureMethod"));
-    assertThat(methodItems.get(2).getMethodName(), is("successMethod"));
-  }
-
-  @Test
-  public void checkAndStoreTestClass_CanStoreTest_WithInnerStaticClass() {
-    WjrStore store = new WjrStore();
-    storeLoader.checkAndStoreTestClass(store, ForTest.ForTestInnerStatic.class);
-
-    List<WjrClassItem> classItems = store.getClassItems();
-    assertThat(classItems.size(), is(1));
-    assertThat(
-      classItems.get(0).getClassName(),
-      is(ForTest.ForTestInnerStatic.class.getName()));
-
-    List<WjrMethodItem> methodItems =
-      store.getMethodItems(ForTest.ForTestInnerStatic.class.getName());
-    assertThat(methodItems.size(), is(1));
-    assertThat(methodItems.get(0).getMethodName(), is("successMethod"));
-  }
-
-  @Test
-  public void isTargetClass_WillReturnTrue_WithCommonClass() throws Exception {
-    assertThat(storeLoader.isTargetClass(ForTest.class), is(true));
-  }
-
-  @Test
-  public void isTargetClass_WillReturnTrue_WithInnerStaticClass()
-      throws Exception {
-    assertThat(
-      storeLoader.isTargetClass(ForTest.ForTestInnerStatic.class),
-      is(true));
-  }
-
-  @Test
-  public void isTargetClass_WillReturnFlase_WithInnerNotStaticClass()
-      throws Exception {
-    assertThat(
-      storeLoader.isTargetClass(ForTest.ForTestInnerNotStatic.class),
-      is(false));
-  }
-
-  @Test
-  public void isTargetMethod_WillReturnTrue_WithTestAnnotation()
-      throws Exception {
-    Method m = ForTest.class.getMethod("successMethod");
-    assertThat(storeLoader.isTargetMethod(m), is(true));
-  }
-
-  @Test
-  public void isTargetMethod_WillReturnFalse_WithIgnoreAnnotation()
-      throws Exception {
-    Method m = ForTest.class.getMethod("ignoreMethod");
-    assertThat(storeLoader.isTargetMethod(m), is(false));
-  }
-
 }

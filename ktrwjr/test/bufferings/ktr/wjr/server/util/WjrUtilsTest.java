@@ -22,7 +22,6 @@ import org.junit.Test;
 
 import bufferings.ktr.wjr.server.fortest.ForTest;
 import bufferings.ktr.wjr.server.fortest.ForTestInherit;
-import bufferings.ktr.wjr.server.util.WjrUtils;
 
 /**
  * Utility methods.
@@ -73,21 +72,33 @@ public class WjrUtilsTest {
       WjrUtils.loadClass(ForTestInherit.class.getName()).getName(),
       is(ForTestInherit.class.getName()));
   }
-  
-  @Test(expected=NullPointerException.class)
-  public void getTimeZone_WillThrowNPE_WithNullId(){
+
+  @Test(expected = NullPointerException.class)
+  public void getTimeZone_WillThrowNPE_WithNullId() {
     WjrUtils.getTimeZone(null);
   }
 
   @Test
-  public void getTimeZone_WillGMT_WithInvalidId(){
+  public void getTimeZone_WillGMT_WithInvalidId() {
     assertThat(WjrUtils.getTimeZone("").getID(), is("GMT"));
     assertThat(WjrUtils.getTimeZone("Invalid").getID(), is("GMT"));
   }
 
   @Test
-  public void getTimeZone_CanGetTimeZone_WithValidId(){
+  public void getTimeZone_CanGetTimeZone_WithValidId() {
     assertThat(WjrUtils.getTimeZone("JST").getID(), is("JST"));
     assertThat(WjrUtils.getTimeZone("PST").getID(), is("PST"));
+  }
+
+  @Test
+  public void getTrace_WillReturnEmptyString_WhenExceptionIsNull() {
+    assertThat(WjrUtils.getTraceStringFromException(null), is(""));
+  }
+
+  @Test
+  public void getTrace_CanGetTrace() {
+    assertThat(
+      WjrUtils.getTraceStringFromException(new Exception()),
+      is(not(nullValue())));
   }
 }

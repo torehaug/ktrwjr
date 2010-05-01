@@ -34,7 +34,8 @@ public interface KtrWjrServiceAsync {
   void loadStore(Map<String, List<String>> parameterMap,
       AsyncCallback<WjrStore> callback);
 
-  void runTest(WjrMethodItem methodItem, Map<String, List<String>> parameterMap,
+  void runTest(WjrMethodItem methodItem,
+      Map<String, List<String>> parameterMap,
       AsyncCallback<WjrMethodItem> callback);
 
 }

@@ -35,7 +35,7 @@ public class KtrWjrServiceServletTest {
   public final void loadStore_WillCallDelegate() {
     final WjrStore store = new WjrStore();
     final Map<String, List<String>> map = new HashMap<String, List<String>>();
-    
+
     servlet.delegate = new KtrWjrServiceImpl() {
 
       @Override

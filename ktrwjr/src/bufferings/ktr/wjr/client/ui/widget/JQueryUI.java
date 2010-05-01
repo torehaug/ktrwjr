@@ -38,10 +38,10 @@ public class JQueryUI {
   public static final String UI_CORNER_TOP = "ui-corner-top";
 
   public static final String UI_ICON = "ui-icon";
-  
+
   // This is prepared by KtrWjr
   public static final String UI_ICON_EMPTY = "ui-icon-empty";
-  
+
   public static final String UI_ICON_TRIANGLE_1_S = "ui-icon-triangle-1-s";
   public static final String UI_ICON_TRIANGLE_1_E = "ui-icon-triangle-1-e";
   public static final String UI_ICON_CHECK = "ui-icon-check";

@@ -34,48 +34,28 @@ import bufferings.ktr.wjr.shared.model.WjrStore;
 
 public class KtrWjrServiceImplTest extends ServletTestCase {
 
-  @Test(expected = IllegalStateException.class)
-  public void loadStore_WillThrowISE_WhenJUnit4IsNotAvailable() {
-    KtrWjrServiceImpl service = new KtrWjrServiceImpl() {
-
-      @Override
-      protected boolean isJUnit4Available() {
-        return false;
-      }
-
-    };
-    service.loadStore(null);
-  }
-
   @Test
   public void loadStore_WillCallStoreLoader() {
-    KtrWjrServiceImpl service = new KtrWjrServiceImpl();
-
     final WjrStore store = new WjrStore();
-    service.storeLoader = new WjrStoreLoader() {
 
+    KtrWjrServiceImpl service = new KtrWjrServiceImpl() {
       @Override
-      public WjrStore loadWjrStore(String searchRootDirPath) {
-        assertThat(searchRootDirPath, is("WEB-INF/classes"));
-        return store;
-      }
+      protected WjrStoreLoader getStoreLoader() {
+        return new WjrStoreLoader() {
+          @Override
+          public WjrStore loadWjrStore(String searchRootDirPath) {
+            assertThat(searchRootDirPath, is("WEB-INF/classes"));
+            return store;
+          }
 
+          @Override
+          protected void checkAndStoreTestClass(WjrStore store, Class<?> clazz) {
+          }
+        };
+      }
     };
 
     assertThat(service.loadStore(null), is(store));
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void runTest_WillThrowISE_WhenJUnit4IsNotAvailable() {
-    KtrWjrServiceImpl service = new KtrWjrServiceImpl() {
-
-      @Override
-      protected boolean isJUnit4Available() {
-        return false;
-      }
-
-    };
-    service.runTest(new WjrMethodItem("foo.Foo", "forMethod"), null);
   }
 
   @Test(expected = NullPointerException.class)
@@ -86,52 +66,57 @@ public class KtrWjrServiceImplTest extends ServletTestCase {
 
   @Test
   public void runTest_WillCallMethodRunnerAndAppEngineRecorder() {
-    KtrWjrServiceImpl service = new KtrWjrServiceImpl();
     final WjrMethodItem methodItem = new WjrMethodItem("foo.Foo", "fooMethod");
     final StringBuilder called = new StringBuilder();
-    service.methodRunner = new WjrMethodRunner() {
 
+    KtrWjrServiceImpl service = new KtrWjrServiceImpl() {
       @Override
-      public WjrMethodItem runWjrMethod(WjrMethodItem param) {
-        called.append("2");
-        assertThat(param, is(methodItem));
-        return param;
+      protected WjrAppEngineRecorder getAppEngineRecorder() {
+        return new WjrAppEngineRecorder() {
+          @Override
+          public String getRecordedApiTime() {
+            return "APITIME";
+          }
+
+          @Override
+          public String getRecordedCpuTime() {
+            return "CPUTIME";
+          }
+
+          @Override
+          public String getRecordedLog() {
+            return "LOG";
+          }
+
+          @Override
+          public void startRecording(String timeZoneId) {
+            called.append("1");
+            assertThat(timeZoneId, is("PST"));
+          }
+
+          @Override
+          public void stopRecording() {
+            called.append("3");
+          }
+
+          @Override
+          public boolean isRecording() {
+            return true;
+          }
+        };
       }
 
-    };
-    service.appEngineRecorder = new WjrAppEngineRecorder() {
-
       @Override
-      public String getRecordedApiTime() {
-        return "APITIME";
+      protected WjrMethodRunner getMethodRunner() {
+        return new WjrMethodRunner() {
+          @Override
+          public WjrMethodItem runWjrMethod(WjrMethodItem param) {
+            called.append("2");
+            assertThat(param, is(methodItem));
+            return param;
+          }
+        };
       }
-
-      @Override
-      public String getRecordedCpuTime() {
-        return "CPUTIME";
-      }
-
-      @Override
-      public String getRecordedLog() {
-        return "LOG";
-      }
-
-      @Override
-      public void startRecording(String timeZoneId) {
-        called.append("1");
-        assertThat(timeZoneId, is("PST"));
-      }
-
-      @Override
-      public void stopRecording() {
-        called.append("3");
-      }
-
-      @Override
-      public boolean isRecording() {
-        return true;
-      }
-
     };
 
     assertThat(service.runTest(methodItem, null), is(methodItem));
@@ -143,49 +128,54 @@ public class KtrWjrServiceImplTest extends ServletTestCase {
 
   @Test
   public void runTest_WillCallMethodRunnerAndAppEngineRecorder_WithParameter() {
-    KtrWjrServiceImpl service = new KtrWjrServiceImpl();
     final WjrMethodItem methodItem = new WjrMethodItem("foo.Foo", "fooMethod");
     final StringBuilder called = new StringBuilder();
-    service.methodRunner = new WjrMethodRunner() {
 
+    KtrWjrServiceImpl service = new KtrWjrServiceImpl() {
       @Override
-      public WjrMethodItem runWjrMethod(WjrMethodItem param) {
-        return param;
+      protected WjrAppEngineRecorder getAppEngineRecorder() {
+        return new WjrAppEngineRecorder() {
+          @Override
+          public String getRecordedApiTime() {
+            return "";
+          }
+
+          @Override
+          public String getRecordedCpuTime() {
+            return "";
+          }
+
+          @Override
+          public String getRecordedLog() {
+            return "";
+          }
+
+          @Override
+          public void startRecording(String timeZoneId) {
+            assertThat(timeZoneId, is("JST"));
+            called.append("1");
+          }
+
+          @Override
+          public void stopRecording() {
+          }
+
+          @Override
+          public boolean isRecording() {
+            return true;
+          }
+        };
       }
 
-    };
-    service.appEngineRecorder = new WjrAppEngineRecorder() {
-
       @Override
-      public String getRecordedApiTime() {
-        return "";
+      protected WjrMethodRunner getMethodRunner() {
+        return new WjrMethodRunner() {
+          @Override
+          public WjrMethodItem runWjrMethod(WjrMethodItem param) {
+            return param;
+          }
+        };
       }
-
-      @Override
-      public String getRecordedCpuTime() {
-        return "";
-      }
-
-      @Override
-      public String getRecordedLog() {
-        return "";
-      }
-
-      @Override
-      public void startRecording(String timeZoneId) {
-        assertThat(timeZoneId, is("JST"));
-        called.append("1");
-      }
-
-      @Override
-      public void stopRecording() {
-      }
-
-      @Override
-      public boolean isRecording() {
-        return true;
-      }
-
     };
 
     Map<String, List<String>> map = new HashMap<String, List<String>>();
@@ -196,11 +186,4 @@ public class KtrWjrServiceImplTest extends ServletTestCase {
     service.runTest(methodItem, map);
     assertThat(called.toString(), is("1"));
   }
-
-  @Test
-  public void isJUnit4Available_IsTrue() throws Exception {
-    KtrWjrServiceImpl service = new KtrWjrServiceImpl();
-    assertThat(service.isJUnit4Available(), is(true));
-  }
-
 }

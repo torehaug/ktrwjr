@@ -24,8 +24,8 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * This class is used by WjrTree and WjrListBox. If you want to use key to
  * operate the selection, the focus is needed. So I used the focusable panel in
- * the back end of them. The focusable panel has borders, but I want not to
- * show borders, so I prepared this class.
+ * the back end of them. The focusable panel has borders, but I want not to show
+ * borders, so I prepared this class.
  * 
  * @author bufferings[at]gmail.com
  */

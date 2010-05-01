@@ -13,25 +13,8 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package bufferings.ktr.wjr.server.logic;
+package bufferings.ktr.wjr.server.fortest;
 
-import bufferings.ktr.wjr.shared.model.WjrMethodItem;
+public class ForTestJUnit3Inherit extends ForTestJUnit3 {
 
-/**
- * The test runner of the {@link WjrMethodItem}
- * 
- * @author bufferings[at]gmail.com
- */
-public interface WjrMethodRunner {
-
-  /**
-   * Runs the test method of {@link WjrMethodItem}.
-   * 
-   * @param methodItem
-   *          The information of the test method.
-   * @return The input methodItem with result.
-   * @throws NullPointerException
-   *           When the methodItem parameter is null.
-   */
-  public WjrMethodItem runWjrMethod(WjrMethodItem methodItem);
 }

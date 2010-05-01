@@ -129,10 +129,10 @@ public class WjrPopupPanel extends Composite implements HasText {
    *          The element id.
    */
   private native void showAnimation(String id)/*-{
-    var options = {}
-    var callback = this.@bufferings.ktr.wjr.client.ui.WjrPopupPanel::showCallback()();
-    $wnd.$("#" + id).show('slide', options, 500, callback);
-  }-*/;
+      var options = {}
+      var callback = this.@bufferings.ktr.wjr.client.ui.WjrPopupPanel::showCallback()();
+      $wnd.$("#" + id).show('slide', options, 500, callback);
+    }-*/;
 
   /**
    * Starts the hiding animation.
@@ -141,10 +141,10 @@ public class WjrPopupPanel extends Composite implements HasText {
    *          The element id.
    */
   public native void hideAnimation(String id)/*-{
-    var options = {}
-    var callback = this.@bufferings.ktr.wjr.client.ui.WjrPopupPanel::hideCallback()();
-    $wnd.$("#" + id).hide('slide', options, 500, callback);
-  }-*/;
+      var options = {}
+      var callback = this.@bufferings.ktr.wjr.client.ui.WjrPopupPanel::hideCallback()();
+      $wnd.$("#" + id).hide('slide', options, 500, callback);
+    }-*/;
 
   /**
    * {@inheritDoc}

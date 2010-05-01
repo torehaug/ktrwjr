@@ -19,15 +19,8 @@ import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
-import org.junit.Ignore;
-import org.junit.Test;
 
 import bufferings.ktr.wjr.server.util.WjrUtils;
-import bufferings.ktr.wjr.shared.model.WjrClassItem;
-import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
 /**
@@ -35,7 +28,7 @@ import bufferings.ktr.wjr.shared.model.WjrStore;
  * 
  * @author bufferings[at]gmail.com
  */
-public class WjrStoreLoader {
+public abstract class WjrStoreLoader {
 
   protected static final String CLASSFILE_EXT = ".class";
 
@@ -173,55 +166,5 @@ public class WjrStoreLoader {
    * @param clazz
    *          The class.
    */
-  protected void checkAndStoreTestClass(WjrStore store, Class<?> clazz) {
-    if (!isTargetClass(clazz)) {
-      return;
-    }
-
-    WjrClassItem classItem = null;
-    Method[] methods = clazz.getMethods();
-    for (Method m : methods) {
-      if (isTargetMethod(m)) {
-        if (classItem == null) {
-          classItem = new WjrClassItem(clazz.getName());
-          store.addClassItem(classItem);
-        }
-        store.addMethodItem(new WjrMethodItem(clazz.getName(), m.getName()));
-      }
-    }
-  }
-
-  /**
-   * Checks if the class is a target class or not.
-   * 
-   * If the class is not member class or static inner class then returns true,
-   * otherwise returns false.
-   * 
-   * @param clazz
-   *          The class to check.
-   * @return If the class is not member class or static inner class then returns
-   *         true, otherwise returns false.
-   */
-  protected boolean isTargetClass(Class<?> clazz) {
-    return !clazz.isMemberClass()
-      || (clazz.getModifiers() & Modifier.STATIC) == Modifier.STATIC;
-  }
-
-  /**
-   * Checks if the method is a target method or not.
-   * 
-   * If the method's modifier is public only, has Test annotation and doesn't
-   * have the Ignore annotation, then returns true, otherwise returns false.
-   * 
-   * @param method
-   *          The method to check.
-   * @return If the method's modifier is public only, has Test annotation and
-   *         doesn't have the Ignore annotation, then returns true, otherwise
-   *         returns false.
-   */
-  protected boolean isTargetMethod(Method method) {
-    return (method.getModifiers() == Modifier.PUBLIC
-      && method.getAnnotation(Test.class) != null && method
-      .getAnnotation(Ignore.class) == null);
-  }
+  protected abstract void checkAndStoreTestClass(WjrStore store, Class<?> clazz);
 }

@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package bufferings.ktr.wjr.server.logic;
+package bufferings.ktr.wjr.server.logic.junit3;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -21,151 +21,159 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.List;
 
+import junit.framework.AssertionFailedError;
+import junit.framework.TestFailure;
+
 import org.junit.Test;
-import org.junit.runner.Result;
-import org.junit.runner.notification.Failure;
 
 import bufferings.ktr.wjr.server.fortest.ForTest;
-import bufferings.ktr.wjr.server.fortest.ForTestInherit;
-import bufferings.ktr.wjr.server.logic.WjrMethodRunner;
+import bufferings.ktr.wjr.server.fortest.ForTestJUnit3;
+import bufferings.ktr.wjr.server.fortest.ForTestJUnit3Inherit;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
 
-public class WjrMethodRunnerTest {
+/**
+ * The test runner of the {@link WjrMethodItem}.
+ * 
+ * @author bufferings[at]gmail.com
+ */
+public class WjrJUnit3MethodRunnerTest {
 
-  private WjrMethodRunner methodRunner = new WjrMethodRunner();
-
-  @Test
-  public void getTrace_WillReturnEmptyString_WhenExceptionIsNull() {
-    assertThat(methodRunner.getTrace(null), is(""));
-  }
-
-  @Test
-  public void getTrace_CanGetTrace() {
-    assertThat(methodRunner.getTrace(new Exception()), is(not(nullValue())));
-  }
+  private WjrJUnit3MethodRunner methodRunner = new WjrJUnit3MethodRunner();
 
   @Test
   public void getRunner_WontBeError_WhenMethodNotExist() {
     assertThat(
-      methodRunner.getRunner(ForTest.class, "notExistMethod"),
+      methodRunner.getRunner(ForTestJUnit3.class, "notExistMethod"),
       is(not(nullValue())));
   }
 
   @Test
   public void getRunner_CanGetRunner() {
     assertThat(
-      methodRunner.getRunner(ForTest.class, "succeedMethod"),
+      methodRunner.getRunner(ForTestJUnit3.class, "testSucceedMethod"),
       is(not(nullValue())));
   }
 
   @Test
   public void getRunner_CanGetRunnerOfInnerStaticClass() {
     assertThat(methodRunner.getRunner(
-      ForTest.ForTestInnerStatic.class,
-      "succeedMethod"), is(not(nullValue())));
+      ForTestJUnit3.ForTestJUnit3InnerStatic.class,
+      "testSucceedMethod"), is(not(nullValue())));
   }
 
   @Test
   public void getRunner_CanGetRunnerOfInheritClass() {
-    assertThat(
-      methodRunner.getRunner(ForTestInherit.class, "succeedMethod"),
-      is(not(nullValue())));
+    assertThat(methodRunner.getRunner(
+      ForTestJUnit3Inherit.class,
+      "testSucceedMethod"), is(not(nullValue())));
   }
 
   @Test
-  public void runTest_WillFailure_WhenMethodNotExist() {
-    Result result =
+  public void runTest_WillBeFailure_WhenMethodNotExist() {
+    WjrJUnit3Result result =
       methodRunner.runTest(methodRunner.getRunner(
-        ForTest.class,
+        ForTestJUnit3.class,
         "notExistMethod"));
     assertThat(result.getRunCount(), is(1));
     assertThat(result.getFailureCount(), is(1));
-    assertThat(result.getIgnoreCount(), is(0));
+    assertThat(result.getErrorCount(), is(0));
+    assertThat(result.getFailures().size(), is(1));
+    assertThat(result.getErrors().size(), is(0));
   }
 
   @Test
   public void runTest_CanRunSuccessTest() {
-    Result result =
+    WjrJUnit3Result result =
       methodRunner.runTest(methodRunner.getRunner(
-        ForTest.class,
-        "successMethod"));
+        ForTestJUnit3.class,
+        "testSuccessMethod"));
     assertThat(result.getRunCount(), is(1));
     assertThat(result.getFailureCount(), is(0));
-    assertThat(result.getIgnoreCount(), is(0));
+    assertThat(result.getErrorCount(), is(0));
+    assertThat(result.getFailures().size(), is(0));
+    assertThat(result.getErrors().size(), is(0));
   }
 
   @Test
   public void runTest_CanRunFailureTest() {
-    Result result =
+    WjrJUnit3Result result =
       methodRunner.runTest(methodRunner.getRunner(
-        ForTest.class,
-        "failureMethod"));
+        ForTestJUnit3.class,
+        "testFailureMethod"));
     assertThat(result.getRunCount(), is(1));
     assertThat(result.getFailureCount(), is(1));
-    assertThat(result.getIgnoreCount(), is(0));
+    assertThat(result.getErrorCount(), is(0));
+    assertThat(result.getFailures().size(), is(1));
     assertThat(
-      result.getFailures().get(0).getException() instanceof AssertionError,
+      result.getFailures().get(0).thrownException() instanceof AssertionFailedError,
       is(true));
+    assertThat(result.getErrors().size(), is(0));
   }
 
   @Test
   public void runTest_CanRunErrorTest() {
-    Result result =
-      methodRunner
-        .runTest(methodRunner.getRunner(ForTest.class, "errorMethod"));
+    WjrJUnit3Result result =
+      methodRunner.runTest(methodRunner.getRunner(
+        ForTestJUnit3.class,
+        "testErrorMethod"));
     assertThat(result.getRunCount(), is(1));
-    assertThat(result.getFailureCount(), is(1));
-    assertThat(result.getIgnoreCount(), is(0));
-    assertThat(
-      result.getFailures().get(0).getException() instanceof AssertionError,
-      is(false));
+    assertThat(result.getFailureCount(), is(0));
+    assertThat(result.getErrorCount(), is(1));
+    assertThat(result.getFailures().size(), is(0));
+    assertThat(result.getErrors().size(), is(1));
   }
 
   @Test
   public void runTest_CanRunSuccessTestOfInnerStaticClass() {
-    Result result =
+    WjrJUnit3Result result =
       methodRunner.runTest(methodRunner.getRunner(
-        ForTest.ForTestInnerStatic.class,
-        "successMethod"));
+        ForTestJUnit3.ForTestJUnit3InnerStatic.class,
+        "testSuccessMethod"));
     assertThat(result.getRunCount(), is(1));
     assertThat(result.getFailureCount(), is(0));
-    assertThat(result.getIgnoreCount(), is(0));
+    assertThat(result.getErrorCount(), is(0));
   }
 
   @Test
   public void runTest_CanRunSuccessTestOfInheritClass() {
-    Result result =
+    WjrJUnit3Result result =
       methodRunner.runTest(methodRunner.getRunner(
-        ForTestInherit.class,
-        "successMethod"));
+        ForTestJUnit3Inherit.class,
+        "testSuccessMethod"));
     assertThat(result.getRunCount(), is(1));
     assertThat(result.getFailureCount(), is(0));
-    assertThat(result.getIgnoreCount(), is(0));
+    assertThat(result.getErrorCount(), is(0));
   }
 
   @Test
-  public void applyResult_WillBeErrorState_WithException() {
-    Result result = new Result() {
+  public void applyResult_WillBeErrorState_WithError() {
+    WjrJUnit3Result result = new WjrJUnit3Result(null, 1234) {
       @Override
-      public int getFailureCount() {
+      public int getRunCount() {
         return 1;
       }
 
       @Override
-      public List<Failure> getFailures() {
-        return Arrays
-          .asList(new Failure[] { new Failure(null, new Exception()) });
+      public int getFailureCount() {
+        return 0;
       }
 
       @Override
-      public long getRunTime() {
-        return 1234;
+      public int getErrorCount() {
+        return 1;
+      }
+
+      @Override
+      public List<TestFailure> getErrors() {
+        return Arrays.asList(new TestFailure[] { new TestFailure(
+          null,
+          new Exception()) });
       }
     };
 
     WjrMethodItem methodItem =
-      new WjrMethodItem(ForTest.class.getName(), "successMethod");
+      new WjrMethodItem(ForTestJUnit3.class.getName(), "dummy");
     methodRunner.applyResult(methodItem, result);
 
     assertThat(methodItem.getState(), is(State.ERROR));
@@ -174,23 +182,28 @@ public class WjrMethodRunnerTest {
   }
 
   @Test
-  public void applyResult_WillBeFailureState_WithAssertionError() {
-    Result result = new Result() {
+  public void applyResult_WillBeFailureState_WithFailure() {
+    WjrJUnit3Result result = new WjrJUnit3Result(null, 1234) {
+      @Override
+      public int getRunCount() {
+        return 1;
+      }
+
       @Override
       public int getFailureCount() {
         return 1;
       }
 
       @Override
-      public List<Failure> getFailures() {
-        return Arrays.asList(new Failure[] { new Failure(
-          null,
-          new AssertionError()) });
+      public int getErrorCount() {
+        return 0;
       }
 
       @Override
-      public long getRunTime() {
-        return 1234;
+      public List<TestFailure> getFailures() {
+        return Arrays.asList(new TestFailure[] { new TestFailure(
+          null,
+          new AssertionFailedError()) });
       }
     };
 
@@ -204,16 +217,21 @@ public class WjrMethodRunnerTest {
   }
 
   @Test
-  public void applyResult_WillBeSuccessState_WithoutFailure() {
-    Result result = new Result() {
+  public void applyResult_WillBeSuccessState_WithoutFailureAndError() {
+    WjrJUnit3Result result = new WjrJUnit3Result(null, 1234) {
+      @Override
+      public int getRunCount() {
+        return 1;
+      }
+
       @Override
       public int getFailureCount() {
         return 0;
       }
 
       @Override
-      public long getRunTime() {
-        return 1234;
+      public int getErrorCount() {
+        return 0;
       }
     };
 
@@ -234,7 +252,7 @@ public class WjrMethodRunnerTest {
   @Test
   public void runWjrMethod_CanRunSucceessMethod() {
     WjrMethodItem methodItem =
-      new WjrMethodItem(ForTest.class.getName(), "successMethod");
+      new WjrMethodItem(ForTestJUnit3.class.getName(), "testSuccessMethod");
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.SUCCESS));
     assertThat(methodItem.getTrace(), is(""));
@@ -243,7 +261,7 @@ public class WjrMethodRunnerTest {
   @Test
   public void runWjrMethod_CanRunFailureMethod() {
     WjrMethodItem methodItem =
-      new WjrMethodItem(ForTest.class.getName(), "failureMethod");
+      new WjrMethodItem(ForTestJUnit3.class.getName(), "testFailureMethod");
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.FAILURE));
     assertThat(methodItem.getTrace(), is(not(nullValue())));
@@ -252,7 +270,7 @@ public class WjrMethodRunnerTest {
   @Test
   public void runWjrMethod_CanRunErrorMethod() {
     WjrMethodItem methodItem =
-      new WjrMethodItem(ForTest.class.getName(), "errorMethod");
+      new WjrMethodItem(ForTestJUnit3.class.getName(), "testErrorMethod");
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.ERROR));
     assertThat(methodItem.getTrace(), is(not(nullValue())));
@@ -261,7 +279,9 @@ public class WjrMethodRunnerTest {
   @Test
   public void runWjrMethod_CanRunInnerStaticClassMethod() {
     WjrMethodItem methodItem =
-      new WjrMethodItem(ForTest.ForTestInnerStatic.class.getName(), "successMethod");
+      new WjrMethodItem(
+        ForTestJUnit3.ForTestJUnit3InnerStatic.class.getName(),
+        "testSuccessMethod");
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.SUCCESS));
     assertThat(methodItem.getTrace(), is(""));
@@ -270,10 +290,21 @@ public class WjrMethodRunnerTest {
   @Test
   public void runWjrMethod_CanRunInheritClassMethod() {
     WjrMethodItem methodItem =
-      new WjrMethodItem(ForTestInherit.class.getName(), "successMethod");
+      new WjrMethodItem(
+        ForTestJUnit3Inherit.class.getName(),
+        "testSuccessMethod");
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.SUCCESS));
     assertThat(methodItem.getTrace(), is(""));
+  }
+
+  @Test
+  public void runWjrMethod_WillError_WithNotExistMethod() {
+    WjrMethodItem methodItem =
+      new WjrMethodItem(ForTestJUnit3.class.getName(), "notExistMethod");
+    methodRunner.runWjrMethod(methodItem);
+    assertThat(methodItem.getState(), is(State.FAILURE));
+    assertThat(methodItem.getTrace(), is(not(nullValue())));
   }
 
   @Test

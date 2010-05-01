@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package bufferings.ktr.wjr.server.service;
+package bufferings.ktr.wjr.server.logic;
 
 import java.util.List;
 import java.util.Map;
@@ -28,23 +28,23 @@ import bufferings.ktr.wjr.server.util.WjrUtils;
  * 
  * @author bufferings[at]gmail.com
  */
-public class KtrWjrConfig {
+public class WjrParamParser {
 
   protected static final String KEY_TIMEZONE = "tz";
 
   protected static final String DEFAULT_TIMEZONE = "PST";
 
   /**
-   * Gets the timezone property for logs.
+   * Gets the timeZoneId property for logs.
    * 
-   * If the timezone parameter is not set, the
-   * {@link KtrWjrConfig#DEFAULT_TIMEZONE} is used.
+   * If the timeZoneId parameter is not set, the
+   * {@link WjrParamParser#DEFAULT_TIMEZONE} is used.
    * 
    * @param parameterMap
    *          GET parameter map.
    * @return The timezone property for logs.
    */
-  public static String getTimezone(Map<String, List<String>> parameterMap) {
+  public String getTimeZoneId(Map<String, List<String>> parameterMap) {
     if (parameterMap == null) {
       return DEFAULT_TIMEZONE;
     }

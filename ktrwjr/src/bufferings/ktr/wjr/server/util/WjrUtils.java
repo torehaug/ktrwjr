@@ -17,6 +17,8 @@ package bufferings.ktr.wjr.server.util;
 
 import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.TimeZone;
 
 /**
@@ -77,6 +79,25 @@ public class WjrUtils {
     return TimeZone.getTimeZone(timeZoneId);
   }
 
+  /**
+   * Gets the trace string from the exception.
+   * 
+   * If the parameter is null, returns empty string.
+   * 
+   * @param e
+   *          The exception.
+   * @return The trace string from the exception.
+   */
+  public static String getTraceStringFromException(Exception e) {
+    if (e == null) {
+      return "";
+    }
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+    e.printStackTrace(writer);
+    return stringWriter.getBuffer().toString();
+  }
+
   private WjrUtils() {
-  };
+  }
 }
