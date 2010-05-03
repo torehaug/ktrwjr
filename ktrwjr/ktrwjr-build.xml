@@ -6,7 +6,7 @@
   <property name="gwt.home"
             value="C:\eclipse\eclipse\plugins\com.google.gwt.eclipse.sdkbundle.2.0.3_2.0.3.v201002191036\gwt-2.0.3" />
   <property name="gae.home"
-            value="C:\eclipse\eclipse\plugins\com.google.appengine.eclipse.sdkbundle.1.3.2_1.3.2.v201003241245\appengine-java-sdk-1.3.2\lib" />
+            value="C:\eclipse\eclipse\plugins\com.google.appengine.eclipse.sdkbundle.1.3.3_1.3.3.v201004211154\appengine-java-sdk-1.3.3.1\lib" />
 
   <property name="gwt-dev.lib" value="${gwt.home}\gwt-dev.jar" />
   <property name="gwt-user.lib" value="${gwt.home}\gwt-user.jar" />
@@ -36,7 +36,7 @@
            destdir="${work.classes}"
            source="1.5"
            encoding="UTF-8"
-           classpath="${junit.lib};${slim3.lib};${gwt-dev.lib};${gwt-user.lib};${gae.lib}"
+           classpath="${junit.lib};${slim3.lib};${gwt-dev.lib};${gwt-user.lib};${gae.lib};"
            memoryInitialSize="512m"
            memoryMaximumSize="512m"
            fork="true">
