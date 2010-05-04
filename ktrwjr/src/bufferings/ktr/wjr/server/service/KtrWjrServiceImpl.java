@@ -63,12 +63,12 @@ public class KtrWjrServiceImpl implements KtrWjrService {
     } finally {
       if (appEngineRecorder.isRecording()) {
         appEngineRecorder.stopRecording();
+
+        methodItem.setLog(appEngineRecorder.getRecordedLog());
+        methodItem.setCpuTime(appEngineRecorder.getRecordedCpuTime());
+        methodItem.setApiTime(appEngineRecorder.getRecordedApiTime());
       }
     }
-
-    methodItem.setLog(appEngineRecorder.getRecordedLog());
-    methodItem.setCpuTime(appEngineRecorder.getRecordedCpuTime());
-    methodItem.setApiTime(appEngineRecorder.getRecordedApiTime());
     return methodItem;
   }
 
