@@ -268,8 +268,7 @@ public class WjrAppEngineRecorder {
         + "["
         + logRecord.getLevel()
         + "] "
-        + logRecord.getMessage()
-        + "\n";
+        + logRecord.getMessage();
     }
 
     /**
