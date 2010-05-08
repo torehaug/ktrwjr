@@ -15,12 +15,14 @@
   <property name="slim3.lib" value="${lib.dir}\slim3-1.0.3.jar" />
   <property name="junit.lib" value="${lib.dir}\junit-4.7.jar" />
 
+  <property name="target" value="target" />
+  <property name="app-ver" value="${ant.project.name}-${ktrwjr.version}" />
+
   <tstamp>
     <format property="TIMESTAMP" pattern="yyyyMMddHHmm" />
   </tstamp>
 
   <target name="prepare">
-    <property name="target" value="target" />
     <property name="work" value="target/${TIMESTAMP}" />
     <property name="work.classes" value="${work}/classes" />
     <property name="work.lib" value="${work}/lib" />
@@ -29,6 +31,7 @@
     <mkdir dir="${work.classes}" />
     <mkdir dir="${work.lib}" />
     <mkdir dir="${work.gwtc}" />
+    <mkdir dir="${work.gwtc}/ktrwjr" />
   </target>
 
   <target name="compile" depends="prepare">
@@ -75,39 +78,78 @@
         <pathelement location="src" />
         <pathelement location="war/WEB-INF/classes" />
       </classpath>
-      <!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
       <jvmarg value="-Xmx256M" />
-      <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
       <arg line="-war ${work.gwtc}" />
       <arg value="bufferings.ktr.wjr.KtrWjr" />
     </java>
   </target>
 
   <target name="dist" depends="create-lib, gwtc">
-    <zip zipfile="${target}/${ant.project.name}-${ktrwjr.version}-v${TIMESTAMP}.zip">
-      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/war/WEB-INF/lib"
-                  dir="${work.lib}" />
-      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/war/ktrwjr/ktrwjr"
-                  dir="${work.gwtc}/ktrwjr" />
-      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/war/ktrwjr/js"
-                  dir="war/js" />
-      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/war/ktrwjr/css"
-                  dir="war/css" />
-      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/war/ktrwjr"
-                  dir="war"
-                  includes="index.html,ktrwjr.css" />
-      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/licenses/guice"
-                  dir="licenses/guice" />
-      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/licenses/jqueryui"
-                  dir="licenses/jqueryui" />
-      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/licenses/junit"
-                  dir="licenses/junit" />
-      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/licenses/slim3"
-                  dir="licenses/slim3" />
-      <zipfileset prefix="${ant.project.name}-${ktrwjr.version}/licenses"
-                  file="licenses/LICENSE.txt" />
+    <copy todir="${target}/${app-ver}/war/WEB-INF/lib">
+      <fileset dir="${work.lib}" />
+    </copy>
+    <copy todir="${target}/${app-ver}/war/ktrwjr/ktrwjr">
+      <fileset dir="${work.gwtc}/ktrwjr" />
+    </copy>
+    <copy todir="${target}/${app-ver}/war/ktrwjr/js">
+      <fileset dir="war/js" />
+    </copy>
+    <copy todir="${target}/${app-ver}/war/ktrwjr/css">
+      <fileset dir="war/css" />
+    </copy>
+    <copy todir="${target}/${app-ver}/war/ktrwjr">
+      <fileset dir="war" includes="index.html,ktrwjr.css" />
+    </copy>
+    <zip zipfile="${target}/${app-ver}/${app-ver}.zip">
+      <zipfileset prefix="${app-ver}/war" dir="${target}/${app-ver}/war" />
+      <zipfileset prefix="${app-ver}/licenses" dir="licenses" />
     </zip>
     <delete dir="${work}" />
   </target>
 
+  <target name="copy-to-projects">
+    <antcall target="copy-to-projects-inner">
+      <param name="copy.to.project" value="../ktrwjr-demo" />
+    </antcall>
+    <antcall target="copy-to-projects-inner">
+      <param name="copy.to.project" value="../ktrwjr-test" />
+    </antcall>
+    <antcall target="copy-to-projects-inner">
+      <param name="copy.to.project" value="../ktrwjr-test-java5" />
+    </antcall>
+    <antcall target="copy-to-projects-inner">
+      <param name="copy.to.project" value="../ktrwjr-test-junit3" />
+    </antcall>
+    <antcall target="copy-to-projects-inner">
+      <param name="copy.to.project" value="../ktrwjr-test-loadfail" />
+    </antcall>
+    <antcall target="copy-to-projects-inner">
+      <param name="copy.to.project" value="../ktrwjr-test-many" />
+    </antcall>
+    <antcall target="copy-to-projects-inner">
+      <param name="copy.to.project" value="../ktrwjr-test-slim3" />
+    </antcall>
+    <antcall target="copy-to-projects-inner">
+      <param name="copy.to.project" value="../slim3-blank" />
+    </antcall>
+    <antcall target="copy-to-projects-inner">
+      <param name="copy.to.project" value="../slim3demo" />
+    </antcall>
+  </target>
+
+  <target name="copy-to-projects-inner">
+    <delete>
+      <fileset dir="${copy.to.project}/war/ktrwjr/ktrwjr" />
+    </delete>
+    <copy todir="${copy.to.project}/war/ktrwjr/ktrwjr">
+      <fileset dir="${target}/${app-ver}/war/ktrwjr/ktrwjr" />
+    </copy>
+    <copy todir="${copy.to.project}/war/ktrwjr" overwrite="true">
+      <fileset dir="${target}/${app-ver}/war/ktrwjr" includes="index.html, ktrwjr.css" />
+    </copy>
+    <copy todir="${copy.to.project}/war/WEB-INF/lib" overwrite="true">
+      <fileset dir="${target}/${app-ver}/war/WEB-INF/lib"
+               includes="ktrwjr.jar" />
+    </copy>
+  </target>
 </project>
