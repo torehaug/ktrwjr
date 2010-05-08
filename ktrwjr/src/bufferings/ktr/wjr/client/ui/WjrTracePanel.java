@@ -68,7 +68,7 @@ public class WjrTracePanel extends Composite {
     logList.setStyleName("");
     ScrollPanel logSp = new ScrollPanel(logList);
 
-    tabPanel.add(traceSp, "Trace");
+    tabPanel.add(traceSp, "Failure Trace");
     tabPanel.add(logSp, "Log");
   }
 
