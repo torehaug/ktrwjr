@@ -24,7 +24,7 @@ import org.junit.Test;
 
 public class ForTest {
   private static final Logger logger =
-    Logger.getLogger(ForTest.class.getSimpleName());
+    Logger.getLogger(ForTest.class.getName());
 
   @Test
   public void successMethod() {

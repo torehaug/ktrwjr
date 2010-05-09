@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 
 public class ForTestJUnit3 extends TestCase {
   private static final Logger logger =
-    Logger.getLogger(ForTestJUnit3.class.getSimpleName());
+    Logger.getLogger(ForTestJUnit3.class.getName());
 
   public void testSuccessMethod() {
     logger.info("testSuccessMethod");
