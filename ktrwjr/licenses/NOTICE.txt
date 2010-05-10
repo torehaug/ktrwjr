@@ -1,0 +1,14 @@
+Kotori Web JUnit Runner
+  Copyright 2010 bufferings[at]gmail.com
+  http://code.google.com/p/ktrwjr/
+
+This product includes jQueryUI.
+  Copyright (c) 2010 Paul Bakaus, http://jqueryui.com/
+
+This product includes a file of Slim3.
+  Copyright 2004-2010 the Seasar Foundation and the Others.
+  http://slim3.org/
+
+This product includes a file of google-guice.
+  Copyright (C) 2007 Google Inc.
+  http://code.google.com/p/google-guice/
