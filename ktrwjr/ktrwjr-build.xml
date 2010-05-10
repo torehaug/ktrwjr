@@ -85,6 +85,7 @@
   </target>
 
   <target name="dist" depends="create-lib, gwtc">
+    <delete dir="${target}/${app-ver}" />
     <copy todir="${target}/${app-ver}/war/WEB-INF/lib">
       <fileset dir="${work.lib}" />
     </copy>
