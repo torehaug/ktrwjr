@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 public class JUnit3Check extends TestCase {
 
   private static final Logger logger =
-    Logger.getLogger(JUnit3Check.class.getSimpleName());
+    Logger.getLogger(JUnit3Check.class.getName());
 
   public void setUp() {
     logger.info("setUp");

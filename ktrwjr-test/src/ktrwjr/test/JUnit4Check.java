@@ -15,7 +15,7 @@ import org.junit.Test;
 public class JUnit4Check {
 
   private static final Logger logger =
-    Logger.getLogger(JUnit4Check.class.getSimpleName());
+    Logger.getLogger(JUnit4Check.class.getName());
 
   @BeforeClass
   public static void setUpBeforeClass() {

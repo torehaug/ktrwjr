@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 public class LoggingCheck extends TestCase {
 
   private static final Logger logger =
-    Logger.getLogger(LoggingCheck.class.getSimpleName());
+    Logger.getLogger(LoggingCheck.class.getName());
 
   public void testLog() {
     logger.finest("log finest");

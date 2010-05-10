@@ -11,7 +11,7 @@ import com.google.appengine.api.utils.SystemProperty;
 
 public class DEEAndHDECheck {
   private static final Logger logger =
-    Logger.getLogger(DEEAndHDECheck.class.getSimpleName());
+    Logger.getLogger(DEEAndHDECheck.class.getName());
 
   @Test
   public void waitForDEE() throws Exception {
