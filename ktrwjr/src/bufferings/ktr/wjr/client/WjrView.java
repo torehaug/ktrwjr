@@ -634,10 +634,10 @@ public class WjrView extends Composite implements WjrDisplay,
     sb.append(time.length() > 0 ? time : "-").append("ms ");
 
     String cpuTime = methodItem.getCpuTime();
-    sb.append(time.length() > 0 ? cpuTime : "-").append("cpu_ms ");
+    sb.append(cpuTime.length() > 0 ? cpuTime : "-").append("cpu_ms ");
 
     String apiTime = methodItem.getApiTime();
-    sb.append(time.length() > 0 ? apiTime : "-").append("api_ms");
+    sb.append(apiTime.length() > 0 ? apiTime : "-").append("api_ms");
 
     return sb.toString();
   }

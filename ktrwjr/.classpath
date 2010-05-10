@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="forTest"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/slim3-1.0.3.jar" sourcepath="libsrc/slim3-1.0.3-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/junit-4.7.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>

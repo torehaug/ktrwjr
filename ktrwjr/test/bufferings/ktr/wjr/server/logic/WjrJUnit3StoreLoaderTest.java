@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package bufferings.ktr.wjr.server.logic.junit4;
+package bufferings.ktr.wjr.server.logic;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -23,35 +23,16 @@ import java.util.List;
 
 import org.junit.Test;
 
-import bufferings.ktr.wjr.server.fortest.ForTest;
-import bufferings.ktr.wjr.server.fortest.ForTestInherit;
 import bufferings.ktr.wjr.server.fortest.ForTestJUnit3;
 import bufferings.ktr.wjr.server.fortest.ForTestJUnit3Inherit;
+import bufferings.ktr.wjr.server.logic.WjrJUnit3StoreLoader;
 import bufferings.ktr.wjr.shared.model.WjrClassItem;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
-public class WjrJUnit4StoreLoaderTest {
+public class WjrJUnit3StoreLoaderTest {
 
-  private WjrJUnit4StoreLoader storeLoader = new WjrJUnit4StoreLoader();
-
-  @Test
-  public void checkAndStoreTestClass_CanStoreTest_WithCommonClass_JUnit4() {
-    WjrStore store = new WjrStore();
-    storeLoader.checkAndStoreTestClass(store, ForTest.class);
-
-    List<WjrClassItem> classItems = store.getClassItems();
-    assertThat(classItems.size(), is(1));
-    assertThat(classItems.get(0).getClassName(), is(ForTest.class.getName()));
-
-    List<WjrMethodItem> methodItems =
-      store.getMethodItems(ForTest.class.getName());
-    assertThat(methodItems.size(), is(3));
-    assertThat(methodItems.get(0).getMethodName(), is("errorMethod"));
-    assertThat(methodItems.get(1).getMethodName(), is("failureMethod"));
-    assertThat(methodItems.get(2).getMethodName(), is("successMethod"));
-
-  }
+  private WjrJUnit3StoreLoader storeLoader = new WjrJUnit3StoreLoader();
 
   @Test
   public void checkAndStoreTestClass_CanStoreTest_WithCommonClass_JUnit3() {
@@ -73,24 +54,6 @@ public class WjrJUnit4StoreLoaderTest {
   }
 
   @Test
-  public void checkAndStoreTestClass_CanStoreTest_WithInheritClass_JUnit4() {
-    WjrStore store = new WjrStore();
-    storeLoader.checkAndStoreTestClass(store, ForTestInherit.class);
-
-    List<WjrClassItem> classItems = store.getClassItems();
-    assertThat(classItems.size(), is(1));
-    assertThat(classItems.get(0).getClassName(), is(ForTestInherit.class
-      .getName()));
-
-    List<WjrMethodItem> methodItems =
-      store.getMethodItems(ForTestInherit.class.getName());
-    assertThat(methodItems.size(), is(3));
-    assertThat(methodItems.get(0).getMethodName(), is("errorMethod"));
-    assertThat(methodItems.get(1).getMethodName(), is("failureMethod"));
-    assertThat(methodItems.get(2).getMethodName(), is("successMethod"));
-  }
-
-  @Test
   public void checkAndStoreTestClass_CanStoreTest_WithInheritClass_JUnit3() {
     WjrStore store = new WjrStore();
     storeLoader.checkAndStoreTestClass(store, ForTestJUnit3Inherit.class);
@@ -106,23 +69,6 @@ public class WjrJUnit4StoreLoaderTest {
     assertThat(methodItems.get(0).getMethodName(), is("testErrorMethod"));
     assertThat(methodItems.get(1).getMethodName(), is("testFailureMethod"));
     assertThat(methodItems.get(2).getMethodName(), is("testSuccessMethod"));
-  }
-
-  @Test
-  public void checkAndStoreTestClass_CanStoreTest_WithInnerStaticClass_JUnit4() {
-    WjrStore store = new WjrStore();
-    storeLoader.checkAndStoreTestClass(store, ForTest.ForTestInnerStatic.class);
-
-    List<WjrClassItem> classItems = store.getClassItems();
-    assertThat(classItems.size(), is(1));
-    assertThat(
-      classItems.get(0).getClassName(),
-      is(ForTest.ForTestInnerStatic.class.getName()));
-
-    List<WjrMethodItem> methodItems =
-      store.getMethodItems(ForTest.ForTestInnerStatic.class.getName());
-    assertThat(methodItems.size(), is(1));
-    assertThat(methodItems.get(0).getMethodName(), is("successMethod"));
   }
 
   @Test
@@ -146,37 +92,55 @@ public class WjrJUnit4StoreLoaderTest {
   }
 
   @Test
-  public void isJUnit4TargetClass_WillReturnTrue_WithCommonClass()
+  public void isJUnit3TargetClass_WillReturnTrue_WithCommonClass()
       throws Exception {
-    assertThat(storeLoader.isJUnit4TargetClass(ForTest.class), is(true));
+    assertThat(storeLoader.isJUnit3TargetClass(ForTestJUnit3.class), is(true));
   }
 
   @Test
-  public void isJUnit4TargetClass_WillReturnTrue_WithInnerStaticClass()
+  public void isJUnit3TargetClass_WillReturnTrue_WithInnerStaticClass()
       throws Exception {
-    assertThat(storeLoader
-      .isJUnit4TargetClass(ForTest.ForTestInnerStatic.class), is(true));
+    assertThat(
+      storeLoader
+        .isJUnit3TargetClass(ForTestJUnit3.ForTestJUnit3InnerStatic.class),
+      is(true));
   }
 
   @Test
-  public void isJUnit4TargetClass_WillReturnFlase_WithInnerNotStaticClass()
+  public void isJUnit3TargetClass_WillReturnFlase_WithInnerNotStaticClass()
       throws Exception {
-    assertThat(storeLoader
-      .isJUnit4TargetClass(ForTest.ForTestInnerNotStatic.class), is(false));
+    assertThat(
+      storeLoader
+        .isJUnit3TargetClass(ForTestJUnit3.ForTestJUnit3InnerNotStatic.class),
+      is(false));
   }
 
   @Test
-  public void isJUnit4TargetMethod_WillReturnTrue_WithTestAnnotation()
+  public void isJUnit3TargetMethod_WillReturnTrue_WithTestPrefix()
       throws Exception {
-    Method m = ForTest.class.getMethod("successMethod");
-    assertThat(storeLoader.isJUnit4TargetMethod(m), is(true));
+    Method m = ForTestJUnit3.class.getMethod("testSuccessMethod");
+    assertThat(storeLoader.isJUnit3TargetMethod(m), is(true));
   }
 
   @Test
-  public void isJUnit4TargetMethod_WillReturnFalse_WithIgnoreAnnotation()
+  public void isJUnit3TargetMethod_WillReturnFalse_WithoutTestPrefix()
       throws Exception {
-    Method m = ForTest.class.getMethod("ignoreMethod");
-    assertThat(storeLoader.isJUnit4TargetMethod(m), is(false));
+    Method m = ForTestJUnit3.class.getMethod("ignoreMethod");
+    assertThat(storeLoader.isJUnit3TargetMethod(m), is(false));
+  }
+
+  @Test
+  public void isJUnit3TargetMethod_WillReturnFalse_WithReturnValue()
+      throws Exception {
+    Method m = ForTestJUnit3.class.getMethod("testHasReturnMethod");
+    assertThat(storeLoader.isJUnit3TargetMethod(m), is(false));
+  }
+
+  @Test
+  public void isJUnit3TargetMethod_WillReturnFalse_WithParameters()
+      throws Exception {
+    Method m = ForTestJUnit3.class.getMethod("testHasParamMethod", int.class);
+    assertThat(storeLoader.isJUnit3TargetMethod(m), is(false));
   }
 
 }

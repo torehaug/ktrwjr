@@ -21,11 +21,15 @@ import java.util.List;
 import java.util.Map;
 
 import bufferings.ktr.wjr.client.service.KtrWjrService;
-import bufferings.ktr.wjr.server.logic.WjrAppEngineRecorder;
+import bufferings.ktr.wjr.server.logic.WjrGAEDevLogRecorder;
+import bufferings.ktr.wjr.server.logic.WjrGAELogRecorder;
+import bufferings.ktr.wjr.server.logic.WjrGAEProdLogRecorder;
+import bufferings.ktr.wjr.server.logic.WjrGAEQuotaRecorder;
 import bufferings.ktr.wjr.server.logic.WjrJUnitLogicFactory;
 import bufferings.ktr.wjr.server.logic.WjrMethodRunner;
 import bufferings.ktr.wjr.server.logic.WjrParamParser;
 import bufferings.ktr.wjr.server.logic.WjrStoreLoader;
+import bufferings.ktr.wjr.server.util.AppEngineUtil;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
@@ -52,21 +56,26 @@ public class KtrWjrServiceImpl implements KtrWjrService {
       Map<String, List<String>> parameterMap) {
     checkNotNull(methodItem, "The methodItem parameter is null.");
 
-    WjrAppEngineRecorder appEngineRecorder = getAppEngineRecorder();
+    WjrGAEQuotaRecorder quotaRecorder = getGAEQuotaRecorder();
+    WjrGAELogRecorder logRecorder = getGAELogRecorder();
+
     WjrParamParser paramParser = getParamParser();
     WjrMethodRunner methodRunner = getMethodRunner();
 
     String timeZoneId = paramParser.getTimeZoneId(parameterMap);
     try {
-      appEngineRecorder.startRecording(timeZoneId);
+      logRecorder.startRecording(timeZoneId);
+      quotaRecorder.startRecording();
       methodItem = methodRunner.runWjrMethod(methodItem);
     } finally {
-      if (appEngineRecorder.isRecording()) {
-        appEngineRecorder.stopRecording();
-
-        methodItem.setLog(appEngineRecorder.getRecordedLog());
-        methodItem.setCpuTime(appEngineRecorder.getRecordedCpuTime());
-        methodItem.setApiTime(appEngineRecorder.getRecordedApiTime());
+      if (quotaRecorder.isRecording()) {
+        quotaRecorder.stopRecording();
+        methodItem.setCpuTime(quotaRecorder.getRecordedCpuTime());
+        methodItem.setApiTime(quotaRecorder.getRecordedApiTime());
+      }
+      if (logRecorder.isRecording()) {
+        logRecorder.stopRecording();
+        methodItem.setLog(logRecorder.getRecordedLog());
       }
     }
     return methodItem;
@@ -87,16 +96,27 @@ public class KtrWjrServiceImpl implements KtrWjrService {
   }
 
   /**
-   * Gets the app engine time and log recorder.
-   */
-  protected WjrAppEngineRecorder getAppEngineRecorder() {
-    return new WjrAppEngineRecorder();
-  }
-
-  /**
    * Gets the parameter map parser.
    */
   protected WjrParamParser getParamParser() {
     return new WjrParamParser();
+  }
+
+  /**
+   * Gets the GAE log recorder.
+   */
+  protected WjrGAELogRecorder getGAELogRecorder() {
+    if (AppEngineUtil.isProduction()) {
+      return new WjrGAEProdLogRecorder();
+    } else {
+      return new WjrGAEDevLogRecorder();
+    }
+  }
+
+  /**
+   * Gets the GAE quota recorder.
+   */
+  protected WjrGAEQuotaRecorder getGAEQuotaRecorder() {
+    return new WjrGAEQuotaRecorder();
   }
 }

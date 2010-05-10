@@ -15,10 +15,6 @@
  */
 package bufferings.ktr.wjr.server.logic;
 
-import bufferings.ktr.wjr.server.logic.junit3.WjrJUnit3MethodRunner;
-import bufferings.ktr.wjr.server.logic.junit3.WjrJUnit3StoreLoader;
-import bufferings.ktr.wjr.server.logic.junit4.WjrJUnit4MethodRunner;
-import bufferings.ktr.wjr.server.logic.junit4.WjrJUnit4StoreLoader;
 
 /**
  * The logic generator which matches the JUnit version.

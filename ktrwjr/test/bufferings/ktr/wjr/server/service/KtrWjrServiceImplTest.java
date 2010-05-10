@@ -24,15 +24,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
-import org.slim3.tester.ServletTestCase;
 
-import bufferings.ktr.wjr.server.logic.WjrAppEngineRecorder;
+import bufferings.ktr.wjr.server.logic.WjrGAELogRecorder;
+import bufferings.ktr.wjr.server.logic.WjrGAEQuotaRecorder;
 import bufferings.ktr.wjr.server.logic.WjrMethodRunner;
 import bufferings.ktr.wjr.server.logic.WjrStoreLoader;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
-public class KtrWjrServiceImplTest extends ServletTestCase {
+public class KtrWjrServiceImplTest {
 
   @Test
   public void loadStore_WillCallStoreLoader() {
@@ -65,14 +65,50 @@ public class KtrWjrServiceImplTest extends ServletTestCase {
   }
 
   @Test
-  public void runTest_WillCallMethodRunnerAndAppEngineRecorder() {
+  public void runTest_WillCallMethodRunnerAndGAERecorders() {
     final WjrMethodItem methodItem = new WjrMethodItem("foo.Foo", "fooMethod");
     final StringBuilder called = new StringBuilder();
 
     KtrWjrServiceImpl service = new KtrWjrServiceImpl() {
+
       @Override
-      protected WjrAppEngineRecorder getAppEngineRecorder() {
-        return new WjrAppEngineRecorder() {
+      protected WjrGAELogRecorder getGAELogRecorder() {
+        return new WjrGAELogRecorder() {
+
+          @Override
+          public String getRecordedLog() {
+            return "LOG";
+          }
+
+          @Override
+          public void startRecording(String timeZoneId) {
+            assertThat(timeZoneId, is("PST"));
+            called.append("1");
+          }
+
+          @Override
+          public void stopRecording() {
+            called.append("5");
+          }
+
+          @Override
+          public boolean isRecording() {
+            return true;
+          }
+
+          @Override
+          protected void startBare() {
+          }
+
+          @Override
+          protected void stopBare() {
+          }
+        };
+      }
+
+      @Override
+      protected WjrGAEQuotaRecorder getGAEQuotaRecorder() {
+        return new WjrGAEQuotaRecorder() {
           @Override
           public String getRecordedApiTime() {
             return "APITIME";
@@ -84,19 +120,13 @@ public class KtrWjrServiceImplTest extends ServletTestCase {
           }
 
           @Override
-          public String getRecordedLog() {
-            return "LOG";
-          }
-
-          @Override
-          public void startRecording(String timeZoneId) {
-            called.append("1");
-            assertThat(timeZoneId, is("PST"));
+          public void startRecording() {
+            called.append("2");
           }
 
           @Override
           public void stopRecording() {
-            called.append("3");
+            called.append("4");
           }
 
           @Override
@@ -110,7 +140,7 @@ public class KtrWjrServiceImplTest extends ServletTestCase {
       protected WjrMethodRunner getMethodRunner() {
         return new WjrMethodRunner() {
           public WjrMethodItem runWjrMethod(WjrMethodItem param) {
-            called.append("2");
+            called.append("3");
             assertThat(param, is(methodItem));
             return param;
           }
@@ -119,21 +149,56 @@ public class KtrWjrServiceImplTest extends ServletTestCase {
     };
 
     assertThat(service.runTest(methodItem, null), is(methodItem));
-    assertThat(called.toString(), is("123"));
+    assertThat(called.toString(), is("12345"));
     assertThat(methodItem.getApiTime(), is("APITIME"));
     assertThat(methodItem.getCpuTime(), is("CPUTIME"));
     assertThat(methodItem.getLog(), is("LOG"));
   }
 
   @Test
-  public void runTest_WillCallMethodRunnerAndAppEngineRecorder_WithParameter() {
+  public void runTest_WillCallMethodRunnerAndGAERecorders_WithParameter() {
     final WjrMethodItem methodItem = new WjrMethodItem("foo.Foo", "fooMethod");
     final StringBuilder called = new StringBuilder();
 
     KtrWjrServiceImpl service = new KtrWjrServiceImpl() {
+
       @Override
-      protected WjrAppEngineRecorder getAppEngineRecorder() {
-        return new WjrAppEngineRecorder() {
+      protected WjrGAELogRecorder getGAELogRecorder() {
+        return new WjrGAELogRecorder() {
+
+          @Override
+          public String getRecordedLog() {
+            return "";
+          }
+
+          @Override
+          public void startRecording(String timeZoneId) {
+            assertThat(timeZoneId, is("JST"));
+            called.append("1");
+          }
+
+          @Override
+          public void stopRecording() {
+          }
+
+          @Override
+          public boolean isRecording() {
+            return true;
+          }
+
+          @Override
+          protected void startBare() {
+          }
+
+          @Override
+          protected void stopBare() {
+          }
+        };
+      }
+
+      @Override
+      protected WjrGAEQuotaRecorder getGAEQuotaRecorder() {
+        return new WjrGAEQuotaRecorder() {
           @Override
           public String getRecordedApiTime() {
             return "";
@@ -145,14 +210,8 @@ public class KtrWjrServiceImplTest extends ServletTestCase {
           }
 
           @Override
-          public String getRecordedLog() {
-            return "";
-          }
-
-          @Override
-          public void startRecording(String timeZoneId) {
-            assertThat(timeZoneId, is("JST"));
-            called.append("1");
+          public void startRecording() {
+            called.append("2");
           }
 
           @Override
@@ -182,6 +241,6 @@ public class KtrWjrServiceImplTest extends ServletTestCase {
     map.put("tz", list);
 
     service.runTest(methodItem, map);
-    assertThat(called.toString(), is("1"));
+    assertThat(called.toString(), is("12"));
   }
 }

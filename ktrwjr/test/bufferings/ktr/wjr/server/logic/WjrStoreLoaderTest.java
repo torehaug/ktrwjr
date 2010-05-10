@@ -21,9 +21,9 @@ import static org.junit.Assert.*;
 import java.io.File;
 
 import org.junit.Test;
-import org.slim3.util.AppEngineUtil;
 
 import bufferings.ktr.wjr.server.fortest.ForTest;
+import bufferings.ktr.wjr.server.util.AppEngineUtil;
 import bufferings.ktr.wjr.shared.model.WjrClassItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 

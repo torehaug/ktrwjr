@@ -13,14 +13,15 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package bufferings.ktr.wjr.server.logic.junit3;
+package bufferings.ktr.wjr.server.logic;
 
 import static bufferings.ktr.wjr.shared.util.Preconditions.*;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestResult;
-import junit.framework.TestSuite;
-import bufferings.ktr.wjr.server.logic.WjrMethodRunner;
+
+import org.junit.runner.Request;
+import org.junit.runner.Result;
+import org.junit.runner.Runner;
+import org.junit.runner.notification.RunNotifier;
+
 import bufferings.ktr.wjr.server.util.WjrUtils;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
@@ -30,7 +31,7 @@ import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
  * 
  * @author bufferings[at]gmail.com
  */
-public class WjrJUnit3MethodRunner implements WjrMethodRunner {
+public class WjrJUnit4MethodRunner implements WjrMethodRunner {
 
   /**
    * {@inheritDoc}
@@ -39,8 +40,8 @@ public class WjrJUnit3MethodRunner implements WjrMethodRunner {
     checkNotNull(methodItem, "The methodItem parameter is null.");
     try {
       Class<?> clazz = loadClass(methodItem.getClassName());
-      Test runner = getRunner(clazz, methodItem.getMethodName());
-      WjrJUnit3Result result = runTest(runner);
+      Runner runner = getRunner(clazz, methodItem.getMethodName());
+      Result result = runTest(runner);
       return applyResult(methodItem, result);
     } catch (Exception e) {
       methodItem.setState(State.ERROR);
@@ -86,15 +87,8 @@ public class WjrJUnit3MethodRunner implements WjrMethodRunner {
    *          The method name to run.
    * @return The test runner of the given test method.
    */
-  @SuppressWarnings("unchecked")
-  protected Test getRunner(Class<?> clazz, String methodName) {
-    if (!TestCase.class.isAssignableFrom(clazz)) {
-      throw new IllegalArgumentException(
-        "TestCase is not assignable from the class.");
-    }
-
-    Class<? extends TestCase> testCaseClass = (Class<? extends TestCase>) clazz;
-    return TestSuite.createTest(testCaseClass, methodName);
+  protected Runner getRunner(Class<?> clazz, String methodName) {
+    return Request.method(clazz, methodName).getRunner();
   }
 
   /**
@@ -104,12 +98,17 @@ public class WjrJUnit3MethodRunner implements WjrMethodRunner {
    *          The test runner.
    * @return The test result.
    */
-  protected WjrJUnit3Result runTest(Test runner) {
-    TestResult result = new TestResult();
-    long before = System.currentTimeMillis();
-    runner.run(result);
-    Long time = System.currentTimeMillis() - before;
-    return new WjrJUnit3Result(result, time);
+  protected Result runTest(Runner runner) {
+    Result result = new Result();
+
+    RunNotifier notifier = new RunNotifier();
+    notifier.addFirstListener(result.createListener());
+
+    notifier.fireTestRunStarted(runner.getDescription());
+    runner.run(notifier);
+    notifier.fireTestRunFinished(result);
+
+    return result;
   }
 
   /**
@@ -119,15 +118,36 @@ public class WjrJUnit3MethodRunner implements WjrMethodRunner {
    *          The methodItem to be applied the result.
    * @param result
    *          The test result.
+   * @return The applied methodItem, which is the same instance as the input.
    */
-  protected WjrMethodItem applyResult(WjrMethodItem methodItem,
-      WjrJUnit3Result result) {
-    if (result.getFailureCount() > 0) {
-      methodItem.setState(State.FAILURE);
-      methodItem.setTrace(result.getFailures().get(0).trace());
-    } else if (result.getErrorCount() > 0) {
+  protected WjrMethodItem applyResult(WjrMethodItem methodItem, Result result) {
+    if (result.getRunCount() == 0) {
+      // The handling of the not exist method.
+
+      // In the case of JUnit4 test case with JUnit4 runner,
+      // the result will be error.
+
+      // In the case of JUnit3 test case with JUnit4 runner,
+      // the result will not run, so I regard the not run as
+      // the not exist method here.
+
+      // In the case of JUnit3 test case with JUnit3 runner,
+      // the result will be failure.
+
       methodItem.setState(State.ERROR);
-      methodItem.setTrace(result.getErrors().get(0).trace());
+      methodItem.setTrace("No tests found matching Method "
+        + methodItem.getMethodName()
+        + "("
+        + methodItem.getClassName()
+        + ").");
+    } else if (result.getFailureCount() > 0) {
+      if (result.getFailures().get(0).getException() instanceof AssertionError) {
+        methodItem.setState(State.FAILURE);
+      } else {
+        methodItem.setState(State.ERROR);
+      }
+      methodItem.setTrace(result.getFailures().get(0).getTrace());
+
     } else {
       methodItem.setState(State.SUCCESS);
       methodItem.setTrace("");

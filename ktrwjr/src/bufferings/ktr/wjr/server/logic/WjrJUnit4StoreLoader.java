@@ -13,29 +13,36 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package bufferings.ktr.wjr.server.logic.junit3;
+package bufferings.ktr.wjr.server.logic;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import junit.framework.TestCase;
-import bufferings.ktr.wjr.server.logic.WjrStoreLoader;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import bufferings.ktr.wjr.shared.model.WjrClassItem;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
-public class WjrJUnit3StoreLoader extends WjrStoreLoader {
+public class WjrJUnit4StoreLoader extends WjrJUnit3StoreLoader {
 
   /**
-   * {@inheritDoc}
+   * Checks if the class is the target one and has test method(s), then stores
+   * it.
+   * 
+   * @param store
+   *          The store.
+   * @param clazz
+   *          The class.
    */
   @Override
   protected void checkAndStoreTestClass(WjrStore store, Class<?> clazz) {
     WjrClassItem classItem = null;
-    if (isJUnit3TargetClass(clazz)) {
+    if (isJUnit4TargetClass(clazz)) {
       Method[] methods = clazz.getMethods();
       for (Method m : methods) {
-        if (isJUnit3TargetMethod(m)) {
+        if (isJUnit4TargetMethod(m)) {
           if (classItem == null) {
             classItem = new WjrClassItem(clazz.getName());
             store.addClassItem(classItem);
@@ -43,6 +50,10 @@ public class WjrJUnit3StoreLoader extends WjrStoreLoader {
           store.addMethodItem(new WjrMethodItem(clazz.getName(), m.getName()));
         }
       }
+    }
+
+    if (classItem == null) {
+      super.checkAndStoreTestClass(store, clazz);
     }
   }
 
@@ -57,11 +68,7 @@ public class WjrJUnit3StoreLoader extends WjrStoreLoader {
    * @return If the class is not member class or static inner class then returns
    *         true, otherwise returns false.
    */
-  protected boolean isJUnit3TargetClass(Class<?> clazz) {
-    if (!TestCase.class.isAssignableFrom(clazz)) {
-      return false;
-    }
-
+  protected boolean isJUnit4TargetClass(Class<?> clazz) {
     if (!clazz.isMemberClass()) {
       return true;
     }
@@ -76,9 +83,8 @@ public class WjrJUnit3StoreLoader extends WjrStoreLoader {
   /**
    * Checks if the method is a target method or not.
    * 
-   * If the method's modifier is public only, has "test" prefix name and doesn't
-   * have the return value and the parameter, then returns true, otherwise
-   * returns false.
+   * If the method's modifier is public only, has Test annotation and doesn't
+   * have the Ignore annotation, then returns true, otherwise returns false.
    * 
    * @param method
    *          The method to check.
@@ -86,9 +92,9 @@ public class WjrJUnit3StoreLoader extends WjrStoreLoader {
    *         doesn't have the Ignore annotation, then returns true, otherwise
    *         returns false.
    */
-  protected boolean isJUnit3TargetMethod(Method method) {
+  protected boolean isJUnit4TargetMethod(Method method) {
     return (method.getModifiers() == Modifier.PUBLIC
-      && method.getName().startsWith("test")
-      && method.getReturnType() == Void.TYPE && method.getParameterTypes().length == 0);
+      && method.getAnnotation(Test.class) != null && method
+      .getAnnotation(Ignore.class) == null);
   }
 }

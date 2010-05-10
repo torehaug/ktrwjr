@@ -18,15 +18,17 @@ package bufferings.ktr.wjr.server.logic;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import org.junit.After;
 import org.junit.Test;
 
-import bufferings.ktr.wjr.server.logic.junit3.WjrJUnit3MethodRunner;
-import bufferings.ktr.wjr.server.logic.junit3.WjrJUnit3StoreLoader;
-import bufferings.ktr.wjr.server.logic.junit4.WjrJUnit4MethodRunner;
-import bufferings.ktr.wjr.server.logic.junit4.WjrJUnit4StoreLoader;
 
 public class WjrJUnitLogicFactoryTest {
 
+  @After
+  public void tearDown(){
+    WjrJUnitLogicFactory.versionChecker = null;
+  }
+  
   @Test(expected = IllegalStateException.class)
   public void getMethodRunner_WillThrowISE_WhenJUnitIsNotAvailable() {
     WjrJUnitLogicFactory.versionChecker = new WjrJUnitVersionChecker() {
