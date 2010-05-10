@@ -7,7 +7,7 @@ import org.junit.Test;
 public class LoggingCheck {
 
   private static final Logger logger =
-    Logger.getLogger(LoggingCheck.class.getSimpleName());
+    Logger.getLogger(LoggingCheck.class.getName());
 
   @Test
   public void log() {
