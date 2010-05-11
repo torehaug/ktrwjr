@@ -473,8 +473,12 @@ public class WjrView extends Composite implements WjrDisplay,
    *          The test store.
    */
   private void updateResultPanel(WjrStore store) {
+    int runningsCount = store.getRunningCount();
+    int runsCount =
+      store.getTotalCount() - store.getNotYetCount() - runningsCount;
     resultPanel.updateResults(
-      store.getTotalCount() - store.getNotYetCount(),
+      runningsCount,
+      runsCount,
       store.getTotalCount(),
       store.getErrorCount(),
       store.getFailureCount());

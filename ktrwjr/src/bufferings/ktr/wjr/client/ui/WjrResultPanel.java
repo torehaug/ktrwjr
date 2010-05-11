@@ -100,12 +100,14 @@ public class WjrResultPanel extends Composite {
    */
   public WjrResultPanel() {
     initWidget(uiBinder.createAndBindUi(this));
-    updateResults(0, 0, 0, 0);
+    updateResults(0, 0, 0, 0, 0);
   }
 
   /**
    * Updates the result.
    * 
+   * @param runningsCount
+   *          The running tests count.
    * @param runsCount
    *          The run tests count.
    * @param totalCount
@@ -115,8 +117,8 @@ public class WjrResultPanel extends Composite {
    * @param failuresCount
    *          The failure tests count.
    */
-  public void updateResults(int runsCount, int totalCount, int errorsCount,
-      int failuresCount) {
+  public void updateResults(int runningsCount, int runsCount, int totalCount,
+      int errorsCount, int failuresCount) {
     runsLabel.setText(createRunsLabelString(runsCount, totalCount));
     errorsLabel.setText(createErrorsLabelString(errorsCount));
     failuresLabel.setText(createFailuresLabelString(failuresCount));
@@ -127,6 +129,23 @@ public class WjrResultPanel extends Composite {
       resultBar.setStyleName(resultBarStyle.succeed());
     } else {
       resultBar.setStyleName(resultBarStyle.notyet());
+    }
+
+    String width = calcPercent(runsCount, runningsCount + runsCount) + "%";
+    resultBar.setWidth(width);
+  }
+  
+  /**
+   * Calculates the percent value.
+   * @param numerator The numerator.
+   * @param denominator The denominator.
+   * @return The percent value.
+   */
+  protected int calcPercent(int numerator, int denominator){
+    if (denominator == 0) {
+      return 0;
+    } else {
+      return (int) ((double) numerator * 100 / denominator);
     }
   }
 

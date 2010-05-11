@@ -246,7 +246,16 @@ public class WjrStore implements IsSerializable {
    * @return The not yet count.
    */
   public int getNotYetCount() {
-    return root.getNotYetCount() + root.getRunningCount();
+    return root.getNotYetCount();
+  }
+
+  /**
+   * Gets the running count.
+   * 
+   * @return The running count.
+   */
+  public int getRunningCount() {
+    return root.getRunningCount();
   }
 
   /**

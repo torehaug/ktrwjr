@@ -215,13 +215,6 @@ public class WjrStoreTest {
   }
 
   @Test
-  public void getNotYetCount_IsSumOfNotYetAndRunning() {
-    store.root.notYetCount = 10;
-    store.root.runningCount = 5;
-    assertThat(store.getNotYetCount(), is(15));
-  }
-
-  @Test
   public void updateAllSummary_CanUpdateAllSummaries() {
     final StringBuilder called = new StringBuilder(4);
 

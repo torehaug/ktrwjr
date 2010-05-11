@@ -8,23 +8,24 @@
     .titlePanel {
       padding-left: 5px;
     }
+    
+    .resultBarBox {
+      border: solid 1px gray;
+    }
   </ui:style>
 
   <ui:style
     field="resultBarStyle"
     type="bufferings.ktr.wjr.client.ui.WjrResultPanel.ResultBarStyle">
       .notyet {
-        border: solid 1px gray;
         background-color: white;
       }
       
       .fail {
-        border: solid 1px gray;
         background-color: red;
       }
       
       .succeed {
-        border: solid 1px gray;
         background-color: lime;
       }
     </ui:style>
@@ -75,10 +76,11 @@
           horizontalAlignment="ALIGN_CENTER">
           <g:HorizontalPanel
             width="95%"
-            spacing="1">
+            spacing="1"
+            styleName="{style.resultBarBox}">
             <g:Label
               ui:field="resultBar"
-              width="100%"
+              width="0%"
               height="16px"
               styleName="{resultBarStyle.notyet}" />
           </g:HorizontalPanel>

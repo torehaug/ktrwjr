@@ -136,6 +136,9 @@
     <antcall target="copy-to-projects-inner">
       <param name="copy.to.project" value="../slim3demo" />
     </antcall>
+    <antcall target="copy-to-projects-inner">
+      <param name="copy.to.project" value="../bufferings-lab" />
+    </antcall>
   </target>
 
   <target name="copy-to-projects-inner">
