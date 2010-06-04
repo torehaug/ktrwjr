@@ -258,6 +258,8 @@ public class WjrTreeItem extends Composite implements
   public void setChecked(boolean checked, boolean fireEvent) {
     checkBox.setValue(checked);
     if (fireEvent) {
+      propagateCheckBoxValueToChildren(this, checked);
+      propagateCheckBoxValueToParent(this);
       ValueChangeEvent.fire(this, this);
     }
   }
