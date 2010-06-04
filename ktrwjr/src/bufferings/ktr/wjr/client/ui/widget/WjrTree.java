@@ -17,6 +17,7 @@ package bufferings.ktr.wjr.client.ui.widget;
 
 import java.util.ArrayList;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -38,6 +39,7 @@ public class WjrTree extends Composite {
   protected static final int OTHER_KEY_LEFT = 63234;
   protected static final int OTHER_KEY_RIGHT = 63235;
   protected static final int OTHER_KEY_UP = 63232;
+  protected static final int KEY_SPACE = 32;
 
   /**
    * The root tree item. This is used only inside this class.
@@ -65,8 +67,10 @@ public class WjrTree extends Composite {
     case KeyCodes.KEY_RIGHT:
     case KeyCodes.KEY_UP:
     case KeyCodes.KEY_LEFT:
+    case KEY_SPACE:
       return true;
     default:
+      GWT.log("" + code);
       return false;
     }
   }
@@ -363,6 +367,10 @@ public class WjrTree extends Composite {
       maybeExpandTreeItem();
       break;
     }
+    case KEY_SPACE: {
+      curSelection.setChecked(!curSelection.isChecked(), true);
+      break;
+    }
     default: {
       return;
     }
@@ -391,10 +399,12 @@ public class WjrTree extends Composite {
     if (topClosedParent != null) {
       // Select the first visible parent if curSelection is hidden
       setSelectedItem(topClosedParent);
-    } else if (!curSelection.getState()) {
-      curSelection.setState(true);
     } else if (curSelection.getChildCount() > 0) {
-      setSelectedItem(curSelection.getChild(0));
+      if (!curSelection.getState()) {
+        curSelection.setState(true);
+      } else {
+        setSelectedItem(curSelection.getChild(0));
+      }
     }
   }
 
