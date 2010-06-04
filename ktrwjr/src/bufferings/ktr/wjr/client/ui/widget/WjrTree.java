@@ -17,7 +17,6 @@ package bufferings.ktr.wjr.client.ui.widget;
 
 import java.util.ArrayList;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -70,7 +69,6 @@ public class WjrTree extends Composite {
     case KEY_SPACE:
       return true;
     default:
-      GWT.log("" + code);
       return false;
     }
   }
