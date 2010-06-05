@@ -59,8 +59,13 @@
             spacing="1">
 
             <k:WjrIconTextLabel
-              elemId="ktrwjr-runs-label"
+              elemId="ktrwjr-total-label"
               icon="ui-icon-document"
+              ui:field="totalLabel" />
+
+            <k:WjrIconTextLabel
+              elemId="ktrwjr-runs-label"
+              icon="ui-icon-play"
               ui:field="runsLabel" />
 
             <k:WjrIconTextLabel

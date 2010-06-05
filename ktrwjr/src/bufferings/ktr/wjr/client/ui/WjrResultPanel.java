@@ -72,6 +72,12 @@ public class WjrResultPanel extends Composite {
   protected ResultBarStyle resultBarStyle;
 
   /**
+   * The label to show the total tests count.
+   */
+  @UiField
+  protected HasText totalLabel;
+
+  /**
    * The label to show the run tests count.
    */
   @UiField
@@ -119,7 +125,9 @@ public class WjrResultPanel extends Composite {
    */
   public void updateResults(int runningsCount, int runsCount, int totalCount,
       int errorsCount, int failuresCount) {
-    runsLabel.setText(createRunsLabelString(runsCount, totalCount));
+    totalLabel.setText(createTotalLabelString(totalCount));
+    runsLabel.setText(createRunsLabelString(runsCount, runningsCount
+      + runsCount));
     errorsLabel.setText(createErrorsLabelString(errorsCount));
     failuresLabel.setText(createFailuresLabelString(failuresCount));
 
@@ -134,14 +142,17 @@ public class WjrResultPanel extends Composite {
     String width = calcPercent(runsCount, runningsCount + runsCount) + "%";
     resultBar.setWidth(width);
   }
-  
+
   /**
    * Calculates the percent value.
-   * @param numerator The numerator.
-   * @param denominator The denominator.
+   * 
+   * @param numerator
+   *          The numerator.
+   * @param denominator
+   *          The denominator.
    * @return The percent value.
    */
-  protected int calcPercent(int numerator, int denominator){
+  protected int calcPercent(int numerator, int denominator) {
     if (denominator == 0) {
       return 0;
     } else {
@@ -150,20 +161,32 @@ public class WjrResultPanel extends Composite {
   }
 
   /**
-   * Creates the runs label string from run tests count and total test count.
+   * Creates the total label string from run tests count.
    * 
-   * @param runsCount
-   *          The run tests count.
    * @param totalCount
    *          The total count.
    * @return
    */
-  protected String createRunsLabelString(int runsCount, int totalCount) {
+  protected String createTotalLabelString(int totalCount) {
+    return new StringBuilder().append("Total: ").append(totalCount).toString();
+  }
+
+  /**
+   * Creates the runs label string from run tests count and run and running
+   * tests count.
+   * 
+   * @param runsCount
+   *          The run tests count.
+   * @param runsAndRunningsCount
+   *          The run tests count and running tests count.
+   * @return
+   */
+  protected String createRunsLabelString(int runsCount, int runsAndRunningsCount) {
     return new StringBuilder()
       .append("Runs: ")
       .append(runsCount)
       .append("/")
-      .append(totalCount)
+      .append(runsAndRunningsCount)
       .toString();
   }
 
