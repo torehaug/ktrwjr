@@ -222,6 +222,8 @@ public class WjrTree extends Composite {
 
     if (curSelection != null) {
       curSelection.setSelected(true, fireEvents);
+
+      DOMUtil.scrollTopIntoView(curSelection.getElement());
     }
   }
 

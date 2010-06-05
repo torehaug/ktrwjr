@@ -256,6 +256,8 @@ public class WjrListBox extends Composite {
       curSelection.setStyleName(join(
         Resources.INSTANCE.css().itemStyle(),
         UI_STATE_HIGHLIGHT));
+
+      DOMUtil.scrollTopIntoView(curSelection.getElement());
     }
   }
 
