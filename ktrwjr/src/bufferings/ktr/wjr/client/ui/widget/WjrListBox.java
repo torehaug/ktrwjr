@@ -156,11 +156,21 @@ public class WjrListBox extends Composite {
    */
   public void addItem(String item) {
     checkNotNull(item, "The item parameter is null.");
-
+    
     Label label = new HoverableAndClickableLabel();
-    label.setText(item);
     label.setStyleName(Resources.INSTANCE.css().itemStyle());
-    label.setTitle(item.trim());
+    
+    // Use trimedItem not to show prefix tab on the tooltip.
+    String trimedItem = item.trim();
+    label.setTitle(trimedItem);
+
+    if(trimedItem.length() == 0){
+      // Allows &nbsp; to show empty line.
+      label.getElement().setInnerHTML("&nbsp;");
+    }else{
+      // HTML element is escaped.
+      label.setText(item);
+    }
 
     mainPanel.add(label);
   }

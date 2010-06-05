@@ -15,6 +15,7 @@
  */
 package bufferings.ktr.wjr.server.fortest;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.util.logging.Logger;
@@ -34,7 +35,7 @@ public class ForTest {
   @Test
   public void failureMethod() {
     logger.info("failureMethod");
-    assertTrue(false);
+    assertThat("", is("aaaa"));
   }
 
   @Test
