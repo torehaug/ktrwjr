@@ -16,6 +16,7 @@
       horizontalAlignment="ALIGN_RIGHT">
       <g:SimplePanel styleName="{style.panel}">
         <k:WjrIconTextButton
+          elemId="ktrwjr-run-button"
           ui:field="button"
           icon="ui-icon-play"
           disabled="true"

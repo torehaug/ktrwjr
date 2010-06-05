@@ -32,6 +32,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class WjrIconTextLabel extends Composite implements HasText {
 
+  private static final String TEXT_ID_SUFFIX = "-text";
+
   private static WjrIconLabelUiBinder uiBinder =
     GWT.create(WjrIconLabelUiBinder.class);
 
@@ -84,4 +86,14 @@ public class WjrIconTextLabel extends Composite implements HasText {
     textLabel.setText(text);
   }
 
+  /**
+   * Sets the id of this element.
+   * 
+   * @param id
+   *          id to set
+   */
+  public void setElemId(String id) {
+    getElement().setId(id);
+    textLabel.getElement().setId(id + TEXT_ID_SUFFIX);
+  }
 }

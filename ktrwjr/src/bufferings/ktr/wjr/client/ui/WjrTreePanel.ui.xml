@@ -31,31 +31,37 @@
             spacing="1">
 
             <k:WjrIconButton
+              elemId="ktrwjr-expand-all-button"
               icon="ui-icon-circlesmall-plus"
               title="Expand All"
               ui:field="expandAllButton"
               disabled="true" />
             <k:WjrIconButton
+              elemId="ktrwjr-collapse-all-button"
               icon="ui-icon-circlesmall-minus"
               title="Collapse All"
               ui:field="collapseAllButton"
               disabled="true" />
             <k:WjrIconButton
+              elemId="ktrwjr-check-all-button"
               icon="ui-icon-bullet"
               title="Check All"
               ui:field="checkAllButton"
               disabled="true" />
             <k:WjrIconButton
+              elemId="ktrwjr-uncheck-all-button"
               icon="ui-icon-radio-on"
               title="Uncheck All"
               ui:field="uncheckAllButton"
               disabled="true" />
             <k:WjrIconButton
+              elemId="ktrwjr-clear-button"
               icon="ui-icon-arrowreturn-1-w"
               title="Clear Results"
               ui:field="clearButton"
               disabled="true" />
             <k:WjrIconButton
+              elemId="ktrwjr-reload-button"
               icon="ui-icon-refresh"
               title="Reload Testcases"
               ui:field="reloadButton"

@@ -90,5 +90,14 @@ public abstract class WjrAbstractButton extends Composite implements
   public HandlerRegistration addClickHandler(ClickHandler handler) {
     return addDomHandler(handler, ClickEvent.getType());
   }
+  
+  /**
+   * Sets the id of this element.
+   * 
+   * @param id id to set
+   */
+  public void setElemId(String id) {
+    getElement().setId(id);
+  }
 
 }

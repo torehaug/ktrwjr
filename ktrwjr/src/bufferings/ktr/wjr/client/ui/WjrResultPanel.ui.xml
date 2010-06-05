@@ -59,14 +59,17 @@
             spacing="1">
 
             <k:WjrIconTextLabel
+              elemId="ktrwjr-runs-label"
               icon="ui-icon-document"
               ui:field="runsLabel" />
 
             <k:WjrIconTextLabel
+              elemId="ktrwjr-errors-label"
               icon="ui-icon-close"
               ui:field="errorsLabel" />
 
             <k:WjrIconTextLabel
+              elemId="ktrwjr-failures-label"
               icon="ui-icon-notice"
               ui:field="failuresLabel" />
           </g:HorizontalPanel>
