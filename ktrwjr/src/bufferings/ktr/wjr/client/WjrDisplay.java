@@ -20,7 +20,6 @@ import java.util.List;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HasWidgets;
 
 /**
@@ -37,10 +36,8 @@ public interface WjrDisplay {
    *          The view event handler.
    * @param container
    *          The view container.
-   * @param store
-   *          The test store.
    */
-  public void go(WjrDisplayHandler handler, HasWidgets container, Element store);
+  public void go(WjrDisplayHandler handler, HasWidgets container);
 
   /**
    * Sets the store data.

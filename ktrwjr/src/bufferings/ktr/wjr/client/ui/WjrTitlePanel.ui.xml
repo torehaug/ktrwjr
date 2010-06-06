@@ -4,16 +4,35 @@
   xmlns:g="urn:import:com.google.gwt.user.client.ui"
   xmlns:k="urn:import:bufferings.ktr.wjr.client.ui.widget">
 
+  <ui:style>
+    .icon {
+      margin-left: 2px;
+      margin-right: 3px;
+    }
+  </ui:style>
+
+  <ui:with
+    field="res"
+    type="bufferings.ktr.wjr.client.resource.Resources" />
+
   <g:HorizontalPanel
     styleName="ui-widget ui-widget-header ui-corner-top"
     spacing="1">
 
-    <k:WjrIconTextLabel
-      icon="ui-icon-arrowreturnthick-1-e">Kotori Web JUnit Runner</k:WjrIconTextLabel>
+    <g:cell
+      verticalAlignment="ALIGN_MIDDLE">
+      <g:HorizontalPanel
+        spacing="1">
+        <g:Image
+          resource="{res.ktrwjr16}"
+          styleName="{style.icon}" />
+        <g:HTML
+          styleName="ui-widget">Kotori Web JUnit Runner</g:HTML>
+      </g:HorizontalPanel>
+    </g:cell>
 
     <g:cell
-      horizontalAlignment="ALIGN_RIGHT"
-      verticalAlignment="ALIGN_BOTTOM">
+      horizontalAlignment="ALIGN_RIGHT">
       <g:HTMLPanel
         styleName="ui-widget">
         <a

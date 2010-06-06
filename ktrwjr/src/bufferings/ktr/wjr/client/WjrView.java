@@ -44,7 +44,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
@@ -79,12 +78,6 @@ public class WjrView extends Composite implements WjrDisplay,
    * The container widget of this view.
    */
   protected HasWidgets container;
-
-  /**
-   * The "loading" element, which is remove from the DOM when the first loading
-   * is completed.
-   */
-  protected Element loadingElem;
 
   /**
    * The result panel which shows the result summary of the tests.
@@ -194,13 +187,11 @@ public class WjrView extends Composite implements WjrDisplay,
   /**
    * {@inheritDoc}
    */
-  public void go(WjrDisplayHandler handler, HasWidgets container,
-      Element loadingElem) {
+  public void go(WjrDisplayHandler handler, HasWidgets container) {
     checkNotNull(handler, "The handler parameter is null.");
     checkNotNull(container, "The container parameter is null.");
     this.handler = handler;
     this.container = container;
-    this.loadingElem = loadingElem;
 
     dialog = new WjrDialogPanel("Kotori Web JUnit Runner");
     popup = new WjrPopupPanel();
@@ -230,13 +221,12 @@ public class WjrView extends Composite implements WjrDisplay,
    *          The test store.
    */
   private void finishLoading(WjrStore store) {
-    initWidget(uiBinder.createAndBindUi(WjrView.this));
+    initWidget(uiBinder.createAndBindUi(this));
 
     setData(store);
     updateRunButtonDisabled();
     updateTreeButtonsDisabled();
 
-    loadingElem.removeFromParent();
     container.add(this);
   }
 

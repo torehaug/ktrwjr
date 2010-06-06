@@ -28,7 +28,6 @@ import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -44,6 +43,11 @@ public class WjrPresenter implements WjrDisplayHandler {
    * The KtrWjr rpc service(async).
    */
   protected KtrWjrServiceAsync rpcService;
+
+  /**
+   * The loading view.
+   */
+  protected WjrLoadingDisplay loadingView;
 
   /**
    * The view.
@@ -78,8 +82,10 @@ public class WjrPresenter implements WjrDisplayHandler {
    * @param view
    *          The view.
    */
-  public WjrPresenter(KtrWjrServiceAsync rpcService, WjrDisplay view) {
+  public WjrPresenter(KtrWjrServiceAsync rpcService,
+      WjrLoadingDisplay loadingView, WjrDisplay view) {
     this.rpcService = rpcService;
+    this.loadingView = loadingView;
     this.view = view;
   }
 
@@ -88,20 +94,21 @@ public class WjrPresenter implements WjrDisplayHandler {
    * 
    * @param container
    *          The container of the view.
-   * @param loadingElem
-   *          The loading element, which is removed from DOM after loading
-   *          finished.
    */
-  public void go(HasWidgets container, Element loadingElem) {
-    view.go(this, container, loadingElem);
+  public void go(final HasWidgets container) {
+    loadingView.go(container);
+    view.go(WjrPresenter.this, container);
+
     rpcService.loadStore(getParameterMap(), new AsyncCallback<WjrStore>() {
 
       public void onFailure(Throwable caught) {
+        loadingView.notifyLoaded();
         view.notifyLoadingFailed(caught);
       }
 
       public void onSuccess(WjrStore result) {
         store = result;
+        loadingView.notifyLoaded();
         view.notifyLoadingSucceeded(store);
       }
     });
@@ -123,6 +130,7 @@ public class WjrPresenter implements WjrDisplayHandler {
         view.setData(store);
         view.notifyReloadingSucceeded();
       }
+
     });
   }
 

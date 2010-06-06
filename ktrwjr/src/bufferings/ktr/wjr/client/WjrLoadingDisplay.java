@@ -15,28 +15,25 @@
  */
 package bufferings.ktr.wjr.client;
 
-import bufferings.ktr.wjr.client.service.KtrWjrService;
-import bufferings.ktr.wjr.client.service.KtrWjrServiceAsync;
-
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.HasWidgets;
 
 /**
- * The entry point class of Kotori Web JUnit Runner.
+ * KtrWjr loading view interface.
  * 
  * @author bufferings[at]gmail.com
  */
-public class KtrWjr implements EntryPoint {
+public interface WjrLoadingDisplay {
 
   /**
-   * {@inheritDoc}
+   * Starts the view.
+   * 
+   * @param container
+   *          The view container.
    */
-  public void onModuleLoad() {
-    KtrWjrServiceAsync rpcService = GWT.create(KtrWjrService.class);
-    WjrPresenter presenter =
-      new WjrPresenter(rpcService, new WjrLoadingView(), new WjrView());
-    presenter.go(RootLayoutPanel.get());
-  }
+  public void go(HasWidgets container);
 
+  /**
+   * Notifies loaded to the view.
+   */
+  public void notifyLoaded();
 }
