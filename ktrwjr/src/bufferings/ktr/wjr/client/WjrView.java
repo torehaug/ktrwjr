@@ -265,8 +265,8 @@ public class WjrView extends Composite implements WjrDisplay,
   public void setData(WjrStore store) {
     treeItems.clear();
     storeItems.clear();
-    tracePanel.setTrace("");
-    tracePanel.setLog("");
+    tracePanel.setTrace(null);
+    tracePanel.setLog(null);
     updateResultPanel(store);
 
     WjrTree tree = treePanel.getTree();
@@ -338,8 +338,8 @@ public class WjrView extends Composite implements WjrDisplay,
     WjrTreeItem treeItem = event.getSelectedItem();
     if (!treeItem.isSelected()) {
       treeItem.setSelectedStyle("");
-      tracePanel.setTrace("");
-      tracePanel.setLog("");
+      tracePanel.setTrace(null);
+      tracePanel.setLog(null);
     } else {
       WjrStoreItem storeItem =
         (WjrStoreItem) storeItems.get(treeItems.indexOf(treeItem));

@@ -22,11 +22,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
@@ -39,6 +42,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IndexedPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -155,9 +160,11 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
    *          The child tab contents widget.
    * @param text
    *          The tab text.
+   * @param tabStopIndex
+   *          The tab index.
    */
-  public void add(Widget child, String text) {
-    insert(child, text, getWidgetCount());
+  public void add(Widget child, String text, int tabStopIndex) {
+    insert(child, text, getWidgetCount(), tabStopIndex);
   }
 
   /**
@@ -169,8 +176,11 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
    *          The tab text.
    * @param beforeIndex
    *          The index to insert into.
+   * @param tabStopIndex
+   *          The tab index.
    */
-  public void insert(final Widget child, String text, int beforeIndex) {
+  public void insert(final Widget child, String text, int beforeIndex,
+      int tabStopIndex) {
     checkArgument(
       (beforeIndex >= 0) && (beforeIndex <= getWidgetCount()),
       "beforeIndex out of bounds");
@@ -183,7 +193,7 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
       }
     }
 
-    final Tab tab = new Tab(text);
+    final Tab tab = new Tab(text, tabStopIndex);
     children.insert(child, beforeIndex);
     tabs.add(beforeIndex, tab);
 
@@ -374,26 +384,44 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
    * 
    * @author bufferings[at]gmail.com
    */
-  protected class Tab extends Label {
+  protected class Tab extends Composite {
+
+    /**
+     * For controling key events.
+     */
+    protected boolean lastWasKeyDown;
 
     /**
      * Constructs the Tab
      * 
-     * @param label
+     * @param text
      *          the text to show.
+     * @param tabStopIndex
+     *          The tab index.
      */
-    public Tab(String label) {
-      super(label);
+    public Tab(String text, int tabStopIndex) {
+      super();
+
+      Label label = new Label(text);
+      label.setStyleName("");
+
+      FocusPanel focusPanel = new FocusPanel();
+      focusPanel.add(label);
+      focusPanel.setTabIndex(tabStopIndex);
+      initWidget(focusPanel);
+
       setStyleName(join(UI_WIDGET, UI_STATE_DEFAULT, UI_CORNER_TOP));
       setSelected(false);
-      sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
+      sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.KEYEVENTS);
     }
 
     /**
      * {@inheritDoc}
      */
     public void onBrowserEvent(Event event) {
-      switch (DOM.eventGetType(event)) {
+      int eventType = DOM.eventGetType(event);
+
+      switch (eventType) {
       case Event.ONMOUSEOVER:
         addStyleName(UI_STATE_HOVER);
         break;
@@ -401,6 +429,46 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
         removeStyleName(UI_STATE_HOVER);
         break;
       }
+
+      switch (eventType) {
+      case Event.ONKEYDOWN:
+      case Event.ONKEYPRESS:
+      case Event.ONKEYUP:
+        if (DOM.eventGetAltKey(event) || DOM.eventGetMetaKey(event)) {
+          super.onBrowserEvent(event);
+          return;
+        }
+      }
+      switch (eventType) {
+      case Event.ONKEYDOWN: {
+        keyboardNavigation(event);
+        lastWasKeyDown = true;
+        break;
+      }
+      case Event.ONKEYPRESS: {
+        if (!lastWasKeyDown) {
+          keyboardNavigation(event);
+        }
+        lastWasKeyDown = false;
+        break;
+      }
+      case Event.ONKEYUP: {
+        lastWasKeyDown = false;
+        break;
+      }
+      }
+
+      switch (eventType) {
+      case Event.ONKEYDOWN:
+      case Event.ONKEYUP: {
+        if (isKeyAssigned(DOM.eventGetKeyCode(event))) {
+          DOM.eventCancelBubble(event, true);
+          DOM.eventPreventDefault(event);
+          return;
+        }
+      }
+      }
+
       super.onBrowserEvent(event);
     }
 
@@ -426,6 +494,43 @@ public class WjrTabPanel extends ResizeComposite implements ProvidesResize,
         removeStyleName(UI_STATE_ACTIVE);
         removeStyleName(style.tabSelected());
         addStyleName(style.tabUnselected());
+      }
+    }
+
+    /**
+     * Check if the key code is assigned or not.
+     * 
+     * @param code
+     *          The key code.
+     * @return True if the key is assigned, false if not.
+     */
+    protected boolean isKeyAssigned(int code) {
+      switch (code) {
+      case KeyCodes.KEY_ENTER:
+        return true;
+      default:
+        return false;
+      }
+    }
+
+    private void keyboardNavigation(Event event) {
+      int code = DOM.eventGetKeyCode(event);
+      switch (code) {
+      case KeyCodes.KEY_ENTER: {
+        NativeEvent nativeEvent =
+          Document.get().createClickEvent(
+            0,
+            0,
+            0,
+            0,
+            0,
+            false,
+            false,
+            false,
+            false);
+        ClickEvent.fireNativeEvent(nativeEvent, this);
+        break;
+      }
       }
     }
   }

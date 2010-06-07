@@ -24,6 +24,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Tree;
 
 /**
@@ -56,7 +57,7 @@ public class WjrTree extends Composite {
     }
   }
 
-  protected static boolean isArrowKey(int code) {
+  protected static boolean isAssignedKey(int code) {
     switch (code) {
     case OTHER_KEY_DOWN:
     case OTHER_KEY_RIGHT:
@@ -111,12 +112,28 @@ public class WjrTree extends Composite {
   protected boolean lastWasKeyDown;
 
   /**
+   * The panel to get focus.
+   */
+  protected FocusPanel focusPanel;
+
+  /**
    * Constructs the WjrTree.
    */
   public WjrTree() {
     root = new Root();
-    initWidget(new WjrNoBorderFocusPanel(root));
+    focusPanel = new WjrNoBorderFocusPanel(root);
+    initWidget(focusPanel);
     sinkEvents(Event.ONMOUSEDOWN | Event.ONCLICK | Event.KEYEVENTS);
+  }
+
+  /**
+   * Sets the tab index.
+   * 
+   * @param index
+   *          The tab index.
+   */
+  public void setTabIndex(int index) {
+    focusPanel.setTabIndex(index);
   }
 
   /**
@@ -284,7 +301,7 @@ public class WjrTree extends Composite {
     switch (eventType) {
     case Event.ONKEYDOWN:
     case Event.ONKEYUP: {
-      if (isArrowKey(DOM.eventGetKeyCode(event))) {
+      if (isAssignedKey(DOM.eventGetKeyCode(event))) {
         DOM.eventCancelBubble(event, true);
         DOM.eventPreventDefault(event);
         return;

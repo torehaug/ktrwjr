@@ -14,9 +14,11 @@
     width="100%">
     <g:cell
       horizontalAlignment="ALIGN_RIGHT">
-      <g:SimplePanel styleName="{style.panel}">
+      <g:SimplePanel
+        styleName="{style.panel}">
         <k:WjrIconTextButton
           elemId="ktrwjr-run-button"
+          tabIndex="8"
           ui:field="button"
           icon="ui-icon-play"
           disabled="true"

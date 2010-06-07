@@ -13,7 +13,8 @@
     }
   </ui:style>
 
-  <g:SimplePanel
+  <g:FocusPanel
+    ui:field="focusPanel"
     width="100px"
     height="25px"
     styleName="ui-widget ui-button ui-corner-all ui-state-default">
@@ -35,6 +36,6 @@
       <g:Label
         styleName="ui-icon ui-icon-empty" />
     </g:HorizontalPanel>
-  </g:SimplePanel>
+  </g:FocusPanel>
 </ui:UiBinder>
  

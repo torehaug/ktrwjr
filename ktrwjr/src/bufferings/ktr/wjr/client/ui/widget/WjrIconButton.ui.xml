@@ -3,13 +3,14 @@
   xmlns:ui="urn:ui:com.google.gwt.uibinder"
   xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-  <g:SimplePanel
+  <g:FocusPanel
+    ui:field="focusPanel"
     styleName="ui-widget ui-button ui-corner-all ui-state-default"
     height="16px"
     width="16px">
     <g:Label
       ui:field="iconLabel"
       styleName="ui-icon ui-icon-empty" />
-  </g:SimplePanel>
+  </g:FocusPanel>
 </ui:UiBinder>
  

@@ -34,6 +34,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -136,14 +137,29 @@ public class WjrListBox extends Composite {
   protected boolean lastWasKeyDown;
 
   /**
+   * The panel to get focus.
+   */
+  protected FocusPanel focusPanel;
+
+  /**
    * Constructs the WjrListBox.
    */
   public WjrListBox() {
     Resources.INSTANCE.css().ensureInjected();
-
     mainPanel = new FlowPanel();
-    initWidget(new WjrNoBorderFocusPanel(mainPanel));
+    focusPanel = new WjrNoBorderFocusPanel(mainPanel);
+    initWidget(focusPanel);
     sinkEvents(Event.ONMOUSEDOWN | Event.ONCLICK | Event.KEYEVENTS);
+  }
+
+  /**
+   * Sets the tab index.
+   * 
+   * @param index
+   *          The tab index.
+   */
+  public void setTabIndex(int index) {
+    focusPanel.setTabIndex(index);
   }
 
   /**

@@ -62,14 +62,16 @@ public class WjrTracePanel extends Composite {
 
     traceList = new WjrListBox();
     traceList.setStyleName("");
+    traceList.setTabIndex(10);
     ScrollPanel traceSp = new ScrollPanel(traceList);
 
     logList = new WjrListBox();
     logList.setStyleName("");
+    logList.setTabIndex(12);
     ScrollPanel logSp = new ScrollPanel(logList);
 
-    tabPanel.add(traceSp, "Failure Trace");
-    tabPanel.add(logSp, "Log");
+    tabPanel.add(traceSp, "Failure Trace", 9);
+    tabPanel.add(logSp, "Log", 11);
   }
 
   /**
@@ -80,7 +82,7 @@ public class WjrTracePanel extends Composite {
    */
   public void setTrace(String trace) {
     traceList.clear();
-    if (trace == null) {
+    if (trace == null || trace.trim().length() == 0) {
       return;
     }
 
@@ -98,7 +100,7 @@ public class WjrTracePanel extends Composite {
    */
   public void setLog(String log) {
     logList.clear();
-    if (log == null) {
+    if (log == null || log.trim().length() == 0) {
       return;
     }
 

@@ -17,9 +17,12 @@ package bufferings.ktr.wjr.client.ui.widget;
 
 import static bufferings.ktr.wjr.client.ui.widget.JQueryUI.*;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -34,22 +37,45 @@ public abstract class WjrAbstractButton extends Composite implements
     HasClickHandlers {
 
   /**
+   * Check if the key code is assigned or not.
+   * 
+   * @param code
+   *          The key code.
+   * @return True if the key is assigned, false if not.
+   */
+  protected static boolean isKeyAssigned(int code) {
+    switch (code) {
+    case KeyCodes.KEY_ENTER:
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  /**
    * Whether this button is disabled or not.
    */
   protected boolean disabled = false;
 
   /**
+   * For controling key events.
+   */
+  protected boolean lastWasKeyDown;
+
+  /**
    * Constructs the WjrAbstractButton.
    */
   public WjrAbstractButton() {
-    sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
+    sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.KEYEVENTS);
   }
 
   /**
    * {@inheritDoc}
    */
   public void onBrowserEvent(Event event) {
-    switch (DOM.eventGetType(event)) {
+    int eventType = DOM.eventGetType(event);
+
+    switch (eventType) {
     case Event.ONMOUSEOVER:
       addStyleName(UI_STATE_HOVER);
       break;
@@ -61,6 +87,46 @@ public abstract class WjrAbstractButton extends Composite implements
         return;
       }
     }
+
+    switch (eventType) {
+    case Event.ONKEYDOWN:
+    case Event.ONKEYPRESS:
+    case Event.ONKEYUP:
+      if (DOM.eventGetAltKey(event) || DOM.eventGetMetaKey(event)) {
+        super.onBrowserEvent(event);
+        return;
+      }
+    }
+    switch (eventType) {
+    case Event.ONKEYDOWN: {
+      keyboardNavigation(event);
+      lastWasKeyDown = true;
+      break;
+    }
+    case Event.ONKEYPRESS: {
+      if (!lastWasKeyDown) {
+        keyboardNavigation(event);
+      }
+      lastWasKeyDown = false;
+      break;
+    }
+    case Event.ONKEYUP: {
+      lastWasKeyDown = false;
+      break;
+    }
+    }
+
+    switch (eventType) {
+    case Event.ONKEYDOWN:
+    case Event.ONKEYUP: {
+      if (isKeyAssigned(DOM.eventGetKeyCode(event))) {
+        DOM.eventCancelBubble(event, true);
+        DOM.eventPreventDefault(event);
+        return;
+      }
+    }
+    }
+
     super.onBrowserEvent(event);
   }
 
@@ -90,14 +156,40 @@ public abstract class WjrAbstractButton extends Composite implements
   public HandlerRegistration addClickHandler(ClickHandler handler) {
     return addDomHandler(handler, ClickEvent.getType());
   }
-  
+
   /**
    * Sets the id of this element.
    * 
-   * @param id id to set
+   * @param id
+   *          id to set
    */
   public void setElemId(String id) {
     getElement().setId(id);
+  }
+
+  private void keyboardNavigation(Event event) {
+    if (disabled) {
+      return;
+    }
+
+    int code = DOM.eventGetKeyCode(event);
+    switch (code) {
+    case KeyCodes.KEY_ENTER: {
+      NativeEvent nativeEvent =
+        Document.get().createClickEvent(
+          0,
+          0,
+          0,
+          0,
+          0,
+          false,
+          false,
+          false,
+          false);
+      ClickEvent.fireNativeEvent(nativeEvent, this);
+      break;
+    }
+    }
   }
 
 }

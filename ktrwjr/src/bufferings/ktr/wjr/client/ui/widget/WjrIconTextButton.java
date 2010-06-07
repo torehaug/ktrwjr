@@ -20,6 +20,7 @@ import static bufferings.ktr.wjr.client.ui.widget.JQueryUI.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -37,6 +38,12 @@ public class WjrIconTextButton extends WjrAbstractButton implements HasText {
   interface WjrIconTextButtonUiBinder extends
       UiBinder<Widget, WjrIconTextButton> {
   }
+  
+  /**
+   * The panel to get focus.
+   */
+  @UiField
+  protected FocusPanel focusPanel;
 
   /**
    * The label to show the icon.
@@ -84,4 +91,13 @@ public class WjrIconTextButton extends WjrAbstractButton implements HasText {
     textLabel.setText(text);
   }
 
+  /**
+   * Sets the tab index.
+   * 
+   * @param index
+   *          The tab index.
+   */
+  public void setTabIndex(int index) {
+    focusPanel.setTabIndex(index);
+  }
 }

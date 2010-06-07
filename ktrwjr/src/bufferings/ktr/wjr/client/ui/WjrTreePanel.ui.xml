@@ -32,36 +32,42 @@
 
             <k:WjrIconButton
               elemId="ktrwjr-expand-all-button"
+              tabIndex="1"
               icon="ui-icon-circlesmall-plus"
               title="Expand All"
               ui:field="expandAllButton"
               disabled="true" />
             <k:WjrIconButton
               elemId="ktrwjr-collapse-all-button"
+              tabIndex="2"
               icon="ui-icon-circlesmall-minus"
               title="Collapse All"
               ui:field="collapseAllButton"
               disabled="true" />
             <k:WjrIconButton
               elemId="ktrwjr-check-all-button"
+              tabIndex="3"
               icon="ui-icon-bullet"
               title="Check All"
               ui:field="checkAllButton"
               disabled="true" />
             <k:WjrIconButton
               elemId="ktrwjr-uncheck-all-button"
+              tabIndex="4"
               icon="ui-icon-radio-on"
               title="Uncheck All"
               ui:field="uncheckAllButton"
               disabled="true" />
             <k:WjrIconButton
               elemId="ktrwjr-clear-button"
+              tabIndex="5"
               icon="ui-icon-arrowreturn-1-w"
               title="Clear Results"
               ui:field="clearButton"
               disabled="true" />
             <k:WjrIconButton
               elemId="ktrwjr-reload-button"
+              tabIndex="6"
               icon="ui-icon-refresh"
               title="Reload Testcases"
               ui:field="reloadButton"
@@ -75,6 +81,7 @@
       <g:ScrollPanel
         styleName="ui-widget ui-widget-content ui-corner-bottom">
         <k:WjrTree
+          tabIndex="7"
           ui:field="tree" />
       </g:ScrollPanel>
     </g:center>
