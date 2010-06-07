@@ -204,6 +204,7 @@ public class WjrTreeItem extends Composite implements
    */
   protected void updateState() {
     if (getChildCount() == 0) {
+      open = false;
       toggleIconLabel.setStyleName(join(UI_ICON, UI_ICON_EMPTY));
       childrenPanel.setVisible(false);
       return;
@@ -362,6 +363,15 @@ public class WjrTreeItem extends Composite implements
       return null;
     }
     return children.get(index);
+  }
+
+  /**
+   * Gets whether this item has a child or not.
+   * 
+   * @return True if the item has a child, false if not.
+   */
+  public boolean hasChild() {
+    return (children.size() > 0);
   }
 
   /**

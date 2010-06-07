@@ -15,6 +15,8 @@
  */
 package bufferings.ktr.wjr.client.ui.widget;
 
+import static bufferings.ktr.wjr.client.ui.widget.JQueryUI.*;
+
 import java.util.ArrayList;
 
 import com.google.gwt.dom.client.Style.Unit;
@@ -50,10 +52,25 @@ public class WjrTree extends Composite {
    * @author bufferings[at]gmail.com
    */
   protected static class Root extends WjrTreeItem {
+
     public Root() {
       captionPanel.setVisible(false);
       childrenPanel.getElement().getStyle().setMargin(0, Unit.PX);
       setState(true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void updateState() {
+      if (getChildCount() == 0) {
+        toggleIconLabel.setStyleName(join(UI_ICON, UI_ICON_EMPTY));
+        childrenPanel.setVisible(false);
+        return;
+      }
+
+      childrenPanel.setVisible(true);
+      toggleIconLabel.setStyleName(join(UI_ICON, UI_ICON_TRIANGLE_1_S));
     }
   }
 
@@ -195,21 +212,6 @@ public class WjrTree extends Composite {
   }
 
   /**
-   * Ensures the selected item visible.
-   */
-  public void ensureSelectedItemVisible() {
-    if (curSelection == null) {
-      return;
-    }
-
-    WjrTreeItem parent = curSelection.getParentItem();
-    while (parent != null) {
-      parent.setState(true);
-      parent = parent.getParentItem();
-    }
-  }
-
-  /**
    * Sets the selected item and fire the selection event.
    * 
    * @param item
@@ -242,6 +244,91 @@ public class WjrTree extends Composite {
 
       DOMUtil.scrollTopIntoView(curSelection.getElement());
     }
+  }
+
+  /**
+   * Checks all items.
+   */
+  public void checkAllItems() {
+    for (int i = 0; i < getItemCount(); i++) {
+      checkRecursive(getItem(i), true);
+    }
+  }
+
+  /**
+   * Unchecks all items.
+   */
+  public void uncheckAllItems() {
+    for (int i = 0; i < getItemCount(); i++) {
+      checkRecursive(getItem(i), false);
+    }
+  }
+
+  /**
+   * Expands all items.
+   */
+  public void expandAllItems() {
+    for (int i = 0; i < getItemCount(); i++) {
+      expandRecursive(getItem(i));
+    }
+  }
+
+  /**
+   * Collapses all items.
+   */
+  public void collapseAllItems() {
+    for (int i = 0; i < getItemCount(); i++) {
+      collapseRecursive(getItem(i));
+    }
+  }
+
+  /**
+   * Checks or unchecks the treeItem and its children recursively.
+   * 
+   * @param treeItem
+   *          The treeItem.
+   * @param value
+   *          True if check, false if uncheck.
+   */
+  protected void checkRecursive(WjrTreeItem treeItem, boolean value) {
+    treeItem.setChecked(value, false);
+    for (int i = 0; i < treeItem.getChildCount(); i++) {
+      checkRecursive(treeItem.getChild(i), value);
+    }
+  }
+
+  /**
+   * Expands the treeItem and its children recursively.
+   * 
+   * @param treeItem
+   *          The treeItem.
+   */
+  protected void expandRecursive(WjrTreeItem treeItem) {
+    if (treeItem.hasChild()) {
+      treeItem.setState(true);
+      for (int i = 0; i < treeItem.getChildCount(); i++) {
+        expandRecursive(treeItem.getChild(i));
+      }
+    }
+  }
+
+  /**
+   * Collapses the treeItem and its children recursively.
+   * 
+   * @param treeItem
+   *          The treeItem.
+   */
+  protected void collapseRecursive(WjrTreeItem treeItem) {
+    for (int i = 0; i < treeItem.getChildCount(); i++) {
+      collapseRecursive(treeItem.getChild(i));
+    }
+    if (treeItem == curSelection) {
+      WjrTreeItem parentItem = treeItem.getParentItem();
+      if (parentItem != root) {
+        setSelectedItem(parentItem, true);
+      }
+    }
+    treeItem.setState(false);
   }
 
   /**
@@ -349,7 +436,7 @@ public class WjrTree extends Composite {
 
     WjrTreeItem item = findItemByChain(chain, 0, root);
     if (item != null && item != root) {
-      if (item.getChildCount() > 0
+      if (item.hasChild()
         && DOM.isOrHasChild(item.toggleIconLabel.getElement(), hElem)) {
         boolean newState = !item.getState();
         item.setState(newState);
@@ -416,7 +503,7 @@ public class WjrTree extends Composite {
     if (topClosedParent != null) {
       // Select the first visible parent if curSelection is hidden
       setSelectedItem(topClosedParent);
-    } else if (curSelection.getChildCount() > 0) {
+    } else if (curSelection.hasChild()) {
       if (!curSelection.getState()) {
         curSelection.setState(true);
       } else {
@@ -477,9 +564,6 @@ public class WjrTree extends Composite {
     }
 
     WjrTreeItem parent = sel.getParentItem();
-    if (parent == null) {
-      parent = root;
-    }
     int idx = parent.getChildIndex(sel);
 
     if (idx > 0) {

@@ -18,7 +18,6 @@ package bufferings.ktr.wjr.client.ui;
 import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 import bufferings.ktr.wjr.client.ui.widget.WjrIconButton;
 import bufferings.ktr.wjr.client.ui.widget.WjrTree;
-import bufferings.ktr.wjr.client.ui.widget.WjrTreeItem;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -179,9 +178,7 @@ public class WjrTreePanel extends Composite {
    */
   @UiHandler("checkAllButton")
   public void onCheckAllButtonClicked(ClickEvent event) {
-    for (int i = 0; i < tree.getItemCount(); i++) {
-      checkRecursive(tree.getItem(i), true);
-    }
+    tree.checkAllItems();
     handler.onCheckAllButtonClicked(event);
   }
 
@@ -193,25 +190,8 @@ public class WjrTreePanel extends Composite {
    */
   @UiHandler("uncheckAllButton")
   public void onUncheckAllButtonClicked(ClickEvent event) {
-    for (int i = 0; i < tree.getItemCount(); i++) {
-      checkRecursive(tree.getItem(i), false);
-    }
+    tree.uncheckAllItems();
     handler.onUncheckAllButtonClicked(event);
-  }
-
-  /**
-   * Checks or unchecks the treeItem and its children recursively.
-   * 
-   * @param treeItem
-   *          The treeItem.
-   * @param value
-   *          True if check, false if uncheck.
-   */
-  protected void checkRecursive(WjrTreeItem treeItem, boolean value) {
-    treeItem.setChecked(value, false);
-    for (int i = 0; i < treeItem.getChildCount(); i++) {
-      checkRecursive(treeItem.getChild(i), value);
-    }
   }
 
   /**
@@ -222,23 +202,7 @@ public class WjrTreePanel extends Composite {
    */
   @UiHandler("expandAllButton")
   public void onExpandAllButtonClicked(ClickEvent event) {
-    for (int i = 0; i < tree.getItemCount(); i++) {
-      WjrTreeItem treeItem = tree.getItem(i);
-      expandRecursive(treeItem);
-    }
-  }
-
-  /**
-   * Expands the treeItem and its children recursively.
-   * 
-   * @param treeItem
-   *          The treeItem.
-   */
-  protected void expandRecursive(WjrTreeItem treeItem) {
-    treeItem.setState(true);
-    for (int i = 0; i < treeItem.getChildCount(); i++) {
-      expandRecursive(treeItem.getChild(i));
-    }
+    tree.expandAllItems();
   }
 
   /**
@@ -249,23 +213,7 @@ public class WjrTreePanel extends Composite {
    */
   @UiHandler("collapseAllButton")
   public void onCollapseAllButtonClicked(ClickEvent event) {
-    for (int i = 0; i < tree.getItemCount(); i++) {
-      WjrTreeItem treeItem = tree.getItem(i);
-      collapseRecursive(treeItem);
-    }
-  }
-
-  /**
-   * Collapses the treeItem and its children recursively.
-   * 
-   * @param treeItem
-   *          The treeItem.
-   */
-  protected void collapseRecursive(WjrTreeItem treeItem) {
-    for (int i = 0; i < treeItem.getChildCount(); i++) {
-      collapseRecursive(treeItem.getChild(i));
-    }
-    treeItem.setState(false);
+    tree.collapseAllItems();
   }
 
   /**
