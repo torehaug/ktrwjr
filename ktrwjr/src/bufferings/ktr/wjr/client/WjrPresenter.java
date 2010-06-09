@@ -15,6 +15,8 @@
  */
 package bufferings.ktr.wjr.client;
 
+import static bufferings.ktr.wjr.shared.util.Preconditions.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -130,7 +132,6 @@ public class WjrPresenter implements WjrDisplayHandler {
         view.setData(store);
         view.notifyReloadingSucceeded();
       }
-
     });
   }
 
@@ -146,7 +147,9 @@ public class WjrPresenter implements WjrDisplayHandler {
    * {@inheritDoc}
    */
   public void onRunButtonClick() {
-    List<WjrMethodItem> checkedMethods = view.getCheckedMethodItems();
+    checkState(running == false, "Tests are running.");
+
+    final List<WjrMethodItem> checkedMethods = view.getCheckedMethodItems();
     if (checkedMethods.size() == 0) {
       GWT.log("No method items are checked.");
       view.notifyRunningFinished();
@@ -195,7 +198,6 @@ public class WjrPresenter implements WjrDisplayHandler {
 
         public void onFailure(Throwable caught) {
           WjrMethodItem stored = methodItems.get(currentIndex);
-          GWT.log("Run " + stored.getMethodName() + " failed.", caught);
 
           stored.setState(State.ERROR);
           stored.setTrace(getTrace(caught));
@@ -220,11 +222,12 @@ public class WjrPresenter implements WjrDisplayHandler {
         }
 
         public void onSuccess(WjrMethodItem result) {
-          GWT.log("Run " + result.getMethodName() + " succeeded.");
+          // TODO In case of the Quota Over, retry.
+          // If canceled then exit.
 
           WjrMethodItem stored =
             store.getMethodItem(result.getClassAndMethodName());
-          copyMethodItemAttributes(result, stored);
+          result.copyResult(stored);
 
           store.getClassItem(stored.getClassName()).updateSummary(store);
           store.updateSummary();
@@ -244,21 +247,13 @@ public class WjrPresenter implements WjrDisplayHandler {
           runWjrMethodItem(methodItems, nextIndex);
         }
 
-        private void copyMethodItemAttributes(WjrMethodItem from,
-            WjrMethodItem to) {
-          to.setState(from.getState());
-          to.setTrace(from.getTrace());
-          to.setTime(from.getTime());
-          to.setCpuTime(from.getCpuTime());
-          to.setApiTime(from.getApiTime());
-          to.setLog(from.getLog());
-        }
-
         private String getTrace(Throwable e) {
           return e.toString();
         }
 
         private void onRunSuccess() {
+          running = false;
+          cancelRequested = false;
           view.notifyRunningFinished();
         }
 
@@ -270,6 +265,9 @@ public class WjrPresenter implements WjrDisplayHandler {
           }
           store.updateAllSummaries();
           view.repaintAllTreeItems(store);
+
+          running = false;
+          cancelRequested = false;
           view.notifyRunningFinished();
         }
       });

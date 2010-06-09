@@ -251,4 +251,23 @@ public class WjrMethodItem extends WjrStoreItem {
     apiTime = "";
   }
 
+  /**
+   * Copies the result attribute to another.
+   * 
+   * @param to
+   *          The item to be copied to.
+   */
+  public void copyResult(WjrMethodItem to) {
+    checkNotNull(to, "The to parameter is null.");
+    checkArgument(
+      classAndMethodName.equals(to.getClassAndMethodName()),
+      "The classAndMethodName is different.");
+    to.setState(state);
+    to.setTrace(trace);
+    to.setTime(time);
+    to.setCpuTime(cpuTime);
+    to.setApiTime(apiTime);
+    to.setLog(log);
+  }
+
 }

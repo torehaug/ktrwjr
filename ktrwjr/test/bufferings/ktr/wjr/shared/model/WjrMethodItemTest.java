@@ -138,4 +138,44 @@ public class WjrMethodItemTest {
     methodItem.setState(null);
   }
 
+  @Test(expected = NullPointerException.class)
+  public void copyResult_WillThrowNPE_WhenToIsNull() {
+    WjrMethodItem from = new WjrMethodItem("bar.foo.Foo", "barMethod");
+    from.copyResult(null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void copyResult_WillThrowIAE_WhenClassNameIsDifferent() {
+    WjrMethodItem from = new WjrMethodItem("bar.foo.Foo", "barMethod");
+    WjrMethodItem to = new WjrMethodItem("bar.foo.Bar", "barMethod");
+    from.copyResult(to);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void copyResult_WillThrowIAE_WhenMethodNameIsDifferent() {
+    WjrMethodItem from = new WjrMethodItem("bar.foo.Foo", "barMethod");
+    WjrMethodItem to = new WjrMethodItem("bar.foo.Foo", "fooMethod");
+    from.copyResult(to);
+  }
+
+  @Test
+  public void copyResult_WillCopyResults() {
+    WjrMethodItem from = new WjrMethodItem("bar.foo.Foo", "barMethod");
+    from.setState(State.FAILURE);
+    from.setTime("1111");
+    from.setApiTime("2222");
+    from.setCpuTime("3333");
+    from.setLog("mylog");
+    from.setTrace("mytrace");
+
+    WjrMethodItem to = new WjrMethodItem("bar.foo.Foo", "barMethod");
+    from.copyResult(to);
+
+    assertThat(from.getState(), is(to.getState()));
+    assertThat(from.getTime(), is(to.getTime()));
+    assertThat(from.getApiTime(), is(to.getApiTime()));
+    assertThat(from.getCpuTime(), is(to.getCpuTime()));
+    assertThat(from.getLog(), is(to.getLog()));
+    assertThat(from.getTrace(), is(to.getTrace()));
+  }
 }
