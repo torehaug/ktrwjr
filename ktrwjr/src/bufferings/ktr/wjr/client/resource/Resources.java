@@ -11,6 +11,6 @@ public interface Resources extends ClientBundle {
   @Source("ktrwjr_icon_16_16.png")
   ImageResource ktrwjr16();
 
-  @Source("ktrwjr_loading.png")
+  @Source("ktrwjr_loading.jpg")
   ImageResource ktrwjrLoading();
 }
