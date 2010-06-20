@@ -463,7 +463,7 @@ public class WjrView extends Composite implements WjrDisplay,
    *          The test store.
    */
   private void updateResultPanel(WjrStore store) {
-    int runningsCount = store.getRunningCount();
+    int runningsCount = store.getRunningCount() + store.getRetryWaitingCount();
     int runsCount =
       store.getTotalCount() - store.getNotYetCount() - runningsCount;
     resultPanel.updateResults(
@@ -535,6 +535,8 @@ public class WjrView extends Composite implements WjrDisplay,
       return UI_ICON_MINUS;
     case RUNNING:
       return UI_ICON_ARRORREFRESH_1_W;
+    case RETRY_WAITING:
+      return UI_ICON_CLOCK;
     default:
       // GWT does not emulate format, so i use the format method of Guice's
       // Preconditions class.
@@ -556,6 +558,7 @@ public class WjrView extends Composite implements WjrDisplay,
     case SUCCESS:
     case NOT_YET:
     case RUNNING:
+    case RETRY_WAITING:
       return UI_STATE_HIGHLIGHT;
     case FAILURE:
     case ERROR:
@@ -605,9 +608,10 @@ public class WjrView extends Composite implements WjrDisplay,
   private String getTreeItemTextFromMethodItem(WjrMethodItem methodItem) {
     StringBuilder sb = new StringBuilder(methodItem.getMethodName());
 
-    if (methodItem.getState() != State.NOT_YET
+    if (methodItem.getState() == State.RETRY_WAITING) {
+      sb.append(" (").append(getRetryWaitingString(methodItem)).append(")");
+    } else if (methodItem.getState() != State.NOT_YET
       && methodItem.getState() != State.RUNNING) {
-
       sb.append(" (").append(getTimeString(methodItem)).append(")");
     }
 
@@ -637,6 +641,24 @@ public class WjrView extends Composite implements WjrDisplay,
   }
 
   /**
+   * Gets the retry waiting string from the test method item.
+   * 
+   * @param methodItem
+   *          The test method item.
+   * @return The time string.
+   */
+  private Object getRetryWaitingString(WjrMethodItem methodItem) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("waiting:");
+    sb.append(methodItem.getWaitingSeconds());
+    sb.append("s retry count:");
+    sb.append(methodItem.getRetryCount());
+    sb.append("/");
+    sb.append(methodItem.getMaxRetryCount());
+    return sb.toString();
+  }
+
+  /**
    * Gets the tree item log from the test store item.
    * 
    * @param storeItem
@@ -649,7 +671,8 @@ public class WjrView extends Composite implements WjrDisplay,
     } else {
       WjrMethodItem methodItem = (WjrMethodItem) storeItem;
       if (methodItem.getState() == State.NOT_YET
-        || methodItem.getState() == State.RUNNING) {
+        || methodItem.getState() == State.RUNNING
+        || methodItem.getState() == State.RETRY_WAITING) {
         return "";
       } else {
         String log = methodItem.getLog();
@@ -670,8 +693,15 @@ public class WjrView extends Composite implements WjrDisplay,
       return "";
     } else {
       WjrMethodItem methodItem = (WjrMethodItem) storeItem;
-      String trace = methodItem.getTrace();
-      return (trace != null ? trace : "");
+      if (methodItem.getState() == State.NOT_YET
+        || methodItem.getState() == State.RUNNING
+        || methodItem.getState() == State.RETRY_WAITING) {
+        return "";
+      } else {
+        String trace = methodItem.getTrace();
+        return (trace != null ? trace : "");
+      }
     }
   }
+
 }

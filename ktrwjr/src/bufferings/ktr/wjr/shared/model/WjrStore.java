@@ -257,7 +257,16 @@ public class WjrStore implements IsSerializable {
   public int getRunningCount() {
     return root.getRunningCount();
   }
-
+  
+  /**
+   * Gets the retry waiting count.
+   * 
+   * @return The retry waiting count.
+   */
+  public int getRetryWaitingCount() {
+    return root.getRetryWaitingCount();
+  }
+  
   /**
    * Updates the summary of the class items. This method does not update the
    * summaries in the class items. If you want to update all summaries, you can

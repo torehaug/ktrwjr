@@ -24,6 +24,8 @@ import bufferings.ktr.wjr.server.util.WjrUtils;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
 
+import com.google.apphosting.api.ApiProxy.OverQuotaException;
+
 /**
  * The test runner of the {@link WjrMethodItem}.
  * 
@@ -127,6 +129,9 @@ public class WjrJUnit3MethodRunner implements WjrMethodRunner {
     } else if (result.getErrorCount() > 0) {
       methodItem.setState(State.ERROR);
       methodItem.setTrace(result.getErrors().get(0).trace());
+      if (result.getErrors().get(0).thrownException() instanceof OverQuotaException) {
+        methodItem.setOverQuota(true);
+      }
     } else {
       methodItem.setState(State.SUCCESS);
       methodItem.setTrace("");

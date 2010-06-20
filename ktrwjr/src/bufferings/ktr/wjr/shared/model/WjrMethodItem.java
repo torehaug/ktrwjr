@@ -74,6 +74,26 @@ public class WjrMethodItem extends WjrStoreItem {
   protected String apiTime = "";
 
   /**
+   * Determine whether the over quota exception or not.
+   */
+  protected boolean isOverQuota = false;
+
+  /**
+   * The retry count of the method.
+   */
+  protected int retryCount = 0;
+
+  /**
+   * The max count of retrying.
+   */
+  protected int maxRetryCount = 0;
+
+  /**
+   * The waiting seconds before retrying the test.
+   */
+  protected int waitingSeconds = 0;
+
+  /**
    * Constructor for only GWT-RPC serialization.
    */
   @SuppressWarnings("unused")
@@ -240,6 +260,82 @@ public class WjrMethodItem extends WjrStoreItem {
   }
 
   /**
+   * Gets whether the quota over error has been occured or not.
+   * 
+   * @return True if the over quota exception has been occured, false if not.
+   */
+  public boolean isOverQuota() {
+    return isOverQuota;
+  }
+
+  /**
+   * Sets whether the over quota exception has been occured or not.
+   * 
+   * @param isOverQuota
+   *          True if the over quota exception has been occured, false if not.
+   */
+  public void setOverQuota(boolean isOverQuota) {
+    this.isOverQuota = isOverQuota;
+  }
+
+  /**
+   * Gets the retry count of the method.
+   * 
+   * @return The retry count of the method.
+   */
+  public int getRetryCount() {
+    return retryCount;
+  }
+
+  /**
+   * Sets the retry count of the method.
+   * 
+   * @param retryCount
+   *          The retry count of the method.
+   */
+  public void setRetryCount(int retryCount) {
+    this.retryCount = retryCount;
+  }
+
+  /**
+   * Gets the max count of retrying.
+   * 
+   * @return The max count of retrying.
+   */
+  public int getMaxRetryCount() {
+    return maxRetryCount;
+  }
+
+  /**
+   * Sets the max count of retrying.
+   * 
+   * @param maxRetryCount
+   *          The max count of retrying.
+   */
+  public void setMaxRetryCount(int maxRetryCount) {
+    this.maxRetryCount = maxRetryCount;
+  }
+
+  /**
+   * Gets the waiting seconds before retrying the test.
+   * 
+   * @return The waiting seconds before retrying the test.
+   */
+  public int getWaitingSeconds() {
+    return waitingSeconds;
+  }
+
+  /**
+   * Sets the waiting seconds before retrying the test.
+   * 
+   * @param waitingSeconds
+   *          The waiting seconds before retrying the test.
+   */
+  public void setWaitingSeconds(int waitingSeconds) {
+    this.waitingSeconds = waitingSeconds;
+  }
+
+  /**
    * Clears the test result.
    */
   public void clearResult() {
@@ -249,6 +345,11 @@ public class WjrMethodItem extends WjrStoreItem {
     time = "";
     cpuTime = "";
     apiTime = "";
+    
+    isOverQuota = false;
+    retryCount = 0;
+    maxRetryCount = 0;
+    waitingSeconds = 0;
   }
 
   /**

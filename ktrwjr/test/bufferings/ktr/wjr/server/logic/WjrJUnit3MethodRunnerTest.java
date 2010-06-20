@@ -29,8 +29,6 @@ import org.junit.Test;
 import bufferings.ktr.wjr.server.fortest.ForTest;
 import bufferings.ktr.wjr.server.fortest.ForTestJUnit3;
 import bufferings.ktr.wjr.server.fortest.ForTestJUnit3Inherit;
-import bufferings.ktr.wjr.server.logic.WjrJUnit3MethodRunner;
-import bufferings.ktr.wjr.server.logic.WjrJUnit3Result;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
 
@@ -258,6 +256,7 @@ public class WjrJUnit3MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.SUCCESS));
     assertThat(methodItem.getTrace(), is(""));
+    assertThat(methodItem.isOverQuota(), is(false));
   }
 
   @Test
@@ -267,6 +266,7 @@ public class WjrJUnit3MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.FAILURE));
     assertThat(methodItem.getTrace(), is(not(nullValue())));
+    assertThat(methodItem.isOverQuota(), is(false));
   }
 
   @Test
@@ -276,6 +276,7 @@ public class WjrJUnit3MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.ERROR));
     assertThat(methodItem.getTrace(), is(not(nullValue())));
+    assertThat(methodItem.isOverQuota(), is(false));
   }
 
   @Test
@@ -287,6 +288,7 @@ public class WjrJUnit3MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.SUCCESS));
     assertThat(methodItem.getTrace(), is(""));
+    assertThat(methodItem.isOverQuota(), is(false));
   }
 
   @Test
@@ -298,6 +300,7 @@ public class WjrJUnit3MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.SUCCESS));
     assertThat(methodItem.getTrace(), is(""));
+    assertThat(methodItem.isOverQuota(), is(false));
   }
 
   @Test
@@ -307,6 +310,7 @@ public class WjrJUnit3MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.FAILURE));
     assertThat(methodItem.getTrace(), is(not(nullValue())));
+    assertThat(methodItem.isOverQuota(), is(false));
   }
 
   @Test
@@ -316,5 +320,18 @@ public class WjrJUnit3MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.ERROR));
     assertThat(methodItem.getTrace(), is(not("")));
+    assertThat(methodItem.isOverQuota(), is(false));
+  }
+
+  @Test
+  public void runWjrMethod_WillSetQuotaOver_WhenOverQuotaExceptionOccur() {
+    WjrMethodItem methodItem =
+      new WjrMethodItem(
+        ForTestJUnit3.class.getName(),
+        "testOverQuotaExceptionMethod");
+    methodRunner.runWjrMethod(methodItem);
+    assertThat(methodItem.getState(), is(State.ERROR));
+    assertThat(methodItem.getTrace(), is(not("")));
+    assertThat(methodItem.isOverQuota(), is(true));
   }
 }

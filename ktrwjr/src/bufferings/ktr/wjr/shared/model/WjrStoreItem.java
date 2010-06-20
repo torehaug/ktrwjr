@@ -32,7 +32,7 @@ public abstract class WjrStoreItem implements IsSerializable {
    * @author bufferings[at]gmail.com
    */
   public enum State {
-    NOT_YET, SUCCESS, FAILURE, ERROR, RUNNING
+    NOT_YET, SUCCESS, FAILURE, ERROR, RUNNING, RETRY_WAITING
   }
 
   /**

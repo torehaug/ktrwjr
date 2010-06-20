@@ -52,6 +52,11 @@ public abstract class WjrSummaryItem extends WjrStoreItem {
   protected int runningCount = 0;
 
   /**
+   * The retry-waiting count of the children.
+   */
+  protected int retryWaitingCount = 0;
+
+  /**
    * The not yet count of the children.
    */
   protected int notYetCount = 0;
@@ -102,6 +107,15 @@ public abstract class WjrSummaryItem extends WjrStoreItem {
   }
 
   /**
+   * Gets the retry waiting count of the children.
+   * 
+   * @return The retry waiting count of the children.
+   */
+  public int getRetryWaitingCount() {
+    return retryWaitingCount;
+  }
+
+  /**
    * Gets the not yet count of the children.
    * 
    * @return The not yet count of the children.
@@ -120,6 +134,7 @@ public abstract class WjrSummaryItem extends WjrStoreItem {
     errorCount = 0;
     failureCount = 0;
     runningCount = 0;
+    retryWaitingCount = 0;
     notYetCount = totalCount;
   }
 
@@ -140,6 +155,7 @@ public abstract class WjrSummaryItem extends WjrStoreItem {
     errorCount = 0;
     failureCount = 0;
     runningCount = 0;
+    retryWaitingCount = 0;
     notYetCount = 0;
     totalCount = 0;
 
@@ -160,6 +176,7 @@ public abstract class WjrSummaryItem extends WjrStoreItem {
     errorCount += classItem.getErrorCount();
     failureCount += classItem.getFailureCount();
     runningCount += classItem.getRunningCount();
+    retryWaitingCount += classItem.getRetryWaitingCount();
     notYetCount += classItem.getNotYetCount();
     totalCount += classItem.getTotalCount();
   }
@@ -179,6 +196,9 @@ public abstract class WjrSummaryItem extends WjrStoreItem {
     case RUNNING:
       runningCount++;
       break;
+    case RETRY_WAITING:
+      retryWaitingCount++;
+      break;
     case NOT_YET:
       notYetCount++;
       break;
@@ -197,7 +217,7 @@ public abstract class WjrSummaryItem extends WjrStoreItem {
       state = State.ERROR;
     } else if (failureCount > 0) {
       state = State.FAILURE;
-    } else if (runningCount > 0) {
+    } else if (runningCount > 0 || retryWaitingCount > 0) {
       state = State.RUNNING;
     } else if (notYetCount > 0) {
       state = State.NOT_YET;

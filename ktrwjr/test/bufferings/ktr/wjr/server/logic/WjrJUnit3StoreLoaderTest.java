@@ -47,10 +47,11 @@ public class WjrJUnit3StoreLoaderTest {
 
     List<WjrMethodItem> methodItems =
       store.getMethodItems(ForTestJUnit3.class.getName());
-    assertThat(methodItems.size(), is(3));
+    assertThat(methodItems.size(), is(4));
     assertThat(methodItems.get(0).getMethodName(), is("testErrorMethod"));
     assertThat(methodItems.get(1).getMethodName(), is("testFailureMethod"));
-    assertThat(methodItems.get(2).getMethodName(), is("testSuccessMethod"));
+    assertThat(methodItems.get(2).getMethodName(), is("testOverQuotaExceptionMethod"));
+    assertThat(methodItems.get(3).getMethodName(), is("testSuccessMethod"));
   }
 
   @Test
@@ -65,10 +66,11 @@ public class WjrJUnit3StoreLoaderTest {
 
     List<WjrMethodItem> methodItems =
       store.getMethodItems(ForTestJUnit3Inherit.class.getName());
-    assertThat(methodItems.size(), is(3));
+    assertThat(methodItems.size(), is(4));
     assertThat(methodItems.get(0).getMethodName(), is("testErrorMethod"));
     assertThat(methodItems.get(1).getMethodName(), is("testFailureMethod"));
-    assertThat(methodItems.get(2).getMethodName(), is("testSuccessMethod"));
+    assertThat(methodItems.get(2).getMethodName(), is("testOverQuotaExceptionMethod"));
+    assertThat(methodItems.get(3).getMethodName(), is("testSuccessMethod"));
   }
 
   @Test

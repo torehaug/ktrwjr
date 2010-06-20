@@ -64,6 +64,7 @@ public class KtrWjrServiceImpl implements KtrWjrService {
 
     String timeZoneId = paramParser.getTimeZoneId(parameterMap);
     try {
+      methodItem.clearResult();
       logRecorder.startRecording(timeZoneId);
       quotaRecorder.startRecording();
       methodItem = methodRunner.runWjrMethod(methodItem);

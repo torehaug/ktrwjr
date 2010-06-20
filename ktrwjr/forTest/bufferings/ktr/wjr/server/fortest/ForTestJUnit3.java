@@ -19,6 +19,8 @@ import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
+import com.google.apphosting.api.ApiProxy;
+
 public class ForTestJUnit3 extends TestCase {
   private static final Logger logger =
     Logger.getLogger(ForTestJUnit3.class.getName());
@@ -44,6 +46,13 @@ public class ForTestJUnit3 extends TestCase {
   public int testHasReturnMethod() {
     logger.info("testHasReturnMethod");
     return 0;
+  }
+
+  public void testOverQuotaExceptionMethod() {
+    logger.info("overQuotaExceptionMethod");
+    throw new ApiProxy.OverQuotaException(
+      ForTest.class.getPackage().getName(),
+      ForTest.class.getSimpleName());
   }
 
   public void testHasParamMethod(int a) {

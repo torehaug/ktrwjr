@@ -50,7 +50,8 @@ public class JQueryUI {
   public static final String UI_ICON_MINUS = "ui-icon-minus";
   public static final String UI_ICON_ARRORREFRESH_1_W =
     "ui-icon-arrowrefresh-1-w";
-
+  public static final String UI_ICON_CLOCK = "ui-icon-clock";
+  
   public static final String UI_ICON_PLAY = "ui-icon-play";
   public static final String UI_ICON_PAUSE = "ui-icon-pause";
 

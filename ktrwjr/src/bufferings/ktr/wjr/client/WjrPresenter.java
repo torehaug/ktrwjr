@@ -30,6 +30,7 @@ import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -75,6 +76,11 @@ public class WjrPresenter implements WjrDisplayHandler {
    * The GET parameters for user configuration.
    */
   protected Map<String, List<String>> parameterMap;
+
+  /**
+   * The retry timers. The key is the classAndMethodName.
+   */
+  protected Map<String, Timer> retryTimerMap = new HashMap<String, Timer>();
 
   /**
    * Constructs the presenter.
@@ -178,6 +184,11 @@ public class WjrPresenter implements WjrDisplayHandler {
       return;
     }
     cancelRequested = true;
+
+    for (Timer retryTimer : retryTimerMap.values()) {
+      retryTimer.cancel();
+    }
+    retryTimerMap.clear();
   }
 
   /**
@@ -222,12 +233,57 @@ public class WjrPresenter implements WjrDisplayHandler {
         }
 
         public void onSuccess(WjrMethodItem result) {
-          // TODO In case of the Quota Over, retry.
-          // If canceled then exit.
-
-          WjrMethodItem stored =
+          final WjrMethodItem stored =
             store.getMethodItem(result.getClassAndMethodName());
           result.copyResult(stored);
+
+          stored.setMaxRetryCount(3);
+          if (!cancelRequested
+            && result.isOverQuota()
+            && stored.getRetryCount() < stored.getMaxRetryCount()) {
+
+            stored.setState(State.RETRY_WAITING);
+            stored.setRetryCount(stored.getRetryCount() + 1);
+            stored.setWaitingSeconds(5);
+
+            store.getClassItem(stored.getClassName()).updateSummary(store);
+            store.updateSummary();
+            view.repaintTreeItemAncestors(store, stored);
+
+            Timer retryTimer = new Timer() {
+
+              public void run() {
+                if (cancelRequested) {
+                  onRunCancel();
+                  return;
+                }
+                
+                stored.setState(State.RUNNING);
+                store.getClassItem(stored.getClassName()).updateSummary(store);
+                store.updateSummary();
+                view.repaintTreeItemAncestors(store, stored);
+                
+                runWjrMethodItem(methodItems, currentIndex);
+              }
+
+              @Override
+              public void cancel() {
+                super.cancel();
+                if (cancelRequested) {
+                  onRunCancel();
+                }
+              }
+
+            };
+            retryTimerMap.put(stored.getClassAndMethodName(), retryTimer);
+            retryTimer.schedule(10 * 1000);
+            return;
+          } else {
+            retryTimerMap.remove(stored.getClassAndMethodName());
+            stored.setRetryCount(0);
+            stored.setMaxRetryCount(0);
+            stored.setWaitingSeconds(0);
+          }
 
           store.getClassItem(stored.getClassName()).updateSummary(store);
           store.updateSummary();
@@ -261,6 +317,8 @@ public class WjrPresenter implements WjrDisplayHandler {
           for (WjrMethodItem item : methodItems) {
             if (item.getState() == State.RUNNING) {
               item.setState(State.NOT_YET);
+            } else if (item.getState() == State.RETRY_WAITING) {
+              item.setState(State.ERROR);
             }
           }
           store.updateAllSummaries();

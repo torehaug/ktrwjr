@@ -29,7 +29,6 @@ import bufferings.ktr.wjr.server.fortest.ForTest;
 import bufferings.ktr.wjr.server.fortest.ForTestInherit;
 import bufferings.ktr.wjr.server.fortest.ForTestJUnit3;
 import bufferings.ktr.wjr.server.fortest.ForTestJUnit3Inherit;
-import bufferings.ktr.wjr.server.logic.WjrJUnit4MethodRunner;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
 
@@ -410,5 +409,24 @@ public class WjrJUnit4MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.ERROR));
     assertThat(methodItem.getTrace(), is(not("")));
+  }
+
+  @Test
+  public void runWjrMethod_WillSetQuotaOver_WhenOverQuotaExceptionOccur() {
+    WjrMethodItem methodItem =
+      new WjrMethodItem(ForTest.class.getName(), "overQuotaExceptionMethod");
+    methodRunner.runWjrMethod(methodItem);
+    assertThat(methodItem.getState(), is(State.ERROR));
+    assertThat(methodItem.getTrace(), is(not("")));
+    assertThat(methodItem.isOverQuota(), is(true));
+
+    methodItem =
+      new WjrMethodItem(
+        ForTestJUnit3.class.getName(),
+        "testOverQuotaExceptionMethod");
+    methodRunner.runWjrMethod(methodItem);
+    assertThat(methodItem.getState(), is(State.ERROR));
+    assertThat(methodItem.getTrace(), is(not("")));
+    assertThat(methodItem.isOverQuota(), is(true));
   }
 }

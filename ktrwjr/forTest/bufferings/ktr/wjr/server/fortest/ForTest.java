@@ -23,6 +23,8 @@ import java.util.logging.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.google.apphosting.api.ApiProxy;
+
 public class ForTest {
   private static final Logger logger =
     Logger.getLogger(ForTest.class.getName());
@@ -48,6 +50,14 @@ public class ForTest {
   @Ignore
   public void ignoreMethod() {
     logger.info("ignoreMethod");
+  }
+
+  @Test
+  public void overQuotaExceptionMethod() {
+    logger.info("overQuotaExceptionMethod");
+    throw new ApiProxy.OverQuotaException(
+      ForTest.class.getPackage().getName(),
+      ForTest.class.getSimpleName());
   }
 
   public static class ForTestInnerStatic {
