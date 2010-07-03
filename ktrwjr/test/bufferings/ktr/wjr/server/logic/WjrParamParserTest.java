@@ -25,8 +25,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import bufferings.ktr.wjr.server.logic.WjrParamParser;
-
 public class WjrParamParserTest {
 
   private WjrParamParser paramParser = new WjrParamParser();
@@ -88,5 +86,64 @@ public class WjrParamParserTest {
     map.put("tz", list);
 
     assertThat(paramParser.getTimeZoneId(map), is("JST"));
+  }
+
+  @Test
+  public void getConfigId_WillReturnPST_WithNullMap() {
+    assertThat(paramParser.getTimeZoneId(null), is("PST"));
+  }
+
+  @Test
+  public void getConfigId_WillReturnDefault_WithNoConfigIdMap() {
+    Map<String, List<String>> map = new HashMap<String, List<String>>();
+    assertThat(paramParser.getConfigId(map), is("default"));
+  }
+
+  @Test
+  public void getConfigId_WillReturnDefault_WithConfigIdIsNullList() {
+    Map<String, List<String>> map = new HashMap<String, List<String>>();
+    map.put("config", null);
+
+    assertThat(paramParser.getConfigId(map), is("default"));
+  }
+
+  @Test
+  public void getConfigId_WillReturnDefault_WithConfigIdIsEmptyList() {
+    Map<String, List<String>> map = new HashMap<String, List<String>>();
+    List<String> list = new ArrayList<String>();
+    map.put("config", list);
+
+    assertThat(paramParser.getConfigId(map), is("default"));
+  }
+
+  @Test
+  public void getConfigId_WillReturnDefault_WithConfigIdIsNull() {
+    Map<String, List<String>> map = new HashMap<String, List<String>>();
+    List<String> list = new ArrayList<String>();
+    list.add(null);
+    map.put("config", list);
+
+    assertThat(paramParser.getConfigId(map), is("default"));
+  }
+
+  @Test
+  public void getConfigId_WillReturnEmpty_WithConfigIdIsEmpty() {
+    Map<String, List<String>> map = new HashMap<String, List<String>>();
+    List<String> list = new ArrayList<String>();
+    list.add("");
+    map.put("config", list);
+
+    assertThat(paramParser.getConfigId(map), is(""));
+  }
+
+  @Test
+  public void getConfigId_WillReturnConfigId() {
+    Map<String, List<String>> map = new HashMap<String, List<String>>();
+    List<String> list = new ArrayList<String>();
+    list.add("sample");
+    list.add("NotUsed");
+    map.put("config", list);
+
+    assertThat(paramParser.getConfigId(map), is("sample"));
   }
 }

@@ -39,7 +39,6 @@ public class WjrParamParser {
   protected static final String DEFAULT_CONFIG_ID = "default";
 
   /**
-   * TODO test
    * Gets the configuration ID property.
    * 
    * If the configuration ID parameter is not set, the
