@@ -22,15 +22,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import bufferings.ktr.wjr.client.runner.SequentialRunner;
+import bufferings.ktr.wjr.client.runner.WjrRunner;
 import bufferings.ktr.wjr.client.service.KtrWjrServiceAsync;
 import bufferings.ktr.wjr.server.util.WjrUtils;
-import bufferings.ktr.wjr.shared.model.WjrMethodItem;
+import bufferings.ktr.wjr.shared.model.WjrConfig;
 import bufferings.ktr.wjr.shared.model.WjrStore;
-import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -58,19 +58,14 @@ public class WjrPresenter implements WjrDisplayHandler {
   protected WjrDisplay view;
 
   /**
+   * The user configuration.
+   */
+  protected WjrConfig config;
+
+  /**
    * The test store.
    */
   protected WjrStore store;
-
-  /**
-   * Whether the test is running or not.
-   */
-  protected boolean running = false;
-
-  /**
-   * Whether the cancel running tests is requested or not.
-   */
-  protected boolean cancelRequested = false;
 
   /**
    * The GET parameters for user configuration.
@@ -78,9 +73,9 @@ public class WjrPresenter implements WjrDisplayHandler {
   protected Map<String, List<String>> parameterMap;
 
   /**
-   * The retry timers. The key is the classAndMethodName.
+   * The method runner.
    */
-  protected Map<String, Timer> retryTimerMap = new HashMap<String, Timer>();
+  protected WjrRunner runner;
 
   /**
    * Constructs the presenter.
@@ -107,17 +102,19 @@ public class WjrPresenter implements WjrDisplayHandler {
     loadingView.go(container);
     view.go(WjrPresenter.this, container);
 
-    rpcService.loadStore(getParameterMap(), new AsyncCallback<WjrStore>() {
+    rpcService.loadConfig(getParameterMap(), new AsyncCallback<WjrConfig>() {
 
       public void onFailure(Throwable caught) {
+        config = new WjrConfig();
         loadingView.notifyLoaded();
-        view.notifyLoadingFailed(caught);
+        view.notifyLoadingConfigFailed(config, caught);
       }
 
-      public void onSuccess(WjrStore result) {
-        store = result;
+      public void onSuccess(WjrConfig result) {
+        checkNotNull(result, "The configuration is null.");
+        config = result;
         loadingView.notifyLoaded();
-        view.notifyLoadingSucceeded(store);
+        view.notifyLoadingConfigSucceeded(config);
       }
     });
   }
@@ -130,13 +127,13 @@ public class WjrPresenter implements WjrDisplayHandler {
 
       public void onFailure(Throwable caught) {
         view.setData(new WjrStore());
-        view.notifyReloadingFailed(caught);
+        view.notifyLoadingStoreFailed(caught);
       }
 
       public void onSuccess(WjrStore result) {
         store = result;
         view.setData(store);
-        view.notifyReloadingSucceeded();
+        view.notifyLoadingStoreSucceeded();
       }
     });
   }
@@ -153,182 +150,45 @@ public class WjrPresenter implements WjrDisplayHandler {
    * {@inheritDoc}
    */
   public void onRunButtonClick() {
-    checkState(running == false, "Tests are running.");
+    checkState(!isRunnerRunning(), "Tests are running.");
 
-    final List<WjrMethodItem> checkedMethods = view.getCheckedMethodItems();
-    if (checkedMethods.size() == 0) {
-      GWT.log("No method items are checked.");
-      view.notifyRunningFinished();
-      return;
-    }
-
-    running = true;
-    cancelRequested = false;
-
-    for (WjrMethodItem item : checkedMethods) {
-      item.clearResult();
-      item.setState(State.RUNNING);
-    }
-    store.updateAllSummaries();
-    view.repaintAllTreeItems(store);
-
-    runWjrMethodItem(checkedMethods, 0);
+    runner = createRunner();
+    runner.run();
   }
 
   /**
    * {@inheritDoc}
    */
   public void onCancelButtonClick() {
-    if (!running) {
+    if (!isRunnerRunning()) {
       GWT.log("No tests are running.");
       return;
     }
-    cancelRequested = true;
-
-    for (Timer retryTimer : retryTimerMap.values()) {
-      retryTimer.cancel();
-    }
-    retryTimerMap.clear();
+    runner.cancelRunning();
   }
 
   /**
-   * Runs the test method.
+   * The runner is running or not.
    * 
-   * @param methodItems
-   *          The methods to run.
-   * @param currentIndex
-   *          The index
+   * @return True if the runner is not null and the runner is running, false if
+   *         not.
    */
-  protected void runWjrMethodItem(final List<WjrMethodItem> methodItems,
-      final int currentIndex) {
+  protected boolean isRunnerRunning() {
+    return runner != null && runner.isRunning();
+  }
 
-    rpcService.runTest(
-      methodItems.get(currentIndex),
-      getParameterMap(),
-      new AsyncCallback<WjrMethodItem>() {
-
-        public void onFailure(Throwable caught) {
-          WjrMethodItem stored = methodItems.get(currentIndex);
-
-          stored.setState(State.ERROR);
-          stored.setTrace(getTrace(caught));
-
-          store.getClassItem(stored.getClassName()).updateSummary(store);
-          store.updateSummary();
-
-          view.repaintTreeItemAncestors(store, stored);
-
-          int nextIndex = currentIndex + 1;
-          if (methodItems.size() <= nextIndex) {
-            onRunSuccess();
-            return;
-          }
-
-          if (cancelRequested) {
-            onRunCancel();
-            return;
-          }
-
-          runWjrMethodItem(methodItems, nextIndex);
-        }
-
-        public void onSuccess(WjrMethodItem result) {
-          final WjrMethodItem stored =
-            store.getMethodItem(result.getClassAndMethodName());
-          result.copyResult(stored);
-
-          stored.setMaxRetryCount(3);
-          if (!cancelRequested
-            && result.isOverQuota()
-            && stored.getRetryCount() < stored.getMaxRetryCount()) {
-
-            stored.setState(State.RETRY_WAITING);
-            stored.setRetryCount(stored.getRetryCount() + 1);
-            stored.setWaitingSeconds(5);
-
-            store.getClassItem(stored.getClassName()).updateSummary(store);
-            store.updateSummary();
-            view.repaintTreeItemAncestors(store, stored);
-
-            Timer retryTimer = new Timer() {
-
-              public void run() {
-                if (cancelRequested) {
-                  onRunCancel();
-                  return;
-                }
-                
-                stored.setState(State.RUNNING);
-                store.getClassItem(stored.getClassName()).updateSummary(store);
-                store.updateSummary();
-                view.repaintTreeItemAncestors(store, stored);
-                
-                runWjrMethodItem(methodItems, currentIndex);
-              }
-
-              @Override
-              public void cancel() {
-                super.cancel();
-                if (cancelRequested) {
-                  onRunCancel();
-                }
-              }
-
-            };
-            retryTimerMap.put(stored.getClassAndMethodName(), retryTimer);
-            retryTimer.schedule(10 * 1000);
-            return;
-          } else {
-            retryTimerMap.remove(stored.getClassAndMethodName());
-            stored.setRetryCount(0);
-            stored.setMaxRetryCount(0);
-            stored.setWaitingSeconds(0);
-          }
-
-          store.getClassItem(stored.getClassName()).updateSummary(store);
-          store.updateSummary();
-          view.repaintTreeItemAncestors(store, stored);
-
-          int nextIndex = currentIndex + 1;
-          if (methodItems.size() <= nextIndex) {
-            onRunSuccess();
-            return;
-          }
-
-          if (cancelRequested) {
-            onRunCancel();
-            return;
-          }
-
-          runWjrMethodItem(methodItems, nextIndex);
-        }
-
-        private String getTrace(Throwable e) {
-          return e.toString();
-        }
-
-        private void onRunSuccess() {
-          running = false;
-          cancelRequested = false;
-          view.notifyRunningFinished();
-        }
-
-        private void onRunCancel() {
-          for (WjrMethodItem item : methodItems) {
-            if (item.getState() == State.RUNNING) {
-              item.setState(State.NOT_YET);
-            } else if (item.getState() == State.RETRY_WAITING) {
-              item.setState(State.ERROR);
-            }
-          }
-          store.updateAllSummaries();
-          view.repaintAllTreeItems(store);
-
-          running = false;
-          cancelRequested = false;
-          view.notifyRunningFinished();
-        }
-      });
+  /**
+   * Gets the test runner.
+   * 
+   * @return The test runner.
+   */
+  protected WjrRunner createRunner() {
+    return new SequentialRunner(
+      rpcService,
+      view,
+      config,
+      store,
+      getParameterMap());
   }
 
   /**
@@ -349,7 +209,6 @@ public class WjrPresenter implements WjrDisplayHandler {
     if (parameterMap != null) {
       return parameterMap;
     }
-
     parameterMap = buildListParamMap(Window.Location.getQueryString());
     return parameterMap;
   }

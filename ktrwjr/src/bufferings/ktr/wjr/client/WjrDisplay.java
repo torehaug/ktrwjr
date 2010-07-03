@@ -17,6 +17,7 @@ package bufferings.ktr.wjr.client;
 
 import java.util.List;
 
+import bufferings.ktr.wjr.shared.model.WjrConfig;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
@@ -77,33 +78,35 @@ public interface WjrDisplay {
   public void repaintTreeItemAncestors(WjrStore store, WjrMethodItem methodItem);
 
   /**
-   * Notifies loading succeeded to the view.
+   * Notifies loading the configuration succeeded to the view.
    * 
-   * @param store
-   *          The test store.
+   * @param config
+   *          The user configuration.
    */
-  public void notifyLoadingSucceeded(WjrStore store);
+  public void notifyLoadingConfigSucceeded(WjrConfig config);
 
   /**
-   * Notifies loading failed to the view.
+   * Notifies loading the configuration failed to the view.
+   * 
+   * @param config
+   *          The user configuration.
+   * @param caught
+   *          The cause.
+   */
+  public void notifyLoadingConfigFailed(WjrConfig config, Throwable caught);
+
+  /**
+   * Notifies loading the test store succeeded to the view.
+   */
+  public void notifyLoadingStoreSucceeded();
+
+  /**
+   * Notifies loading the test store failed to the view.
    * 
    * @param caught
    *          The cause.
    */
-  public void notifyLoadingFailed(Throwable caught);
-
-  /**
-   * Notifies reloading succeeded.
-   */
-  public void notifyReloadingSucceeded();
-
-  /**
-   * Notifies reloading failed to the view.
-   * 
-   * @param caught
-   *          The cause.
-   */
-  public void notifyReloadingFailed(Throwable caught);
+  public void notifyLoadingStoreFailed(Throwable caught);
 
   /**
    * Notifies running the test is filnished.

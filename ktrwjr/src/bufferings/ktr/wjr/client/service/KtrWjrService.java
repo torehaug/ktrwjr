@@ -18,6 +18,7 @@ package bufferings.ktr.wjr.client.service;
 import java.util.List;
 import java.util.Map;
 
+import bufferings.ktr.wjr.shared.model.WjrConfig;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
@@ -31,6 +32,15 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("ktrwjr.s3gwt")
 public interface KtrWjrService extends RemoteService {
+
+  /**
+   * Loads the WjrConfig.
+   * 
+   * @param parameterMap
+   *          GET parameter map for user configuration.
+   * @return The loaded config.
+   */
+  public WjrConfig loadConfig(Map<String, List<String>> parameterMap);
 
   /**
    * Loads the WjrStore.

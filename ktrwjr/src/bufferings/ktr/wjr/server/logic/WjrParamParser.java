@@ -32,7 +32,35 @@ public class WjrParamParser {
 
   protected static final String KEY_TIMEZONE = "tz";
 
+  protected static final String KEY_CONFIG_ID = "config";
+
   protected static final String DEFAULT_TIMEZONE = "PST";
+
+  protected static final String DEFAULT_CONFIG_ID = "default";
+
+  /**
+   * TODO test
+   * Gets the configuration ID property.
+   * 
+   * If the configuration ID parameter is not set, the
+   * {@link WjrParamParser#DEFAULT_CONFIG_ID} is used.
+   * 
+   * @param parameterMap
+   *          GET parameter map.
+   * @return The configuration ID property for logs.
+   */
+  public String getConfigId(Map<String, List<String>> parameterMap) {
+    if (parameterMap == null) {
+      return DEFAULT_CONFIG_ID;
+    }
+
+    List<String> config = parameterMap.get(KEY_CONFIG_ID);
+    if (config == null || config.size() == 0) {
+      return DEFAULT_CONFIG_ID;
+    }
+
+    return WjrUtils.toString(config.get(0), DEFAULT_CONFIG_ID);
+  }
 
   /**
    * Gets the timeZoneId property for logs.

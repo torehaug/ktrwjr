@@ -23,12 +23,16 @@ import bufferings.ktr.wjr.shared.model.WjrClassItem;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
+/**
+ * The loader of the WjrStore for JUnit3.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class WjrJUnit3StoreLoader extends WjrStoreLoader {
 
   /**
    * {@inheritDoc}
    */
-  @Override
   protected void checkAndStoreTestClass(WjrStore store, Class<?> clazz) {
     WjrClassItem classItem = null;
     if (isJUnit3TargetClass(clazz)) {

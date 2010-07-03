@@ -19,8 +19,10 @@ import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import bufferings.ktr.wjr.client.service.KtrWjrService;
+import bufferings.ktr.wjr.server.logic.WjrConfigLoader;
 import bufferings.ktr.wjr.server.logic.WjrGAEDevLogRecorder;
 import bufferings.ktr.wjr.server.logic.WjrGAELogRecorder;
 import bufferings.ktr.wjr.server.logic.WjrGAEProdLogRecorder;
@@ -30,6 +32,7 @@ import bufferings.ktr.wjr.server.logic.WjrMethodRunner;
 import bufferings.ktr.wjr.server.logic.WjrParamParser;
 import bufferings.ktr.wjr.server.logic.WjrStoreLoader;
 import bufferings.ktr.wjr.server.util.AppEngineUtil;
+import bufferings.ktr.wjr.shared.model.WjrConfig;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
@@ -39,8 +42,20 @@ import bufferings.ktr.wjr.shared.model.WjrStore;
  * @author bufferings[at]gmail.com
  */
 public class KtrWjrServiceImpl implements KtrWjrService {
+  
+  private static final Logger logger = Logger.getLogger(KtrWjrServiceImpl.class.getName());
 
   protected static final String CLASSES_DIRECTORY = "WEB-INF/classes";
+
+  /**
+   * {@inheritDoc}
+   */
+  public WjrConfig loadConfig(Map<String, List<String>> parameterMap) {
+    String configId = getParamParser().getConfigId(parameterMap);
+    WjrConfig config = getConfigLoader().loadWjrConfig(configId);
+    logger.info("The configuration is loaded. " + config.toString());
+    return config;
+  }
 
   /**
    * {@inheritDoc}
@@ -80,6 +95,13 @@ public class KtrWjrServiceImpl implements KtrWjrService {
       }
     }
     return methodItem;
+  }
+
+  /**
+   * Gets the configuration loader.
+   */
+  protected WjrConfigLoader getConfigLoader() {
+    return new WjrConfigLoader();
   }
 
   /**

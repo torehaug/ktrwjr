@@ -25,6 +25,11 @@ import bufferings.ktr.wjr.shared.model.WjrClassItem;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
+/**
+ * The loader of the WjrStore for JUnit4.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class WjrJUnit4StoreLoader extends WjrJUnit3StoreLoader {
 
   /**
@@ -36,7 +41,6 @@ public class WjrJUnit4StoreLoader extends WjrJUnit3StoreLoader {
    * @param clazz
    *          The class.
    */
-  @Override
   protected void checkAndStoreTestClass(WjrStore store, Class<?> clazz) {
     WjrClassItem classItem = null;
     if (isJUnit4TargetClass(clazz)) {

@@ -30,6 +30,7 @@ import bufferings.ktr.wjr.client.ui.WjrTreePanel;
 import bufferings.ktr.wjr.client.ui.widget.WjrTree;
 import bufferings.ktr.wjr.client.ui.widget.WjrTreeItem;
 import bufferings.ktr.wjr.shared.model.WjrClassItem;
+import bufferings.ktr.wjr.shared.model.WjrConfig;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 import bufferings.ktr.wjr.shared.model.WjrStoreItem;
@@ -127,17 +128,22 @@ public class WjrView extends Composite implements WjrDisplay,
   /**
    * Whether loading the store or not.
    */
-  boolean loading = false;
+  protected boolean loading = false;
 
   /**
    * Whether running the tests or not.
    */
-  boolean running = false;
+  protected boolean running = false;
 
   /**
    * Whether canceled running the tests or not.
    */
-  boolean canceled = false;
+  protected boolean canceled = false;
+
+  /**
+   * The configuration.
+   */
+  protected WjrConfig config = new WjrConfig();
 
   /**
    * UiFactory method which creates WjrButtonPanel and handles its events.
@@ -200,30 +206,32 @@ public class WjrView extends Composite implements WjrDisplay,
   /**
    * {@inheritDoc}
    */
-  public void notifyLoadingSucceeded(WjrStore store) {
-    finishLoading(store);
+  public void notifyLoadingConfigSucceeded(WjrConfig config) {
+    finishLoadingConfig(config);
+    startReloading();
   }
 
   /**
    * {@inheritDoc}
    */
-  public void notifyLoadingFailed(Throwable caught) {
+  public void notifyLoadingConfigFailed(WjrConfig config, Throwable caught) {
     dialog.show("Cannot load the tests.", caught);
-    finishLoading(new WjrStore());
+    finishLoadingConfig(config);
   }
 
   /**
-   * Performs the post-processing of loading.
+   * Performs the post-processing of loading configuration.
    * 
-   * Hides the loading element and shows the KtrWjr panels.
+   * Shows the KtrWjr panels.
    * 
-   * @param store
-   *          The test store.
+   * @param config
+   *          The user configuration.
    */
-  private void finishLoading(WjrStore store) {
+  private void finishLoadingConfig(WjrConfig config) {
     initWidget(uiBinder.createAndBindUi(this));
 
-    setData(store);
+    applyConfig(config);
+    setData(new WjrStore());
     updateRunButtonDisabled();
     updateTreeButtonsDisabled();
 
@@ -231,16 +239,27 @@ public class WjrView extends Composite implements WjrDisplay,
   }
 
   /**
+   * Sets the configuration.
+   * 
+   * @param newConfig
+   *          The configuration
+   */
+  private void applyConfig(WjrConfig newConfig) {
+    config = newConfig;
+    tracePanel.setTraceTabVisible(config.isLogHookEnabled());
+  }
+
+  /**
    * {@inheritDoc}
    */
-  public void notifyReloadingSucceeded() {
+  public void notifyLoadingStoreSucceeded() {
     finishReloading();
   }
 
   /**
    * {@inheritDoc}
    */
-  public void notifyReloadingFailed(Throwable caught) {
+  public void notifyLoadingStoreFailed(Throwable caught) {
     dialog.show("Cannot load the tests.", caught);
     finishReloading();
   }
@@ -265,8 +284,8 @@ public class WjrView extends Composite implements WjrDisplay,
   public void setData(WjrStore store) {
     treeItems.clear();
     storeItems.clear();
-    tracePanel.setTrace(null);
-    tracePanel.setLog(null);
+
+    updateTracePanel(null);
     updateResultPanel(store);
 
     WjrTree tree = treePanel.getTree();
@@ -338,14 +357,12 @@ public class WjrView extends Composite implements WjrDisplay,
     WjrTreeItem treeItem = event.getSelectedItem();
     if (!treeItem.isSelected()) {
       treeItem.setSelectedStyle("");
-      tracePanel.setTrace(null);
-      tracePanel.setLog(null);
+      updateTracePanel(null);
     } else {
       WjrStoreItem storeItem =
         (WjrStoreItem) storeItems.get(treeItems.indexOf(treeItem));
       treeItem.setSelectedStyle(getTreeItemSelectedStyle(storeItem));
-      tracePanel.setTrace(getTreeItemTrace(storeItem));
-      tracePanel.setLog(getTreeItemLog(storeItem));
+      updateTracePanel(storeItem);
     }
   }
 
@@ -475,6 +492,19 @@ public class WjrView extends Composite implements WjrDisplay,
   }
 
   /**
+   * Updates the trace panel with the selected tree item.
+   * 
+   * @param selectedItem
+   *          The selected tree item. If no item is selected, set null.
+   */
+  private void updateTracePanel(WjrStoreItem selectedItem) {
+    tracePanel.setTrace(getTreeItemTrace(selectedItem));
+    if (config.isLogHookEnabled()) {
+      tracePanel.setLog(getTreeItemLog(selectedItem));
+    }
+  }
+
+  /**
    * Repaints the tree item by the store item.
    * 
    * @param treeItem
@@ -487,8 +517,7 @@ public class WjrView extends Composite implements WjrDisplay,
     treeItem.setIcon(getTreeItemIcon(storeItem));
     if (treeItem.isSelected()) {
       treeItem.setSelectedStyle(getTreeItemSelectedStyle(storeItem));
-      tracePanel.setTrace(getTreeItemTrace(storeItem));
-      tracePanel.setLog(getTreeItemLog(storeItem));
+      updateTracePanel(storeItem);
     }
   }
 
@@ -629,13 +658,19 @@ public class WjrView extends Composite implements WjrDisplay,
     StringBuilder sb = new StringBuilder();
 
     String time = methodItem.getTime();
-    sb.append(time.length() > 0 ? time : "-").append("ms ");
+    sb.append(time.length() > 0 ? time : "-").append("ms");
 
-    String cpuTime = methodItem.getCpuTime();
-    sb.append(cpuTime.length() > 0 ? cpuTime : "-").append("cpu_ms ");
+    if (config.isCpumsEnabled()) {
+      String cpuTime = methodItem.getCpuTime();
+      sb.append(" ");
+      sb.append(cpuTime.length() > 0 ? cpuTime : "-").append("cpu_ms");
+    }
 
-    String apiTime = methodItem.getApiTime();
-    sb.append(apiTime.length() > 0 ? apiTime : "-").append("api_ms");
+    if (config.isApimsEnabled()) {
+      String apiTime = methodItem.getApiTime();
+      sb.append(" ");
+      sb.append(apiTime.length() > 0 ? apiTime : "-").append("api_ms");
+    }
 
     return sb.toString();
   }
@@ -666,14 +701,14 @@ public class WjrView extends Composite implements WjrDisplay,
    * @return The tree item log.
    */
   private String getTreeItemLog(WjrStoreItem storeItem) {
-    if (storeItem instanceof WjrClassItem) {
-      return "";
+    if (storeItem == null || storeItem instanceof WjrClassItem) {
+      return null;
     } else {
       WjrMethodItem methodItem = (WjrMethodItem) storeItem;
       if (methodItem.getState() == State.NOT_YET
         || methodItem.getState() == State.RUNNING
         || methodItem.getState() == State.RETRY_WAITING) {
-        return "";
+        return null;
       } else {
         String log = methodItem.getLog();
         return getTimeString(methodItem) + (log != null ? "\n" + log : "");
@@ -686,22 +721,22 @@ public class WjrView extends Composite implements WjrDisplay,
    * 
    * @param storeItem
    *          The test store item.
-   * @return The tree item trace.
+   * @return The tree item trace. If the storeItem is null or the trace is not
+   *         set, returns null.
    */
   private String getTreeItemTrace(WjrStoreItem storeItem) {
-    if (storeItem instanceof WjrClassItem) {
-      return "";
+    if (storeItem == null || storeItem instanceof WjrClassItem) {
+      return null;
     } else {
       WjrMethodItem methodItem = (WjrMethodItem) storeItem;
       if (methodItem.getState() == State.NOT_YET
         || methodItem.getState() == State.RUNNING
         || methodItem.getState() == State.RETRY_WAITING) {
-        return "";
+        return null;
       } else {
         String trace = methodItem.getTrace();
         return (trace != null ? trace : "");
       }
     }
   }
-
 }
