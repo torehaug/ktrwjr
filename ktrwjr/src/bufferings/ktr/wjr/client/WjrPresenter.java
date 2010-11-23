@@ -237,7 +237,7 @@ public class WjrPresenter implements WjrDisplayHandler {
           values = new ArrayList<String>();
           out.put(kv[0], values);
         }
-        values.add(kv.length > 1 ? URL.decodeComponent(kv[1]) : "");
+        values.add(kv.length > 1 ? URL.decodeQueryString(kv[1]) : "");
       }
     }
     return out;
