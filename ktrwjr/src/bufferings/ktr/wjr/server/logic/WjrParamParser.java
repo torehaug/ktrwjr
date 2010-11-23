@@ -34,8 +34,6 @@ public class WjrParamParser {
 
   protected static final String KEY_CONFIG_ID = "config";
 
-  protected static final String DEFAULT_TIMEZONE = "PST";
-
   protected static final String DEFAULT_CONFIG_ID = "default";
 
   /**
@@ -64,24 +62,26 @@ public class WjrParamParser {
   /**
    * Gets the timeZoneId property for logs.
    * 
-   * If the timeZoneId parameter is not set, the
-   * {@link WjrParamParser#DEFAULT_TIMEZONE} is used.
+   * If the timeZoneId parameter is not set, the default value is used.
    * 
    * @param parameterMap
    *          GET parameter map.
+   * @param defaultValue
+   *          The default value.
    * @return The timezone property for logs.
    */
-  public String getTimeZoneId(Map<String, List<String>> parameterMap) {
+  public String getTimeZoneId(Map<String, List<String>> parameterMap,
+      String defaultValue) {
     if (parameterMap == null) {
-      return DEFAULT_TIMEZONE;
+      return defaultValue;
     }
 
     List<String> tz = parameterMap.get(KEY_TIMEZONE);
     if (tz == null || tz.size() == 0) {
-      return DEFAULT_TIMEZONE;
+      return defaultValue;
     }
 
-    return WjrUtils.toString(tz.get(0), DEFAULT_TIMEZONE);
+    return WjrUtils.toString(tz.get(0), defaultValue);
   }
 
 }

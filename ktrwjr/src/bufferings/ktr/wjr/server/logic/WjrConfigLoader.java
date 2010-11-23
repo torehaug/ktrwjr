@@ -15,6 +15,15 @@
  */
 package bufferings.ktr.wjr.server.logic;
 
+import static bufferings.ktr.wjr.shared.util.Preconditions.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import bufferings.ktr.wjr.shared.model.WjrConfig;
 
 /**
@@ -24,24 +33,153 @@ import bufferings.ktr.wjr.shared.model.WjrConfig;
  */
 public class WjrConfigLoader {
 
-  // TODO
+  protected static final String CONFIG_RESOURCE_FILE = "ktrwjr.properties";
+
+  protected static final String CONFIG_ITEM_CONFIGNAME = "configName";
+
+  protected static final String CONFIG_ITEM_CPUMS_ENABLED = "cpumsEnabled";
+
+  protected static final String CONFIG_ITEM_APIMS_ENABLED = "apimsEnabled";
+
+  protected static final String CONFIG_ITEM_LOGHOOK_ENABLED = "logHookEnabled";
+
+  protected static final String CONFIG_ITEM_LOGHOOK_TIMEZONE =
+    "logHookTimezone";
+
+  protected static final String CONFIG_ITEM_RETRYOVERQUOTA_ENABLED =
+    "retryOverQuotaEnabled";
+
+  protected static final String CONFIG_ITEM_RETRYOVERQUOTA_INTERVAL =
+    "retryOverQuotaInterval";
+
+  protected static final String CONFIG_ITEM_RETRYOVERQUOTA_MAXCOUNT =
+    "retryOverQuotaMaxCount";
+
+  protected static final String CONFIG_ITEM_RUNPARALLEL = "runParallel";
+
+  /**
+   * The logger.
+   */
+  private static final Logger logger =
+    Logger.getLogger(WjrConfigLoader.class.getName());
+
+  // TODO Test/Javadoc
   // TODO config loading failed test
   // TODO no config exist test
   // TODO config loading succeed test
   public WjrConfig loadWjrConfig(String configId) {
     WjrConfig config = new WjrConfig();
-    if(configId.equals("1")){
-      config.setApimsEnabled(false);
-    }else if(configId.equals("2")){
-      config.setCpumsEnabled(false);
-    }else if(configId.equals("3")){
-      config.setLogHookEnabled(false);
-    }else if(configId.equals("4")){
-      config.setRetryOverQuotaEnabled(true);
-      config.setRetryOverQuotaInterval(3);
-      config.setRetryOverQuotaMaxCount(2);
+    if (configId == null || configId.length() == 0) {
+      return config;
+    }
+
+    Properties props = loadProperties();
+    Enumeration<Object> propKeys = props.keys();
+    while (propKeys.hasMoreElements()) {
+      String propKey = (String) propKeys.nextElement();
+      ConfigKeyInfo keyInfo = new ConfigKeyInfo(propKey);
+      if (!configId.equals(keyInfo.getStoreKey())) {
+        continue;
+      }
+
+      setConfigAttribute(config, keyInfo, props.getProperty(propKey));
     }
     return config;
+  }
+
+  protected void setConfigAttribute(WjrConfig config, ConfigKeyInfo keyInfo,
+      String value) {
+    String configItemName = keyInfo.getItemName();
+    if (CONFIG_ITEM_CONFIGNAME.equals(configItemName)) {
+      config.setConfigName(value);
+    } else if (CONFIG_ITEM_CPUMS_ENABLED.equals(configItemName)) {
+      config.setCpumsEnabled(value);
+    } else if (CONFIG_ITEM_APIMS_ENABLED.equals(configItemName)) {
+      config.setApimsEnabled(value);
+    } else if (CONFIG_ITEM_LOGHOOK_ENABLED.equals(configItemName)) {
+      config.setLogHookEnabled(value);
+    } else if (CONFIG_ITEM_LOGHOOK_TIMEZONE.equals(configItemName)) {
+      config.setLogHookTimezone(value);
+    } else if (CONFIG_ITEM_RETRYOVERQUOTA_ENABLED.equals(configItemName)) {
+      config.setRetryOverQuotaEnabled(value);
+    } else if (CONFIG_ITEM_RETRYOVERQUOTA_INTERVAL.equals(configItemName)) {
+      config.setRetryOverQuotaInterval(value);
+    } else if (CONFIG_ITEM_RETRYOVERQUOTA_MAXCOUNT.equals(configItemName)) {
+      config.setRetryOverQuotaMaxCount(value);
+    } else if (CONFIG_ITEM_RUNPARALLEL.equals(configItemName)) {
+      config.setRunParallel(value);
+    } else {
+      logger.warning("Unknown item name.(" + configItemName + ")");
+    }
+  }
+
+  protected Properties loadProperties() {
+    Properties properties = new Properties();
+    InputStream is = null;
+    try {
+      ClassLoader cl = Thread.currentThread().getContextClassLoader();
+      is = cl.getResourceAsStream(CONFIG_RESOURCE_FILE);
+      if (is != null) {
+        try {
+          properties.load(is);
+        } catch (IOException e) {
+          logger.log(
+            Level.WARNING,
+            "Fails to load configuration resource file .("
+              + CONFIG_RESOURCE_FILE
+              + ")",
+            e);
+        }
+      } else {
+        logger.warning("Configuration resource file not found.("
+          + CONFIG_RESOURCE_FILE
+          + ")");
+      }
+    } finally {
+      if (is != null) {
+        try {
+          is.close();
+        } catch (Exception e) {
+          // ignore
+        }
+      }
+    }
+    return properties;
+  }
+
+  /**
+   * Configuration key value object.
+   * 
+   * @author bufferings[at]gmail.com
+   */
+  public static class ConfigKeyInfo {
+    protected static final String SEPARATOR = ".";
+
+    protected static final String SEPARATOR_REGEX = "\\.";
+
+    protected String storeKey;
+
+    protected String itemName;
+
+    public ConfigKeyInfo(String propKey) {
+      checkNotNull(propKey);
+      checkArgument(propKey.length() > 0);
+      checkArgument(propKey.contains(SEPARATOR));
+
+      String[] splits = propKey.split(SEPARATOR_REGEX);
+      checkArgument(splits.length == 2);
+
+      storeKey = splits[0];
+      itemName = splits[1];
+    }
+
+    public String getStoreKey() {
+      return storeKey;
+    }
+
+    public String getItemName() {
+      return itemName;
+    }
   }
 
 }

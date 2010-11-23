@@ -31,13 +31,13 @@ public class WjrParamParserTest {
 
   @Test
   public void getTimezone_WillReturnPST_WithNullMap() {
-    assertThat(paramParser.getTimeZoneId(null), is("PST"));
+    assertThat(paramParser.getTimeZoneId(null, "PST"), is("PST"));
   }
 
   @Test
   public void getTimezone_WillReturnPST_WithNoTimezoneMap() {
     Map<String, List<String>> map = new HashMap<String, List<String>>();
-    assertThat(paramParser.getTimeZoneId(map), is("PST"));
+    assertThat(paramParser.getTimeZoneId(map, "PST"), is("PST"));
   }
 
   @Test
@@ -45,7 +45,7 @@ public class WjrParamParserTest {
     Map<String, List<String>> map = new HashMap<String, List<String>>();
     map.put("tz", null);
 
-    assertThat(paramParser.getTimeZoneId(map), is("PST"));
+    assertThat(paramParser.getTimeZoneId(map, "PST"), is("PST"));
   }
 
   @Test
@@ -54,7 +54,7 @@ public class WjrParamParserTest {
     List<String> list = new ArrayList<String>();
     map.put("tz", list);
 
-    assertThat(paramParser.getTimeZoneId(map), is("PST"));
+    assertThat(paramParser.getTimeZoneId(map, "PST"), is("PST"));
   }
 
   @Test
@@ -64,7 +64,7 @@ public class WjrParamParserTest {
     list.add(null);
     map.put("tz", list);
 
-    assertThat(paramParser.getTimeZoneId(map), is("PST"));
+    assertThat(paramParser.getTimeZoneId(map, "PST"), is("PST"));
   }
 
   @Test
@@ -74,7 +74,7 @@ public class WjrParamParserTest {
     list.add("");
     map.put("tz", list);
 
-    assertThat(paramParser.getTimeZoneId(map), is(""));
+    assertThat(paramParser.getTimeZoneId(map, "PST"), is(""));
   }
 
   @Test
@@ -85,12 +85,12 @@ public class WjrParamParserTest {
     list.add("NotUsed");
     map.put("tz", list);
 
-    assertThat(paramParser.getTimeZoneId(map), is("JST"));
+    assertThat(paramParser.getTimeZoneId(map, "PST"), is("JST"));
   }
 
   @Test
   public void getConfigId_WillReturnPST_WithNullMap() {
-    assertThat(paramParser.getTimeZoneId(null), is("PST"));
+    assertThat(paramParser.getTimeZoneId(null, "PST"), is("PST"));
   }
 
   @Test
