@@ -58,7 +58,17 @@ public interface KtrWjrService extends RemoteService {
    *          The methodItem to run.
    * @param parameterMap
    *          GET parameter map for user configuration.
+   * @param cpumsEnabled
+   *          Whether to get cpu_ms or not.
+   * @param apimsEnabled
+   *          Whether to get api_ms or not.
+   * @param logHookEnabled
+   *          Whether to get log or not.
+   * @param logHookTimezone
+   *          The log timezone. If the parameterMap has the "tz", the value of
+   *          the parameterMap will be used preferentially.
    */
   public WjrMethodItem runTest(WjrMethodItem methodItem,
-      Map<String, List<String>> parameterMap);
+      Map<String, List<String>> parameterMap, boolean cpumsEnabled,
+      boolean apimsEnabled, boolean logHookEnabled, String logHookTimezone);
 }

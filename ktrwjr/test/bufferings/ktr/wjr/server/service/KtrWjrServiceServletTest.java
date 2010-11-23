@@ -56,16 +56,18 @@ public class KtrWjrServiceServletTest {
     final Map<String, List<String>> map = new HashMap<String, List<String>>();
 
     servlet.delegate = new KtrWjrServiceImpl() {
+
       @Override
       public WjrMethodItem runTest(WjrMethodItem methodItem,
-          Map<String, List<String>> parameterMap) {
+          Map<String, List<String>> parameterMap, boolean cpumsEnabled,
+          boolean apimsEnabled, boolean logHookEnabled, String logHookTimezone) {
         assertThat(methodItem, is(in));
         assertThat(parameterMap, is(map));
         return out;
       }
     };
 
-    assertThat(servlet.runTest(in, map), is(out));
+    assertThat(servlet.runTest(in, map, true, true, true, "PST"), is(out));
   }
 
 }

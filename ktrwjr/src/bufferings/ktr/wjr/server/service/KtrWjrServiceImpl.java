@@ -42,8 +42,9 @@ import bufferings.ktr.wjr.shared.model.WjrStore;
  * @author bufferings[at]gmail.com
  */
 public class KtrWjrServiceImpl implements KtrWjrService {
-  
-  private static final Logger logger = Logger.getLogger(KtrWjrServiceImpl.class.getName());
+
+  private static final Logger logger =
+    Logger.getLogger(KtrWjrServiceImpl.class.getName());
 
   protected static final String CLASSES_DIRECTORY = "WEB-INF/classes";
 
@@ -68,28 +69,52 @@ public class KtrWjrServiceImpl implements KtrWjrService {
    * {@inheritDoc}
    */
   public WjrMethodItem runTest(WjrMethodItem methodItem,
-      Map<String, List<String>> parameterMap) {
+      Map<String, List<String>> parameterMap, boolean cpumsEnabled,
+      boolean apimsEnabled, boolean logHookEnabled, String logHookTimezone) {
     checkNotNull(methodItem, "The methodItem parameter is null.");
 
-    WjrGAEQuotaRecorder quotaRecorder = getGAEQuotaRecorder();
-    WjrGAELogRecorder logRecorder = getGAELogRecorder();
+    WjrGAEQuotaRecorder quotaRecorder = null;
+    if (cpumsEnabled || apimsEnabled) {
+      quotaRecorder = getGAEQuotaRecorder();
+    }
 
-    WjrParamParser paramParser = getParamParser();
+    WjrGAELogRecorder logRecorder = null;
+    if (logHookEnabled) {
+      logRecorder = getGAELogRecorder();
+    }
+
     WjrMethodRunner methodRunner = getMethodRunner();
-
-    String timeZoneId = paramParser.getTimeZoneId(parameterMap);
     try {
       methodItem.clearResult();
-      logRecorder.startRecording(timeZoneId);
-      quotaRecorder.startRecording();
+
+      if (logRecorder != null) {
+        if (logHookTimezone == null || logHookTimezone.length() == 0) {
+          logHookTimezone = WjrConfig.DEFAULT_LOGHOOK_TIMEZONE;
+        }
+
+        WjrParamParser paramParser = getParamParser();
+        String timeZoneId =
+          paramParser.getTimeZoneId(parameterMap, logHookTimezone);
+        logRecorder.startRecording(timeZoneId);
+      }
+
+      if (quotaRecorder != null) {
+        quotaRecorder.startRecording();
+      }
+
       methodItem = methodRunner.runWjrMethod(methodItem);
     } finally {
-      if (quotaRecorder.isRecording()) {
+      if (quotaRecorder != null && quotaRecorder.isRecording()) {
         quotaRecorder.stopRecording();
-        methodItem.setCpuTime(quotaRecorder.getRecordedCpuTime());
-        methodItem.setApiTime(quotaRecorder.getRecordedApiTime());
+        if (cpumsEnabled) {
+          methodItem.setCpuTime(quotaRecorder.getRecordedCpuTime());
+        }
+        if (apimsEnabled) {
+          methodItem.setApiTime(quotaRecorder.getRecordedApiTime());
+        }
       }
-      if (logRecorder.isRecording()) {
+
+      if (logRecorder != null && logRecorder.isRecording()) {
         logRecorder.stopRecording();
         methodItem.setLog(logRecorder.getRecordedLog());
       }

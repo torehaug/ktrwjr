@@ -49,7 +49,7 @@ public class KtrWjrServiceServlet extends RemoteServiceServlet implements
   public WjrConfig loadConfig(Map<String, List<String>> parameterMap) {
     return delegate.loadConfig(parameterMap);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -61,8 +61,15 @@ public class KtrWjrServiceServlet extends RemoteServiceServlet implements
    * {@inheritDoc}
    */
   public WjrMethodItem runTest(WjrMethodItem methodItem,
-      Map<String, List<String>> parameterMap) {
-    return delegate.runTest(methodItem, parameterMap);
+      Map<String, List<String>> parameterMap, boolean cpumsEnabled,
+      boolean apimsEnabled, boolean logHookEnabled, String logHookTimezone) {
+    return delegate.runTest(
+      methodItem,
+      parameterMap,
+      cpumsEnabled,
+      apimsEnabled,
+      logHookEnabled,
+      logHookTimezone);
   }
 
 }

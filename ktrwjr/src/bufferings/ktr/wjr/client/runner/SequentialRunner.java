@@ -115,7 +115,14 @@ public class SequentialRunner extends AbstractRunner implements
    * Runs the test that is the currentIndex of the methodItems.
    */
   protected void runCurrentIndexTestMethod() {
-    rpcService.runTest(methodItems.get(currentIndex), parameterMap, this);
+    rpcService.runTest(
+      methodItems.get(currentIndex),
+      parameterMap,
+      config.isCpumsEnabled(),
+      config.isApimsEnabled(),
+      config.isLogHookEnabled(),
+      config.getLogHookTimezone(),
+      this);
   }
 
   /**

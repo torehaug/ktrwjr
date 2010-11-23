@@ -39,7 +39,8 @@ public interface KtrWjrServiceAsync {
       AsyncCallback<WjrStore> callback);
 
   void runTest(WjrMethodItem methodItem,
-      Map<String, List<String>> parameterMap,
+      Map<String, List<String>> parameterMap, boolean cpumsEnabled,
+      boolean apimsEnabled, boolean logHookEnabled, String logHookTimezone,
       AsyncCallback<WjrMethodItem> callback);
 
 }

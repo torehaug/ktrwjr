@@ -61,7 +61,7 @@ public class KtrWjrServiceImplTest {
   @Test(expected = NullPointerException.class)
   public void runTest_WillThrowNPE_WhenMethodItemIsNull() {
     KtrWjrServiceImpl service = new KtrWjrServiceImpl();
-    service.runTest(null, null);
+    service.runTest(null, null, true, true, true, "PST");
   }
 
   @Test
@@ -148,7 +148,9 @@ public class KtrWjrServiceImplTest {
       }
     };
 
-    assertThat(service.runTest(methodItem, null), is(methodItem));
+    assertThat(
+      service.runTest(methodItem, null, true, true, true, "PST"),
+      is(methodItem));
     assertThat(called.toString(), is("12345"));
     assertThat(methodItem.getApiTime(), is("APITIME"));
     assertThat(methodItem.getCpuTime(), is("CPUTIME"));
@@ -240,7 +242,7 @@ public class KtrWjrServiceImplTest {
     list.add("JST");
     map.put("tz", list);
 
-    service.runTest(methodItem, map);
+    service.runTest(methodItem, map, true, true, true, "PST");
     assertThat(called.toString(), is("12"));
   }
 }
