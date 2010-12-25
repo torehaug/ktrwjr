@@ -18,7 +18,7 @@ package bufferings.ktr.wjr.shared.model;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * TODO Test The configuration.
+ * The configration.
  * 
  * @author bufferings[at]gmail.com
  */

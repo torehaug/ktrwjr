@@ -63,10 +63,18 @@ public class WjrConfigLoader {
   private static final Logger logger =
     Logger.getLogger(WjrConfigLoader.class.getName());
 
-  // TODO Test/Javadoc
+  // TODO Test
   // TODO config loading failed test
   // TODO no config exist test
   // TODO config loading succeed test
+
+  /**
+   * Load the config file.
+   * 
+   * @param configId
+   *          The id of the config to load.
+   * @return The loaded config.
+   */
   public WjrConfig loadWjrConfig(String configId) {
     WjrConfig config = new WjrConfig();
     if (configId == null || configId.length() == 0) {
@@ -78,7 +86,7 @@ public class WjrConfigLoader {
     while (propKeys.hasMoreElements()) {
       String propKey = (String) propKeys.nextElement();
       ConfigKeyInfo keyInfo = new ConfigKeyInfo(propKey);
-      if (!configId.equals(keyInfo.getStoreKey())) {
+      if (!configId.equals(keyInfo.getConfigKey())) {
         continue;
       }
 
@@ -87,9 +95,19 @@ public class WjrConfigLoader {
     return config;
   }
 
+  /**
+   * Sets a property to the config.
+   * 
+   * @param config
+   *          The config.
+   * @param keyInfo
+   *          The key.
+   * @param value
+   *          The value to apply.
+   */
   protected void setConfigAttribute(WjrConfig config, ConfigKeyInfo keyInfo,
       String value) {
-    String configItemName = keyInfo.getItemName();
+    String configItemName = keyInfo.getConfigName();
     if (CONFIG_ITEM_CONFIGNAME.equals(configItemName)) {
       config.setConfigName(value);
     } else if (CONFIG_ITEM_CPUMS_ENABLED.equals(configItemName)) {
@@ -113,6 +131,11 @@ public class WjrConfigLoader {
     }
   }
 
+  /**
+   * Load the property file.
+   * 
+   * @return The loadeg properties.
+   */
   protected Properties loadProperties() {
     Properties properties = new Properties();
     InputStream is = null;
@@ -150,17 +173,28 @@ public class WjrConfigLoader {
   /**
    * Configuration key value object.
    * 
+   * The keys in the config file are written in form of (config key).configName.
+   * 
    * @author bufferings[at]gmail.com
    */
   public static class ConfigKeyInfo {
+
     protected static final String SEPARATOR = ".";
 
     protected static final String SEPARATOR_REGEX = "\\.";
 
-    protected String storeKey;
+    /** The config key. */
+    protected String configKey;
 
-    protected String itemName;
+    /** The config name. */
+    protected String configName;
 
+    /**
+     * Acquire the storeKey and the itemName from the propKey.
+     * 
+     * @param propKey
+     *          The key of the property value.
+     */
     public ConfigKeyInfo(String propKey) {
       checkNotNull(propKey);
       checkArgument(propKey.length() > 0);
@@ -169,16 +203,26 @@ public class WjrConfigLoader {
       String[] splits = propKey.split(SEPARATOR_REGEX);
       checkArgument(splits.length == 2);
 
-      storeKey = splits[0];
-      itemName = splits[1];
+      configKey = splits[0];
+      configName = splits[1];
     }
 
-    public String getStoreKey() {
-      return storeKey;
+    /**
+     * Gets the config key.
+     * 
+     * @return The config key.
+     */
+    public String getConfigKey() {
+      return configKey;
     }
 
-    public String getItemName() {
-      return itemName;
+    /**
+     * Gets the config name.
+     * 
+     * @return The config name.
+     */
+    public String getConfigName() {
+      return configName;
     }
   }
 
