@@ -4,15 +4,14 @@
 
   <property name="lib.dir" value="war\WEB-INF\lib" />
   <property name="gwt.home"
-            value="C:\eclipse\eclipse\plugins\com.google.gwt.eclipse.sdkbundle.2.0.3_2.0.3.v201002191036\gwt-2.0.3" />
+            value="C:\eclipse\eclipse\plugins\com.google.gwt.eclipse.sdkbundle.2.1.1_2.1.1.v201012170126\gwt-2.1.1" />
   <property name="gae.home"
-            value="C:\eclipse\eclipse\plugins\com.google.appengine.eclipse.sdkbundle.1.3.3_1.3.3.v201004211154\appengine-java-sdk-1.3.3.1\lib" />
+            value="C:\eclipse\eclipse\plugins\com.google.appengine.eclipse.sdkbundle.1.4.0_1.4.0.v201012021501\appengine-java-sdk-1.4.0\lib" />
 
   <property name="gwt-dev.lib" value="${gwt.home}\gwt-dev.jar" />
   <property name="gwt-user.lib" value="${gwt.home}\gwt-user.jar" />
   <property name="gae.lib"
-            value="${gae.home}\user\appengine-api-1.0-sdk-1.3.3.1.jar" />
-  <property name="slim3.lib" value="${lib.dir}\slim3-1.0.3.jar" />
+            value="${gae.home}\user\appengine-api-1.0-sdk-1.4.0.jar" />
   <property name="junit.lib" value="${lib.dir}\junit-4.7.jar" />
 
   <property name="target" value="target" />
@@ -39,7 +38,7 @@
            destdir="${work.classes}"
            source="1.5"
            encoding="UTF-8"
-           classpath="${junit.lib};${slim3.lib};${gwt-dev.lib};${gwt-user.lib};${gae.lib};"
+           classpath="${junit.lib};${gwt-dev.lib};${gwt-user.lib};${gae.lib};"
            memoryInitialSize="512m"
            memoryMaximumSize="512m"
            fork="true">

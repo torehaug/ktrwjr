@@ -19,7 +19,8 @@
       <g:HorizontalPanel
         spacing="1">
         <g:Image
-          resource="{res.ktrwjrLoading}" />
+          resource="{res.ktrwjrLoading}"
+          altText="Kotori Web JUnit Runner" />
       </g:HorizontalPanel>
     </g:cell>
 

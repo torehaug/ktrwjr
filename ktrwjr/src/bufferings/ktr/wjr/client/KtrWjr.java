@@ -21,6 +21,7 @@ import bufferings.ktr.wjr.client.service.KtrWjrServiceAsync;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * The entry point class of Kotori Web JUnit Runner.
@@ -29,6 +30,8 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
  */
 public class KtrWjr implements EntryPoint {
 
+  private static final String INITIAL_PANEL_ID = "initialPanel";
+
   /**
    * {@inheritDoc}
    */
@@ -36,6 +39,12 @@ public class KtrWjr implements EntryPoint {
     KtrWjrServiceAsync rpcService = GWT.create(KtrWjrService.class);
     WjrPresenter presenter =
       new WjrPresenter(rpcService, new WjrLoadingView(), new WjrView());
+
+    RootPanel initialPanel = RootPanel.get(INITIAL_PANEL_ID);
+    if (initialPanel != null) {
+      initialPanel.getElement().removeFromParent();
+    }
+
     presenter.go(RootLayoutPanel.get());
   }
 
