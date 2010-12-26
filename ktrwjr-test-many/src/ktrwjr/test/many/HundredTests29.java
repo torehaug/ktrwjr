@@ -1,5 +1,5 @@
 package ktrwjr.test.many;
 
-public class HundredTests29 extends HundredTests {
+public class HundredTests29 extends HundredTests01 {
 
 }
