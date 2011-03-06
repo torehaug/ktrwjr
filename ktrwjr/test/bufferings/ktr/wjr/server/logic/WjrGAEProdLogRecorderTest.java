@@ -32,7 +32,7 @@ import com.google.apphosting.api.ApiProxy.LogRecord.Level;
 
 public class WjrGAEProdLogRecorderTest {
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   private ApiProxy.Delegate prevDelegate;
 
   @Before
@@ -45,7 +45,7 @@ public class WjrGAEProdLogRecorderTest {
     ApiProxy.setDelegate(prevDelegate);
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   @Test
   public void startBare_WillChangeDelegate() {
     ApiProxy.Delegate delegate = ApiProxy.getDelegate();
@@ -57,7 +57,7 @@ public class WjrGAEProdLogRecorderTest {
     assertThat(ApiProxy.getDelegate(), is(not(delegate)));
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   @Test
   public void stopBare_WillRestoreDelegate() {
     ApiProxy.Delegate delegate = ApiProxy.getDelegate();

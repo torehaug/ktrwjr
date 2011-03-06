@@ -141,11 +141,6 @@ public class WjrConfig implements IsSerializable {
   protected int retryOverQuotaMaxCount = DEFAULT_RETRYOVERQUOTA_MAXCOUNT;
 
   /**
-   * Whether to run parallel or not.
-   */
-  protected boolean runParallel = DEFAULT_RUNPARALLEL;
-
-  /**
    * Gets the configuration id.
    * 
    * @return The configuration id.
@@ -161,7 +156,7 @@ public class WjrConfig implements IsSerializable {
    *          The configuration id.
    */
   public void setConfigId(String value) {
-    configId = parseString(configId, DEFAULT_CONFIG_ID);
+    configId = parseString(value, DEFAULT_CONFIG_ID);
   }
 
   /**
@@ -325,25 +320,6 @@ public class WjrConfig implements IsSerializable {
   }
 
   /**
-   * Gets whether to run parallel or not.
-   * 
-   * @return Whether to run parallel or not.
-   */
-  public boolean isRunParallel() {
-    return runParallel;
-  }
-
-  /**
-   * Sets whether to run parallel or not.
-   * 
-   * @param value
-   *          Whether to run parallel or not.
-   */
-  public void setRunParallel(String value) {
-    runParallel = parseBoolean(value, DEFAULT_RUNPARALLEL);
-  }
-
-  /**
    * Parses the string value.
    * 
    * If the value is null or empty, returns the defaultValue, otherwise returns
@@ -456,8 +432,6 @@ public class WjrConfig implements IsSerializable {
     sb.append(retryOverQuotaInterval);
     sb.append(",retryOverQuotaMaxCount=");
     sb.append(retryOverQuotaMaxCount);
-    sb.append(",runParallel=");
-    sb.append(runParallel);
     sb.append("]");
     return sb.toString();
   }

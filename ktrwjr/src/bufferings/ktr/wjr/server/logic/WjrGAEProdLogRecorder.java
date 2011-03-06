@@ -15,6 +15,7 @@
  */
 package bufferings.ktr.wjr.server.logic;
 
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -67,8 +68,10 @@ public class WjrGAEProdLogRecorder extends WjrGAELogRecorder {
       TimeUnit.MILLISECONDS.convert(
         logRecord.getTimestamp(),
         TimeUnit.MICROSECONDS);
-    return formatLog(millis, logRecord.getLevel().name(), logRecord
-      .getMessage());
+    return formatLog(
+      millis,
+      logRecord.getLevel().name(),
+      logRecord.getMessage());
   }
 
   /**
@@ -103,6 +106,20 @@ public class WjrGAEProdLogRecorder extends WjrGAELogRecorder {
     public byte[] makeSyncCall(Environment arg0, String arg1, String arg2,
         byte[] arg3) throws ApiProxyException {
       return originalDelegate.makeSyncCall(arg0, arg1, arg2, arg3);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void flushLogs(Environment arg0) {
+      originalDelegate.flushLogs(arg0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Thread> getRequestThreads(Environment arg0) {
+      return originalDelegate.getRequestThreads(arg0);
     }
   }
 }

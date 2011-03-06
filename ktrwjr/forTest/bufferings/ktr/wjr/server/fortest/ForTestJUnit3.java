@@ -22,8 +22,8 @@ import junit.framework.TestCase;
 import com.google.apphosting.api.ApiProxy;
 
 public class ForTestJUnit3 extends TestCase {
-  private static final Logger logger =
-    Logger.getLogger(ForTestJUnit3.class.getName());
+  private static final Logger logger = Logger.getLogger(ForTestJUnit3.class
+    .getName());
 
   public void testSuccessMethod() {
     logger.info("testSuccessMethod");

@@ -60,8 +60,8 @@ public class WjrConfigLoader {
   /**
    * The logger.
    */
-  private static final Logger logger =
-    Logger.getLogger(WjrConfigLoader.class.getName());
+  private static final Logger logger = Logger.getLogger(WjrConfigLoader.class
+    .getName());
 
   // TODO Test
   // TODO config loading failed test
@@ -124,8 +124,6 @@ public class WjrConfigLoader {
       config.setRetryOverQuotaInterval(value);
     } else if (CONFIG_ITEM_RETRYOVERQUOTA_MAXCOUNT.equals(configItemName)) {
       config.setRetryOverQuotaMaxCount(value);
-    } else if (CONFIG_ITEM_RUNPARALLEL.equals(configItemName)) {
-      config.setRunParallel(value);
     } else {
       logger.warning("Unknown item name.(" + configItemName + ")");
     }

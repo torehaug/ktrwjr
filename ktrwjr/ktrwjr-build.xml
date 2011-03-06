@@ -4,14 +4,14 @@
 
   <property name="lib.dir" value="war\WEB-INF\lib" />
   <property name="gwt.home"
-            value="C:\eclipse\eclipse\plugins\com.google.gwt.eclipse.sdkbundle.2.1.1_2.1.1.v201012170126\gwt-2.1.1" />
+            value="C:\eclipse3.6\eclipse\plugins\com.google.gwt.eclipse.sdkbundle.2.2.0_2.2.0.v201102111811\gwt-2.2.0" />
   <property name="gae.home"
-            value="C:\eclipse\eclipse\plugins\com.google.appengine.eclipse.sdkbundle.1.4.0_1.4.0.v201012021501\appengine-java-sdk-1.4.0\lib" />
+            value="C:\eclipse3.6\eclipse\plugins\com.google.appengine.eclipse.sdkbundle.1.4.2_1.4.2.v201102111811\appengine-java-sdk-1.4.2\lib" />
 
   <property name="gwt-dev.lib" value="${gwt.home}\gwt-dev.jar" />
   <property name="gwt-user.lib" value="${gwt.home}\gwt-user.jar" />
   <property name="gae.lib"
-            value="${gae.home}\user\appengine-api-1.0-sdk-1.4.0.jar" />
+            value="${gae.home}\user\appengine-api-1.0-sdk-1.4.2.jar" />
   <property name="junit.lib" value="${lib.dir}\junit-4.7.jar" />
 
   <property name="target" value="target" />

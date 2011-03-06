@@ -26,8 +26,8 @@ import org.junit.Test;
 import com.google.apphosting.api.ApiProxy;
 
 public class ForTest {
-  private static final Logger logger =
-    Logger.getLogger(ForTest.class.getName());
+  private static final Logger logger = Logger
+    .getLogger(ForTest.class.getName());
 
   @Test
   public void successMethod() {
