@@ -55,8 +55,6 @@ public class WjrConfigLoader {
   protected static final String CONFIG_ITEM_RETRYOVERQUOTA_MAXCOUNT =
     "retryOverQuotaMaxCount";
 
-  protected static final String CONFIG_ITEM_RUNPARALLEL = "runParallel";
-
   /**
    * The logger.
    */
