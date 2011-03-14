@@ -61,11 +61,6 @@ public abstract class AbstractRunner implements WjrRunner {
   protected WjrStore store;
 
   /**
-   * The GET parameters for user configuration.
-   */
-  protected Map<String, List<String>> parameterMap;
-
-  /**
    * The retry timers. The key is the classAndMethodName.
    */
   protected Map<String, Timer> retryTimerMap = new HashMap<String, Timer>();
@@ -94,22 +89,18 @@ public abstract class AbstractRunner implements WjrRunner {
    *          The configuration.
    * @param store
    *          The test store.
-   * @param parameterMap
-   *          The parameter map.
    */
   public AbstractRunner(KtrWjrServiceAsync rpcService, WjrDisplay view,
-      WjrConfig config, WjrStore store, Map<String, List<String>> parameterMap) {
+      WjrConfig config, WjrStore store) {
     checkNotNull(rpcService, "The rpcService is null.");
     checkNotNull(view, "The view is null.");
     checkNotNull(config, "The config is null.");
     checkNotNull(store, "The store is null.");
-    checkNotNull(parameterMap, "The parameterMap is null.");
 
     this.rpcService = rpcService;
     this.view = view;
     this.config = config;
     this.store = store;
-    this.parameterMap = parameterMap;
   }
 
   /**

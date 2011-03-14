@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import bufferings.ktr.wjr.server.util.WjrUtils;
+import bufferings.ktr.wjr.server.util.WjrServerUtils;
 
 /**
  * The recorder template of the GAE log.
@@ -49,8 +49,9 @@ public abstract class WjrGAELogRecorder {
   /**
    * The date format for logging.
    */
-  protected DateFormat dateFormat =
-    new SimpleDateFormat("MM-dd hh:mma ss.SSSZ ", Locale.ENGLISH);
+  protected DateFormat dateFormat = new SimpleDateFormat(
+    "MM-dd hh:mma ss.SSSZ ",
+    Locale.ENGLISH);
 
   /**
    * Start recording.
@@ -65,7 +66,7 @@ public abstract class WjrGAELogRecorder {
     recording = true;
     recorded = false;
 
-    dateFormat.setTimeZone(WjrUtils.getTimeZone(timeZoneId));
+    dateFormat.setTimeZone(WjrServerUtils.getTimeZone(timeZoneId));
     log = new StringBuilder();
     startBare();
   }

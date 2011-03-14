@@ -174,6 +174,15 @@ public class WjrStore implements IsSerializable {
   }
 
   /**
+   * Gets the method items.
+   * 
+   * @return The list of the method items.
+   */
+  public List<WjrMethodItem> getMethodItems() {
+    return new ArrayList<WjrMethodItem>(methodItems.values());
+  }
+
+  /**
    * Gets the method items belong to the className.
    * 
    * @param className
@@ -257,7 +266,7 @@ public class WjrStore implements IsSerializable {
   public int getRunningCount() {
     return root.getRunningCount();
   }
-  
+
   /**
    * Gets the retry waiting count.
    * 
@@ -266,7 +275,7 @@ public class WjrStore implements IsSerializable {
   public int getRetryWaitingCount() {
     return root.getRetryWaitingCount();
   }
-  
+
   /**
    * Updates the summary of the class items. This method does not update the
    * summaries in the class items. If you want to update all summaries, you can

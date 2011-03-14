@@ -13,27 +13,26 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package bufferings.ktr.wjr.client.service;
-
-import bufferings.ktr.wjr.shared.model.WjrConfig;
-import bufferings.ktr.wjr.shared.model.WjrMethodItem;
-import bufferings.ktr.wjr.shared.model.WjrStore;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
+package bufferings.ktr.wjr.shared.util;
 
 /**
- * The service async.
+ * Shared utility methods.
  * 
  * @author bufferings[at]gmail.com
- * @see KtrWjrService
  */
-public interface KtrWjrServiceAsync {
+public class WjrSharedUtils {
 
-  void loadConfig(String configId, AsyncCallback<WjrConfig> callback);
+  /**
+   * Check if the value is null or empty string.
+   * 
+   * @param value
+   *          the value
+   * @return true if the value is null or empty string, false if not.
+   */
+  public static boolean isNullOrEmptyString(String value) {
+    return value == null || value.length() == 0;
+  }
 
-  void loadStore(AsyncCallback<WjrStore> callback);
-
-  void runTest(WjrMethodItem methodItem, boolean cpumsEnabled,
-      boolean apimsEnabled, boolean logHookEnabled, String logHookTimezone,
-      AsyncCallback<WjrMethodItem> callback);
+  private WjrSharedUtils() {
+  }
 }

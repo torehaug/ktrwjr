@@ -25,9 +25,11 @@ import java.util.Map;
 import bufferings.ktr.wjr.client.runner.SequentialRunner;
 import bufferings.ktr.wjr.client.runner.WjrRunner;
 import bufferings.ktr.wjr.client.service.KtrWjrServiceAsync;
-import bufferings.ktr.wjr.server.util.WjrUtils;
+import bufferings.ktr.wjr.server.util.WjrServerUtils;
 import bufferings.ktr.wjr.shared.model.WjrConfig;
 import bufferings.ktr.wjr.shared.model.WjrStore;
+import bufferings.ktr.wjr.shared.util.WjrParamKey;
+import bufferings.ktr.wjr.shared.util.WjrSharedUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
@@ -102,28 +104,39 @@ public class WjrPresenter implements WjrDisplayHandler {
     loadingView.go(container);
     view.go(WjrPresenter.this, container);
 
-    rpcService.loadConfig(getParameterMap(), new AsyncCallback<WjrConfig>() {
+    rpcService.loadConfig(
+      getConfigIdFromQueryString(),
+      new AsyncCallback<WjrConfig>() {
 
-      public void onFailure(Throwable caught) {
-        config = new WjrConfig();
-        loadingView.notifyLoaded();
-        view.notifyLoadingConfigFailed(config, caught);
-      }
+        public void onFailure(Throwable caught) {
+          config = new WjrConfig();
+          setParamTzToConfig(config);
+          loadingView.notifyLoaded();
+          view.notifyLoadingConfigFailed(config, caught);
+        }
 
-      public void onSuccess(WjrConfig result) {
-        checkNotNull(result, "The configuration is null.");
-        config = result;
-        loadingView.notifyLoaded();
-        view.notifyLoadingConfigSucceeded(config);
-      }
-    });
+        public void onSuccess(WjrConfig result) {
+          checkNotNull(result, "The configuration is null.");
+          config = result;
+          setParamTzToConfig(config);
+          loadingView.notifyLoaded();
+          view.notifyLoadingConfigSucceeded(config);
+        }
+
+        private void setParamTzToConfig(WjrConfig config) {
+          String tz = getTzFromQueryString();
+          if (!WjrSharedUtils.isNullOrEmptyString(tz)) {
+            config.setLogHookTimezone(tz);
+          }
+        }
+      });
   }
 
   /**
    * {@inheritDoc}
    */
   public void onLoadStore() {
-    rpcService.loadStore(getParameterMap(), new AsyncCallback<WjrStore>() {
+    rpcService.loadStore(new AsyncCallback<WjrStore>() {
 
       public void onFailure(Throwable caught) {
         view.setData(new WjrStore());
@@ -183,12 +196,30 @@ public class WjrPresenter implements WjrDisplayHandler {
    * @return The test runner.
    */
   protected WjrRunner createRunner() {
-    return new SequentialRunner(
-      rpcService,
-      view,
-      config,
-      store,
-      getParameterMap());
+    return new SequentialRunner(rpcService, view, config, store);
+  }
+
+  /**
+   * Gets the configId parameter form the query string.
+   */
+  protected String getConfigIdFromQueryString() {
+    List<String> items = getParameterMap().get(WjrParamKey.KEY_CONFIG_ID);
+    if (items == null || items.size() == 0) {
+      return null;
+    }
+    return items.get(0);
+  }
+
+  /**
+   * Gets the tz parameter form the query string.
+   */
+  protected String getTzFromQueryString() {
+    List<String> items =
+      getParameterMap().get(WjrParamKey.KEY_LOGHOOK_TIMEZONE);
+    if (items == null || items.size() == 0) {
+      return null;
+    }
+    return items.get(0);
   }
 
   /**
@@ -198,10 +229,10 @@ public class WjrPresenter implements WjrDisplayHandler {
    * 
    * I want to use the method {@link Window.Location#getParameterMap()}, but it
    * returns immutable map and list. The immutable map and list cannot be used
-   * in the GWT-RPC. So I create the {@link WjrUtils#buildListParamMap(String)},
-   * which is the same logic as
-   * {@link Window.Location#buildListParamMap(String)} but returns not immutable
-   * map.
+   * in the GWT-RPC. So I create the
+   * {@link WjrServerUtils#buildListParamMap(String)}, which is the same logic
+   * as {@link Window.Location#buildListParamMap(String)} but returns not
+   * immutable map.
    * 
    * @return The properties.
    */

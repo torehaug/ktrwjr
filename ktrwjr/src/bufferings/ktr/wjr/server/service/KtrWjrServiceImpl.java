@@ -17,8 +17,6 @@ package bufferings.ktr.wjr.server.service;
 
 import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import bufferings.ktr.wjr.client.service.KtrWjrService;
@@ -29,12 +27,12 @@ import bufferings.ktr.wjr.server.logic.WjrGAEProdLogRecorder;
 import bufferings.ktr.wjr.server.logic.WjrGAEQuotaRecorder;
 import bufferings.ktr.wjr.server.logic.WjrJUnitLogicFactory;
 import bufferings.ktr.wjr.server.logic.WjrMethodRunner;
-import bufferings.ktr.wjr.server.logic.WjrParamParser;
 import bufferings.ktr.wjr.server.logic.WjrStoreLoader;
 import bufferings.ktr.wjr.server.util.AppEngineUtil;
 import bufferings.ktr.wjr.shared.model.WjrConfig;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
+import bufferings.ktr.wjr.shared.util.WjrSharedUtils;
 
 /**
  * KtrWjr service class.
@@ -43,16 +41,19 @@ import bufferings.ktr.wjr.shared.model.WjrStore;
  */
 public class KtrWjrServiceImpl implements KtrWjrService {
 
-  private static final Logger logger =
-    Logger.getLogger(KtrWjrServiceImpl.class.getName());
+  private static final Logger logger = Logger.getLogger(KtrWjrServiceImpl.class
+    .getName());
 
   protected static final String CLASSES_DIRECTORY = "WEB-INF/classes";
 
   /**
    * {@inheritDoc}
    */
-  public WjrConfig loadConfig(Map<String, List<String>> parameterMap) {
-    String configId = getParamParser().getConfigId(parameterMap);
+  public WjrConfig loadConfig(String configId) {
+    if (WjrSharedUtils.isNullOrEmptyString(configId)) {
+      configId = WjrConfig.DEFAULT_CONFIG_ID;
+    }
+
     WjrConfig config = getConfigLoader().loadWjrConfig(configId);
     logger.info("The configuration is loaded. " + config.toString());
     return config;
@@ -61,15 +62,14 @@ public class KtrWjrServiceImpl implements KtrWjrService {
   /**
    * {@inheritDoc}
    */
-  public WjrStore loadStore(Map<String, List<String>> parameterMap) {
+  public WjrStore loadStore() {
     return getStoreLoader().loadWjrStore(CLASSES_DIRECTORY);
   }
 
   /**
    * {@inheritDoc}
    */
-  public WjrMethodItem runTest(WjrMethodItem methodItem,
-      Map<String, List<String>> parameterMap, boolean cpumsEnabled,
+  public WjrMethodItem runTest(WjrMethodItem methodItem, boolean cpumsEnabled,
       boolean apimsEnabled, boolean logHookEnabled, String logHookTimezone) {
     checkNotNull(methodItem, "The methodItem parameter is null.");
 
@@ -88,14 +88,11 @@ public class KtrWjrServiceImpl implements KtrWjrService {
       methodItem.clearResult();
 
       if (logRecorder != null) {
-        if (logHookTimezone == null || logHookTimezone.length() == 0) {
+        if (WjrSharedUtils.isNullOrEmptyString(logHookTimezone)) {
           logHookTimezone = WjrConfig.DEFAULT_LOGHOOK_TIMEZONE;
         }
 
-        WjrParamParser paramParser = getParamParser();
-        String timeZoneId =
-          paramParser.getTimeZoneId(parameterMap, logHookTimezone);
-        logRecorder.startRecording(timeZoneId);
+        logRecorder.startRecording(logHookTimezone);
       }
 
       if (quotaRecorder != null) {
@@ -141,13 +138,6 @@ public class KtrWjrServiceImpl implements KtrWjrService {
    */
   protected WjrMethodRunner getMethodRunner() {
     return WjrJUnitLogicFactory.getMethodRunner();
-  }
-
-  /**
-   * Gets the parameter map parser.
-   */
-  protected WjrParamParser getParamParser() {
-    return new WjrParamParser();
   }
 
   /**

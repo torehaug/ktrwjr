@@ -20,7 +20,7 @@ import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 import java.io.File;
 import java.io.FileFilter;
 
-import bufferings.ktr.wjr.server.util.WjrUtils;
+import bufferings.ktr.wjr.server.util.WjrServerUtils;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
 /**
@@ -154,7 +154,7 @@ public abstract class WjrStoreLoader {
    *           When the class is not found.
    */
   protected Class<?> loadClass(String className) {
-    return WjrUtils.loadClass(className);
+    return WjrServerUtils.loadClass(className);
   }
 
   /**

@@ -15,9 +15,6 @@
  */
 package bufferings.ktr.wjr.client.service;
 
-import java.util.List;
-import java.util.Map;
-
 import bufferings.ktr.wjr.shared.model.WjrConfig;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
@@ -36,28 +33,24 @@ public interface KtrWjrService extends RemoteService {
   /**
    * Loads the WjrConfig.
    * 
-   * @param parameterMap
-   *          GET parameter map for user configuration.
+   * @param configId
+   *          The config ID.
    * @return The loaded config.
    */
-  public WjrConfig loadConfig(Map<String, List<String>> parameterMap);
+  public WjrConfig loadConfig(String configId);
 
   /**
    * Loads the WjrStore.
    * 
-   * @param parameterMap
-   *          GET parameter map for user configuration.
    * @return The loaded store.
    */
-  public WjrStore loadStore(Map<String, List<String>> parameterMap);
+  public WjrStore loadStore();
 
   /**
    * Runs the test.
    * 
    * @param methodItem
    *          The methodItem to run.
-   * @param parameterMap
-   *          GET parameter map for user configuration.
    * @param cpumsEnabled
    *          Whether to get cpu_ms or not.
    * @param apimsEnabled
@@ -65,10 +58,8 @@ public interface KtrWjrService extends RemoteService {
    * @param logHookEnabled
    *          Whether to get log or not.
    * @param logHookTimezone
-   *          The log timezone. If the parameterMap has the "tz", the value of
-   *          the parameterMap will be used preferentially.
+   *          The log timezone.
    */
-  public WjrMethodItem runTest(WjrMethodItem methodItem,
-      Map<String, List<String>> parameterMap, boolean cpumsEnabled,
+  public WjrMethodItem runTest(WjrMethodItem methodItem, boolean cpumsEnabled,
       boolean apimsEnabled, boolean logHookEnabled, String logHookTimezone);
 }

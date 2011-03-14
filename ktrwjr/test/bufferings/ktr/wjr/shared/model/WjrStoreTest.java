@@ -140,6 +140,31 @@ public class WjrStoreTest {
     assertThat(items.get(4), is(classItem5));
   }
 
+  @Test
+  public void getMethodItems_WillReturnEmptyList_WhenNoItemsExist() {
+    assertTrue(store.getMethodItems().isEmpty());
+  }
+
+  @Test
+  public void getMethodItems_CanReturnSortedList() {
+    store.addClassItem(new WjrClassItem("foo.Foo1"));
+    store.addClassItem(new WjrClassItem("foo.Foo2"));
+    store.addClassItem(new WjrClassItem("foo.Foo3"));
+
+    WjrMethodItem methodItem1 = new WjrMethodItem("foo.Foo1", "barMethod1");
+    WjrMethodItem methodItem2 = new WjrMethodItem("foo.Foo1", "barMethod2");
+    WjrMethodItem methodItem3 = new WjrMethodItem("foo.Foo1", "barMethod3");
+    store.addMethodItem(methodItem3);
+    store.addMethodItem(methodItem2);
+    store.addMethodItem(methodItem1);
+
+    List<WjrMethodItem> items = store.getMethodItems();
+    assertThat(items.size(), is(3));
+    assertThat(items.get(0), is(methodItem1));
+    assertThat(items.get(1), is(methodItem2));
+    assertThat(items.get(2), is(methodItem3));
+  }
+
   @Test(expected = IllegalStateException.class)
   public void getMethodItems_WillThrowISE_WhenClassItemNotExist() {
     store.getMethodItems("foo.Foo");

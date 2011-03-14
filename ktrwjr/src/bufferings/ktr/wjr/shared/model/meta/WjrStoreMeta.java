@@ -13,27 +13,25 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package bufferings.ktr.wjr.client.service;
-
-import bufferings.ktr.wjr.shared.model.WjrConfig;
-import bufferings.ktr.wjr.shared.model.WjrMethodItem;
-import bufferings.ktr.wjr.shared.model.WjrStore;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
+package bufferings.ktr.wjr.shared.model.meta;
 
 /**
- * The service async.
+ * A meta of WjrStoreMeta.
  * 
  * @author bufferings[at]gmail.com
- * @see KtrWjrService
  */
-public interface KtrWjrServiceAsync {
+public class WjrStoreMeta {
 
-  void loadConfig(String configId, AsyncCallback<WjrConfig> callback);
+  private static final WjrStoreMeta meta = new WjrStoreMeta();
 
-  void loadStore(AsyncCallback<WjrStore> callback);
+  public static WjrStoreMeta meta() {
+    return meta;
+  }
 
-  void runTest(WjrMethodItem methodItem, boolean cpumsEnabled,
-      boolean apimsEnabled, boolean logHookEnabled, String logHookTimezone,
-      AsyncCallback<WjrMethodItem> callback);
+  public final String classItems = "classItems";
+
+  public final String methodItems = "methodItems";
+
+  private WjrStoreMeta() {
+  }
 }

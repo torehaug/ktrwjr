@@ -2,12 +2,22 @@
 <module
   rename-to='ktrwjr'>
   <!-- gwt core -->
-  <inherits name='com.google.gwt.user.User' />
+  <inherits
+    name='com.google.gwt.user.User' />
+  <!-- http & json -->
+  <inherits
+    name='com.google.gwt.http.HTTP' />
+  <inherits
+    name='com.google.gwt.json.JSON' />
+
 
   <!-- entry point -->
-  <entry-point class='bufferings.ktr.wjr.client.KtrWjr' />
+  <entry-point
+    class='bufferings.ktr.wjr.client.KtrWjr' />
 
   <!-- source -->
-  <source path="client" />
-  <source path="shared" />
+  <source
+    path="client" />
+  <source
+    path="shared" />
 </module>

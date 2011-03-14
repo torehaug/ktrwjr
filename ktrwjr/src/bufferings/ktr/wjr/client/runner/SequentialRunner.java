@@ -1,7 +1,6 @@
 package bufferings.ktr.wjr.client.runner;
 
 import java.util.List;
-import java.util.Map;
 
 import bufferings.ktr.wjr.client.WjrDisplay;
 import bufferings.ktr.wjr.client.service.KtrWjrServiceAsync;
@@ -94,12 +93,10 @@ public class SequentialRunner extends AbstractRunner implements
    *          The configuration.
    * @param store
    *          The test store.
-   * @param parameterMap
-   *          The parameter map.
    */
   public SequentialRunner(KtrWjrServiceAsync rpcService, WjrDisplay view,
-      WjrConfig config, WjrStore store, Map<String, List<String>> parameterMap) {
-    super(rpcService, view, config, store, parameterMap);
+      WjrConfig config, WjrStore store) {
+    super(rpcService, view, config, store);
   }
 
   /**
@@ -117,7 +114,6 @@ public class SequentialRunner extends AbstractRunner implements
   protected void runCurrentIndexTestMethod() {
     rpcService.runTest(
       methodItems.get(currentIndex),
-      parameterMap,
       config.isCpumsEnabled(),
       config.isApimsEnabled(),
       config.isLogHookEnabled(),

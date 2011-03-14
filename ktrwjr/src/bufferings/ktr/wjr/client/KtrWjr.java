@@ -15,11 +15,10 @@
  */
 package bufferings.ktr.wjr.client;
 
-import bufferings.ktr.wjr.client.service.KtrWjrService;
+import bufferings.ktr.wjr.client.service.KtrWjrJsonServiceAsync;
 import bufferings.ktr.wjr.client.service.KtrWjrServiceAsync;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -36,7 +35,7 @@ public class KtrWjr implements EntryPoint {
    * {@inheritDoc}
    */
   public void onModuleLoad() {
-    KtrWjrServiceAsync rpcService = GWT.create(KtrWjrService.class);
+    KtrWjrServiceAsync rpcService = new KtrWjrJsonServiceAsync();
     WjrPresenter presenter =
       new WjrPresenter(rpcService, new WjrLoadingView(), new WjrView());
 

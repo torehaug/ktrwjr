@@ -22,7 +22,7 @@ import org.junit.runner.Result;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 
-import bufferings.ktr.wjr.server.util.WjrUtils;
+import bufferings.ktr.wjr.server.util.WjrServerUtils;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
 
@@ -62,7 +62,7 @@ public class WjrJUnit4MethodRunner implements WjrMethodRunner {
    * @return The trace string from the exception.
    */
   protected String getTrace(Exception e) {
-    return WjrUtils.getTraceStringFromException(e);
+    return WjrServerUtils.getTraceStringFromException(e);
   }
 
   /**
@@ -77,7 +77,7 @@ public class WjrJUnit4MethodRunner implements WjrMethodRunner {
    *           When the class is not found.
    */
   protected Class<?> loadClass(String className) {
-    return WjrUtils.loadClass(className);
+    return WjrServerUtils.loadClass(className);
   }
 
   /**

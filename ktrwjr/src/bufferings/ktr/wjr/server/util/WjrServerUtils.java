@@ -22,11 +22,11 @@ import java.io.StringWriter;
 import java.util.TimeZone;
 
 /**
- * Utility methods.
+ * Server utility methods.
  * 
  * @author bufferings[at]gmail.com
  */
-public class WjrUtils {
+public class WjrServerUtils {
 
   /**
    * Loads the class from the class name.
@@ -67,6 +67,34 @@ public class WjrUtils {
   }
 
   /**
+   * Convert the string to boolean.
+   * 
+   * If str is "true" then returns true, if str is "false" then returns false,
+   * other case returns def.
+   * 
+   * @param str
+   *          The string to convert to boolean.
+   * @param def
+   *          The default value if the string cannot be coverted.
+   * @return The converted boolean.
+   */
+  public static boolean convertToBoolean(String str, boolean def) {
+    if (str == null) {
+      return def;
+    }
+
+    if (str.equals("true")) {
+      return true;
+    }
+
+    if (str.equals("false")) {
+      return false;
+    }
+
+    return def;
+  }
+
+  /**
    * Gets the time zone form id.
    * 
    * @param timeZoneId
@@ -98,6 +126,6 @@ public class WjrUtils {
     return stringWriter.getBuffer().toString();
   }
 
-  private WjrUtils() {
+  private WjrServerUtils() {
   }
 }

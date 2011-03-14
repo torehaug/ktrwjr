@@ -55,16 +55,8 @@ public class WjrConfigLoader {
   protected static final String CONFIG_ITEM_RETRYOVERQUOTA_MAXCOUNT =
     "retryOverQuotaMaxCount";
 
-  /**
-   * The logger.
-   */
   private static final Logger logger = Logger.getLogger(WjrConfigLoader.class
     .getName());
-
-  // TODO Test
-  // TODO config loading failed test
-  // TODO no config exist test
-  // TODO config loading succeed test
 
   /**
    * Load the config file.
@@ -75,10 +67,6 @@ public class WjrConfigLoader {
    */
   public WjrConfig loadWjrConfig(String configId) {
     WjrConfig config = new WjrConfig();
-    if (configId == null || configId.length() == 0) {
-      return config;
-    }
-
     Properties props = loadProperties();
     Enumeration<Object> propKeys = props.keys();
     while (propKeys.hasMoreElements()) {
@@ -87,7 +75,6 @@ public class WjrConfigLoader {
       if (!configId.equals(keyInfo.getConfigKey())) {
         continue;
       }
-
       setConfigAttribute(config, keyInfo, props.getProperty(propKey));
     }
     return config;
