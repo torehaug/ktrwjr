@@ -21,10 +21,6 @@ import static com.google.gwt.http.client.RequestBuilder.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import bufferings.ktr.wjr.client.apache.HTTP;
-import bufferings.ktr.wjr.client.apache.NameValuePair;
-import bufferings.ktr.wjr.client.apache.SimpleNameValuePair;
-import bufferings.ktr.wjr.client.apache.URLEncodedUtils;
 import bufferings.ktr.wjr.shared.model.WjrClassItem;
 import bufferings.ktr.wjr.shared.model.WjrConfig;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
@@ -40,39 +36,85 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+/**
+ * The service using Json.
+ * 
+ * @author bufferings[at]gmail.com
+ */
 public class KtrWjrJsonServiceAsync implements KtrWjrServiceAsync {
+
+  /**
+   * Name and Value Pair
+   * 
+   * @author bufferings[at]gmail.com
+   */
+  static class Pair {
+
+    /**
+     * The name.
+     */
+    public final String name;
+
+    /**
+     * The value.
+     */
+    public final String value;
+
+    /**
+     * Init with params.
+     * 
+     * @param name
+     *          the name.
+     * @param value
+     *          the value.
+     */
+    public Pair(String name, String value) {
+      this.name = name;
+      this.value = value;
+    }
+  }
 
   /**
    * The url of json servlet.
    */
-  public static final String JSON_SERVLET_URL = "/ktrwjr/ktrwjr.json";
+  static final String JSON_SERVLET_URL = "/ktrwjr/ktrwjr.json";
 
   /**
    * The header of a content type.
    */
-  public static final String CONTENT_TYPE_HEADER = "Content-Type";
+  static final String CONTENT_TYPE_HEADER = "Content-Type";
 
   /**
    * The x-www-form-urlencoded of a content type.
    */
-  public static final String CONTENT_TYPE_X_WWW_FORM_URLENCODED =
+  static final String CONTENT_TYPE_X_WWW_FORM_URLENCODED =
     "application/x-www-form-urlencoded; charset=utf-8";
+
+  /**
+   * The separator of parameter.
+   */
+  static final String PARAMETER_SEPARATOR = "&";
+
+  /**
+   * The separator of name and value.
+   */
+  static final String NAME_VALUE_SEPARATOR = "=";
 
   /**
    * {@inheritDoc}
    */
   public void loadConfig(String configId,
       final AsyncCallback<WjrConfig> callback) {
-    final List<NameValuePair> params = new ArrayList<NameValuePair>();
-    params.add(new SimpleNameValuePair(KEY_METHOD, METHOD_LOAD_CONFIG));
-    params.add(new SimpleNameValuePair(KEY_CONFIG_ID, configId));
-
+    final List<Pair> params = new ArrayList<Pair>();
+    params.add(new Pair(KEY_METHOD, METHOD_LOAD_CONFIG));
+    params.add(new Pair(KEY_CONFIG_ID, configId));
     try {
       sendRequest(params, new RequestCallback() {
         public void onError(Request request, Throwable exception) {
@@ -96,9 +138,8 @@ public class KtrWjrJsonServiceAsync implements KtrWjrServiceAsync {
    * {@inheritDoc}
    */
   public void loadStore(final AsyncCallback<WjrStore> callback) {
-    final List<NameValuePair> params = new ArrayList<NameValuePair>();
-    params.add(new SimpleNameValuePair(KEY_METHOD, METHOD_LOAD_STORE));
-
+    final List<Pair> params = new ArrayList<Pair>();
+    params.add(new Pair(KEY_METHOD, METHOD_LOAD_STORE));
     try {
       sendRequest(params, new RequestCallback() {
         public void onError(Request request, Throwable exception) {
@@ -124,14 +165,10 @@ public class KtrWjrJsonServiceAsync implements KtrWjrServiceAsync {
   public void runTest(WjrMethodItem methodItem, boolean cpumsEnabled,
       boolean apimsEnabled, boolean logHookEnabled, String logHookTimezone,
       final AsyncCallback<WjrMethodItem> callback) {
-
-    final List<NameValuePair> params = new ArrayList<NameValuePair>();
-    params.add(new SimpleNameValuePair(KEY_METHOD, METHOD_RUN_TEST));
-    params.add(new SimpleNameValuePair(KEY_RUN_CLASS_NAME, methodItem
-      .getClassName()));
-    params.add(new SimpleNameValuePair(KEY_RUN_METHOD_NAME, methodItem
-      .getMethodName()));
-
+    final List<Pair> params = new ArrayList<Pair>();
+    params.add(new Pair(KEY_METHOD, METHOD_RUN_TEST));
+    params.add(new Pair(KEY_RUN_CLASS_NAME, methodItem.getClassName()));
+    params.add(new Pair(KEY_RUN_METHOD_NAME, methodItem.getMethodName()));
     try {
       sendRequest(params, new RequestCallback() {
         public void onError(Request request, Throwable exception) {
@@ -161,11 +198,37 @@ public class KtrWjrJsonServiceAsync implements KtrWjrServiceAsync {
    * @throws RequestException
    *           thrown when the error occured.
    */
-  void sendRequest(List<NameValuePair> params, RequestCallback callback)
+  void sendRequest(List<Pair> params, RequestCallback callback)
       throws RequestException {
     RequestBuilder builder = new RequestBuilder(POST, JSON_SERVLET_URL);
     builder.setHeader(CONTENT_TYPE_HEADER, CONTENT_TYPE_X_WWW_FORM_URLENCODED);
-    builder.sendRequest(URLEncodedUtils.format(params, HTTP.UTF_8), callback);
+    builder.sendRequest(format(params), callback);
+  }
+
+  /**
+   * Returns a String that is suitable for use as an
+   * <code>application/x-www-form-urlencoded</code> list of parameters in an
+   * HTTP PUT or HTTP POST.
+   * 
+   * @param parameters
+   *          The parameters to include.
+   * @param encoding
+   *          The encoding to use.
+   */
+  String format(List<Pair> parameters) {
+    final StringBuilder result = new StringBuilder();
+    for (final Pair parameter : parameters) {
+      String encodedName = URL.encode(parameter.name);
+      String encodedValue =
+        parameter.value != null ? URL.encode(parameter.value) : "";
+      if (result.length() > 0) {
+        result.append(PARAMETER_SEPARATOR);
+      }
+      result.append(encodedName);
+      result.append(NAME_VALUE_SEPARATOR);
+      result.append(encodedValue);
+    }
+    return result.toString();
   }
 
   /**
@@ -297,4 +360,5 @@ public class KtrWjrJsonServiceAsync implements KtrWjrServiceAsync {
 
     return wjrMethodItem;
   }
+
 }
