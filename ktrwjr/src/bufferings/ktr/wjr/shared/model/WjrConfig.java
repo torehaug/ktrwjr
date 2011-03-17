@@ -15,14 +15,13 @@
  */
 package bufferings.ktr.wjr.shared.model;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * The configration.
  * 
  * @author bufferings[at]gmail.com
  */
-public class WjrConfig implements IsSerializable {
+public class WjrConfig {
 
   /**
    * The default value of configId.

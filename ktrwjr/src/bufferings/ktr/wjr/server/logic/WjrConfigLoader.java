@@ -67,6 +67,9 @@ public class WjrConfigLoader {
    */
   public WjrConfig loadWjrConfig(String configId) {
     WjrConfig config = new WjrConfig();
+    config.setConfigId(configId);
+    configId = config.getConfigId();
+
     Properties props = loadProperties();
     Enumeration<Object> propKeys = props.keys();
     while (propKeys.hasMoreElements()) {

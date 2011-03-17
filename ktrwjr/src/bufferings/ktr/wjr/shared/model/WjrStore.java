@@ -22,14 +22,12 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 /**
  * The store of test case and method models.
  * 
  * @author bufferings[at]gmail.com
  */
-public class WjrStore implements IsSerializable {
+public class WjrStore {
 
   /**
    * The root summary item of the store.

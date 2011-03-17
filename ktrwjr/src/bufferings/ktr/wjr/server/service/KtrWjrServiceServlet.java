@@ -43,7 +43,7 @@ import com.google.gson.stream.JsonWriter;
  * 
  * @author bufferings[at]gmail.com
  */
-public class KtrWjrJsonServiceServlet extends HttpServlet {
+public class KtrWjrServiceServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1L;
 

@@ -17,14 +17,12 @@ package bufferings.ktr.wjr.shared.model;
 
 import static bufferings.ktr.wjr.shared.util.Preconditions.*;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 /**
  * The item stored in {@link WjrStore}.
  * 
  * @author bufferings[at]gmail.com
  */
-public abstract class WjrStoreItem implements IsSerializable {
+public abstract class WjrStoreItem {
 
   /**
    * The run test states.

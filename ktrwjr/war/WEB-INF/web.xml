@@ -4,14 +4,14 @@
   version="2.5">
 
   <servlet>
-    <servlet-name>KtrWjrJsonServiceServlet</servlet-name>
-    <servlet-class>bufferings.ktr.wjr.server.service.KtrWjrJsonServiceServlet
+    <servlet-name>KtrWjrServiceServlet</servlet-name>
+    <servlet-class>bufferings.ktr.wjr.server.service.KtrWjrServiceServlet
     </servlet-class>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>KtrWjrJsonServiceServlet</servlet-name>
-    <url-pattern>ktrwjr/ktrwjr.json</url-pattern>
+    <servlet-name>KtrWjrServiceServlet</servlet-name>
+    <url-pattern>/ktrwjr/ktrwjr/ktrwjr.s3gwt</url-pattern>
   </servlet-mapping>
 
   <welcome-file-list>

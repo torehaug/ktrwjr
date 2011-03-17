@@ -19,16 +19,12 @@ import bufferings.ktr.wjr.shared.model.WjrConfig;
 import bufferings.ktr.wjr.shared.model.WjrMethodItem;
 import bufferings.ktr.wjr.shared.model.WjrStore;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-
 /**
  * The KtrWjr service.
  * 
  * @author bufferings[at]gmail.com
  */
-@RemoteServiceRelativePath("ktrwjr.s3gwt")
-public interface KtrWjrService extends RemoteService {
+public interface KtrWjrService {
 
   /**
    * Loads the WjrConfig.

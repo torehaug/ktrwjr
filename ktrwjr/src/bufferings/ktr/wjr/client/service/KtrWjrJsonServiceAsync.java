@@ -84,7 +84,7 @@ public class KtrWjrJsonServiceAsync implements KtrWjrServiceAsync {
   /**
    * The url of json servlet.
    */
-  static final String JSON_SERVLET_URL = "/ktrwjr/ktrwjr.json";
+  static final String JSON_SERVLET_URL = "/ktrwjr/ktrwjr/ktrwjr.s3gwt";
 
   /**
    * The header of a content type.
@@ -169,6 +169,10 @@ public class KtrWjrJsonServiceAsync implements KtrWjrServiceAsync {
     params.add(new Pair(KEY_METHOD, METHOD_RUN_TEST));
     params.add(new Pair(KEY_RUN_CLASS_NAME, methodItem.getClassName()));
     params.add(new Pair(KEY_RUN_METHOD_NAME, methodItem.getMethodName()));
+    params.add(new Pair(KEY_CPUMS_ENABLED, Boolean.toString(cpumsEnabled)));
+    params.add(new Pair(KEY_APIMS_ENABLED, Boolean.toString(apimsEnabled)));
+    params.add(new Pair(KEY_LOGHOOK_ENABLED, Boolean.toString(logHookEnabled)));
+    params.add(new Pair(KEY_LOGHOOK_TIMEZONE, logHookTimezone));
     try {
       sendRequest(params, new RequestCallback() {
         public void onError(Request request, Throwable exception) {
