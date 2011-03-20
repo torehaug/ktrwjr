@@ -47,7 +47,10 @@ public class KtrWjrServiceServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1L;
 
-  public static final String CONTENT_TYPE_JSON = "application/json";
+  public static final String ENCODING = "UTF-8";
+
+  public static final String CONTENT_TYPE_JSON =
+    "application/json ; charset=UTF-8";
 
   /**
    * delegation
@@ -60,6 +63,7 @@ public class KtrWjrServiceServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
+    resp.setCharacterEncoding(ENCODING);
     resp.setContentType(CONTENT_TYPE_JSON);
 
     JsonWriter writer = new JsonWriter(resp.getWriter());
@@ -100,11 +104,15 @@ public class KtrWjrServiceServlet extends HttpServlet {
         req.getParameter(KEY_RUN_CLASS_NAME),
         req.getParameter(KEY_RUN_METHOD_NAME));
     boolean cpumsEnabled =
-      WjrServerUtils.convertToBoolean(req.getParameter(KEY_CPUMS_ENABLED), true);
+      WjrServerUtils
+        .convertToBoolean(req.getParameter(KEY_CPUMS_ENABLED), true);
     boolean apimsEnabled =
-      WjrServerUtils.convertToBoolean(req.getParameter(KEY_APIMS_ENABLED), true);
+      WjrServerUtils
+        .convertToBoolean(req.getParameter(KEY_APIMS_ENABLED), true);
     boolean logHookEnabled =
-      WjrServerUtils.convertToBoolean(req.getParameter(KEY_LOGHOOK_ENABLED), true);
+      WjrServerUtils.convertToBoolean(
+        req.getParameter(KEY_LOGHOOK_ENABLED),
+        true);
     String logHookTimezone = req.getParameter(KEY_LOGHOOK_TIMEZONE);
 
     return delegate.runTest(
