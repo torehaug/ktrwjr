@@ -9,8 +9,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class 日本語テストクラス {
-  private static final Logger logger = Logger
-    .getLogger(ForTest.class.getName());
+  private static final Logger logger = Logger.getLogger(日本語テストクラス.class
+    .getName());
 
   @Test
   public void 成功() {
