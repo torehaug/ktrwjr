@@ -1,7 +1,7 @@
 package ktrwjr.test;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import java.util.logging.Logger;
 
@@ -15,7 +15,7 @@ public class DEEAndHDECheck {
 
   @Test
   public void waitForDEE() throws Exception {
-    assertThat(
+    assumeThat(
       SystemProperty.environment.value(),
       is(SystemProperty.Environment.Value.Production));
     
@@ -31,7 +31,7 @@ public class DEEAndHDECheck {
 
   @Test
   public void waitForHDE() throws Exception {
-    assertThat(
+    assumeThat(
       SystemProperty.environment.value(),
       is(SystemProperty.Environment.Value.Production));
     nestCatchWait(100, 10);
