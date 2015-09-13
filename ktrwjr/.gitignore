@@ -1,2 +1,12 @@
 /target/
 /lib/
+
+# eclipse specific git ignore
+*.pydevproject
+.project
+.metadata
+.classpath
+.settings/
+.loadpath
+
+
