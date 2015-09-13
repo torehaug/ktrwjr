@@ -1,19 +1,6 @@
-<project name="ktrwjr" default="dist" basedir=".">
+<project name="ktrwjr" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 
   <property file="ktrwjr-build.properties" />
-
-  <property name="lib.dir" value="war\WEB-INF\lib" />
-  <property name="gwt.home"
-            value="C:\eclipse3.6\eclipse\plugins\com.google.gwt.eclipse.sdkbundle.2.2.0_2.2.0.v201102111811\gwt-2.2.0" />
-  <property name="gae.home"
-            value="C:\eclipse3.6\eclipse\plugins\com.google.appengine.eclipse.sdkbundle.1.4.2_1.4.2.v201102111811\appengine-java-sdk-1.4.2\lib" />
-
-  <property name="gwt-dev.lib" value="${gwt.home}\gwt-dev.jar" />
-  <property name="gwt-user.lib" value="${gwt.home}\gwt-user.jar" />
-  <property name="gae.lib"
-            value="${gae.home}\user\appengine-api-1.0-sdk-1.4.2.jar" />
-  <property name="junit.lib" value="${lib.dir}\junit-4.7.jar" />
-
   <property name="target" value="target" />
   <property name="app-ver" value="${ant.project.name}-${ktrwjr.version}" />
 
@@ -23,22 +10,28 @@
 
   <target name="prepare">
     <property name="work" value="target/${TIMESTAMP}" />
-    <property name="work.classes" value="${work}/classes" />
-    <property name="work.lib" value="${work}/lib" />
-    <property name="work.gwtc" value="${work}/gwtc" />
+    <property name="target.classes" value="${target}/classes" />
+    <property name="target.lib" value="${target}/lib" />
+    <property name="target.gwtc" value="${target}/gwtc" />
+    <property name="ivy-lib" value="lib" />
     <mkdir dir="${target}" />
-    <mkdir dir="${work.classes}" />
-    <mkdir dir="${work.lib}" />
-    <mkdir dir="${work.gwtc}" />
-    <mkdir dir="${work.gwtc}/ktrwjr" />
+    <mkdir dir="${target.classes}" />
+    <mkdir dir="${target.lib}" />
+    <mkdir dir="${target.gwtc}" />
+    <mkdir dir="${target.gwtc}/ktrwjr" />
   </target>
 
-  <target name="compile" depends="prepare">
-    <javac srcdir="src"
-           destdir="${work.classes}"
-           source="1.5"
+  <target name="compile" depends="prepare, ivy-resolve">
+        <path id="ivy.lib.path">
+            <fileset dir="${ivy-lib}" includes="*.jar"/>
+        </path>
+
+  <javac srcdir="src"
+           destdir="${target.classes}"
+           source="1.8"
+           target="1.8"
            encoding="UTF-8"
-           classpath="${junit.lib};${gwt-dev.lib};${gwt-user.lib};${gae.lib};"
+		   classpathref="ivy.lib.path"
            memoryInitialSize="512m"
            memoryMaximumSize="512m"
            fork="true">
@@ -48,21 +41,18 @@
   </target>
 
   <target name="create-lib" depends="prepare, compile">
-    <jar jarfile="${work.lib}/${ant.project.name}.jar">
-      <fileset dir="${work.classes}" />
+    <jar jarfile="${target.lib}/${ant.project.name}.jar">
+      <fileset dir="${target.classes}" />
       <fileset dir="src" includes="**/*" excludes="**/package-info.java" />
       <manifest>
         <section name="bufferings/ktr/wjr">
           <attribute name="Extension-name" value="bufferings.ktr.wjr" />
-          <attribute name="Specification-Title"
-                     value="Kotori Web JUnit Runner" />
+          <attribute name="Specification-Title" value="Kotori Web JUnit Runner" />
           <attribute name="Specification-Version" value="${ktrwjr.version}" />
-          <attribute name="Specification-Vendor"
-                     value="bufferings[at]gmail.com" />
+          <attribute name="Specification-Vendor" value="bufferings[at]gmail.com" />
           <attribute name="Implementation-Title" value="bufferings.ktr.wjr" />
           <attribute name="Implementation-Version" value="${TIMESTAMP}" />
-          <attribute name="Implementation-Vendor"
-                     value="bufferings[at]gmail.com" />
+          <attribute name="Implementation-Vendor" value="bufferings[at]gmail.com" />
         </section>
       </manifest>
     </jar>
@@ -72,13 +62,15 @@
     <java failonerror="true"
           fork="true"
           classname="com.google.gwt.dev.Compiler"
-          classpath="${gwt-dev.lib};${gwt-user.lib};">
+		  classpathref="ivy.lib.path"
+          
+		  >
       <classpath>
         <pathelement location="src" />
         <pathelement location="war/WEB-INF/classes" />
       </classpath>
       <jvmarg value="-Xmx256M" />
-      <arg line="-war ${work.gwtc}" />
+      <arg line="-war ${target.gwtc}" />
       <arg value="bufferings.ktr.wjr.KtrWjr" />
     </java>
   </target>
@@ -86,10 +78,10 @@
   <target name="dist" depends="create-lib, gwtc">
     <delete dir="${target}/${app-ver}" />
     <copy todir="${target}/${app-ver}/war/WEB-INF/lib">
-      <fileset dir="${work.lib}" />
+      <fileset dir="${target.lib}" />
     </copy>
     <copy todir="${target}/${app-ver}/war/ktrwjr/ktrwjr">
-      <fileset dir="${work.gwtc}/ktrwjr" />
+      <fileset dir="${target.gwtc}/ktrwjr" />
     </copy>
     <copy todir="${target}/${app-ver}/war/ktrwjr/js">
       <fileset dir="war/js" />
@@ -104,7 +96,6 @@
       <zipfileset prefix="${app-ver}/war" dir="${target}/${app-ver}/war" />
       <zipfileset prefix="${app-ver}/licenses" dir="licenses" />
     </zip>
-    <delete dir="${work}" />
   </target>
 
   <target name="copy-to-projects">
@@ -145,8 +136,17 @@
       <fileset dir="${target}/${app-ver}/war/ktrwjr" includes="index.html, ktrwjr.css" />
     </copy>
     <copy todir="${copy.to.project}/war/WEB-INF/lib" overwrite="true">
-      <fileset dir="${target}/${app-ver}/war/WEB-INF/lib"
-               includes="ktrwjr.jar" />
+      <fileset dir="${target}/${app-ver}/war/WEB-INF/lib" includes="ktrwjr.jar" />
     </copy>
   </target>
-</project>
+
+  <target name="clean" depends="prepare">
+    <delete dir="${target}" />
+    <delete dir="${ivy-lib}" />
+  </target>
+
+  <target name="ivy-resolve" description="--> retrieve dependencies with ivy">
+      <ivy:retrieve />
+  </target>
+
+ </project>
