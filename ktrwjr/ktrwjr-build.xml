@@ -150,10 +150,27 @@
   <delete file="${ivy-lib}/gwt-dev-2.7.0.jar" />
   <delete file="${ivy-lib}/gwt-user-2.7.0.jar" />
 
-  <war destfile="target/ktrwjrwar.war" webxml="war/WEB-INF/web.xml">
-        <fileset dir="war"/>
-        <lib dir="${ivy-lib}"/>
-        <classes dir="target/classes"/>
+  <property name="target.war-content" value="${target}/war-content" />
+  <mkdir dir="${target.war-content}" />
+
+ 
+  <copy todir="${target.war-content}">
+   <fileset dir="war/ktrwjr" />
+  </copy>
+
+  <property name="target.war-gwt-content" value="${target}/war-content/ktrwjr-gwt" />
+  <mkdir dir="${target.war-gwt-content}" />
+  <copy todir="${target.war-gwt-content}">
+   <fileset dir="target/gwtc/ktrwjr" />
+  </copy>
+  
+  <war destfile="target/ktrwjr.war" webxml="war/WEB-INF/web.xml">
+  <fileset dir="${target.war-content}" />
+  <lib dir="${ivy-lib}">
+    <exclude name="jdbc1.jar"/>
+  </lib>
+  <lib file="${target.lib}/${ant.project.name}.jar" />
+			  
     </war>
 </target>
   

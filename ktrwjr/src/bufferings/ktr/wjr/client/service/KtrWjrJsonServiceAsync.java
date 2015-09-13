@@ -84,7 +84,7 @@ public class KtrWjrJsonServiceAsync implements KtrWjrServiceAsync {
   /**
    * The url of json servlet.
    */
-  static final String JSON_SERVLET_URL = "/ktrwjr/ktrwjr/ktrwjr.s3gwt";
+  static final String JSON_SERVLET_URL = "/ktrwjr/ktrwjr.s3gwt";
 
   /**
    * The header of a content type.
