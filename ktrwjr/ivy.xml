@@ -1,9 +1,13 @@
 <ivy-module version="2.0">
-    <info organisation="org.apache" module="hello-ivy"/>
+    <info organisation="apache" module="hello-ivy"/>
+    <configurations>
+        <conf name="war" description="Libraries that should be included in the war file" />
+        <conf name="build" extends="war" description="Libraries needed to for compilation" />
+    </configurations>
     <dependencies>
-        <dependency org="com.google.gwt" name="gwt-user" rev="2.7.0"/>
-        <dependency org="com.google.gwt" name="gwt-dev" rev="2.7.0"/>
-        <dependency org="com.google.appengine" name="appengine-api-1.0-sdk" rev="1.4.2"/>
-        <dependency org="junit" name="junit" rev="4.7"/>
+        <dependency org="com.google.gwt" name="gwt-user" rev="2.7.0" conf="build->*,!sources,!javadoc" />
+        <dependency org="com.google.gwt" name="gwt-dev" rev="2.7.0" conf="build->*,!sources,!javadoc" />
+        <dependency org="com.google.appengine" name="appengine-api-1.0-sdk" rev="1.4.2" conf="war->*,!sources,!javadoc" />
+        <dependency org="junit" name="junit" rev="4.7" conf="war->*,!sources,!javadoc" />
     </dependencies>
 </ivy-module>

@@ -2,18 +2,14 @@
 
   <property file="ktrwjr-build.properties" />
   <property name="target" value="target" />
+  <property name="target.classes" value="${target}/classes" />
+  <property name="target.lib" value="${target}/lib" />
+  <property name="target.gwtc" value="${target}/gwtc" />
+  <property name="ivy-lib" value="lib" />
   <property name="app-ver" value="${ant.project.name}-${ktrwjr.version}" />
 
-  <tstamp>
-    <format property="TIMESTAMP" pattern="yyyyMMddHHmm" />
-  </tstamp>
 
   <target name="prepare">
-    <property name="work" value="target/${TIMESTAMP}" />
-    <property name="target.classes" value="${target}/classes" />
-    <property name="target.lib" value="${target}/lib" />
-    <property name="target.gwtc" value="${target}/gwtc" />
-    <property name="ivy-lib" value="lib" />
     <mkdir dir="${target}" />
     <mkdir dir="${target.classes}" />
     <mkdir dir="${target.lib}" />
@@ -63,7 +59,6 @@
           fork="true"
           classname="com.google.gwt.dev.Compiler"
 		  classpathref="ivy.lib.path"
-          
 		  >
       <classpath>
         <pathelement location="src" />
@@ -75,7 +70,7 @@
     </java>
   </target>
 
-  <target name="dist" depends="create-lib, gwtc">
+  <target name="dist" depends="create-lib, gwtc, war">
     <delete dir="${target}/${app-ver}" />
     <copy todir="${target}/${app-ver}/war/WEB-INF/lib">
       <fileset dir="${target.lib}" />
@@ -140,7 +135,7 @@
     </copy>
   </target>
 
-  <target name="clean" depends="prepare">
+  <target name="clean">
     <delete dir="${target}" />
     <delete dir="${ivy-lib}" />
   </target>
@@ -149,4 +144,17 @@
       <ivy:retrieve />
   </target>
 
+  <target name="war" depends="create-lib, gwtc">
+
+  <!-- FIXME: Find a ant/ivy-way to remove compile time dependencies -->
+  <delete file="${ivy-lib}/gwt-dev-2.7.0.jar" />
+  <delete file="${ivy-lib}/gwt-user-2.7.0.jar" />
+
+  <war destfile="target/ktrwjrwar.war" webxml="war/WEB-INF/web.xml">
+        <fileset dir="war"/>
+        <lib dir="${ivy-lib}"/>
+        <classes dir="target/classes"/>
+    </war>
+</target>
+  
  </project>
