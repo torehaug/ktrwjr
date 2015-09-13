@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 
 import bufferings.ktr.wjr.client.service.KtrWjrService;
 import bufferings.ktr.wjr.server.logic.WjrConfigLoader;
+import bufferings.ktr.wjr.server.logic.WjrDefaultMethodRunner;
+import bufferings.ktr.wjr.server.logic.WjrDefaultStoreLoader;
 import bufferings.ktr.wjr.server.logic.WjrGAEDevLogRecorder;
 import bufferings.ktr.wjr.server.logic.WjrGAELogRecorder;
 import bufferings.ktr.wjr.server.logic.WjrJUnitLogicFactory;
@@ -59,7 +61,9 @@ public class KtrWjrServiceImpl implements KtrWjrService {
 	 * {@inheritDoc}
 	 */
 	public WjrStore loadStore() {
-		return getStoreLoader().loadWjrStore(CLASSES_DIRECTORY);
+		final WjrStoreLoader storeLoader = new WjrDefaultStoreLoader();
+		return storeLoader.loadWjrStore("default");
+		// return getStoreLoader().loadWjrStore(CLASSES_DIRECTORY);
 	}
 
 	/**
@@ -74,7 +78,9 @@ public class KtrWjrServiceImpl implements KtrWjrService {
 			logRecorder = getGAELogRecorder();
 		}
 
-		WjrMethodRunner methodRunner = getMethodRunner();
+		WjrMethodRunner methodRunner = new WjrDefaultMethodRunner();
+		// WjrMethodRunner methodRunner =
+		// getMethodRunner("WjrDefaultMethodRunner");
 		methodItem.clearResult();
 
 		if (logRecorder != null) {
@@ -107,8 +113,8 @@ public class KtrWjrServiceImpl implements KtrWjrService {
 	/**
 	 * Gets the method runner which runs the tests.
 	 */
-	protected WjrMethodRunner getMethodRunner() {
-		return WjrJUnitLogicFactory.getMethodRunner();
+	protected WjrMethodRunner getMethodRunner(final String runnerName) {
+		return WjrJUnitLogicFactory.getMethodRunner(runnerName);
 	}
 
 	/**

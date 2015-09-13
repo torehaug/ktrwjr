@@ -22,36 +22,38 @@ package bufferings.ktr.wjr.shared.model.meta;
  */
 public class WjrMethodItemMeta {
 
-  private static final WjrMethodItemMeta meta = new WjrMethodItemMeta();
+	private static final WjrMethodItemMeta meta = new WjrMethodItemMeta();
 
-  public static WjrMethodItemMeta meta() {
-    return meta;
-  }
+	public static WjrMethodItemMeta meta() {
+		return meta;
+	}
 
-  public final String className = "className";
+	public final String className = "className";
 
-  public final String methodName = "methodName";
+	public final String methodName = "methodName";
 
-  public final String trace = "trace";
+	public final String trace = "trace";
 
-  public final String log = "log";
+	public final String log = "log";
 
-  public final String time = "time";
+	public final String results = "results";
 
-  public final String cpuTime = "cpuTime";
+	public final String time = "time";
 
-  public final String apiTime = "apiTime";
+	public final String cpuTime = "cpuTime";
 
-  public final String isOverQuota = "isOverQuota";
+	public final String apiTime = "apiTime";
 
-  public final String retryCount = "retryCount";
+	public final String isOverQuota = "isOverQuota";
 
-  public final String maxRetryCount = "maxRetryCount";
+	public final String retryCount = "retryCount";
 
-  public final String waitingSeconds = "waitingSeconds";
+	public final String maxRetryCount = "maxRetryCount";
 
-  public final String state = "state";
+	public final String waitingSeconds = "waitingSeconds";
 
-  private WjrMethodItemMeta() {
-  };
+	public final String state = "state";
+
+	private WjrMethodItemMeta() {
+	};
 }

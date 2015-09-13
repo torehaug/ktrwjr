@@ -15,7 +15,6 @@
  */
 package bufferings.ktr.wjr.server.logic;
 
-
 /**
  * The logic generator which matches the JUnit version.
  * 
@@ -23,60 +22,62 @@ package bufferings.ktr.wjr.server.logic;
  */
 public class WjrJUnitLogicFactory {
 
-  /**
-   * The version checker.
-   */
-  protected static WjrJUnitVersionChecker versionChecker;
+	/**
+	 * The version checker.
+	 */
+	protected static WjrJUnitVersionChecker versionChecker;
 
-  /**
-   * Gets the method runnner which matches the version of the using JUnit.
-   * 
-   * @return The method runner.
-   * @throws IllegalStateException
-   *           When both JUnit4 and JUnit3 are not available.
-   */
-  public static WjrMethodRunner getMethodRunner() {
-    WjrJUnitVersionChecker checker = getVersionChecker();
+	/**
+	 * Gets the method runnner which matches the version of the using JUnit.
+	 * 
+	 * @return The method runner.
+	 * @throws IllegalStateException
+	 *             When both JUnit4 and JUnit3 are not available.
+	 */
+	public static WjrMethodRunner getMethodRunner(String runnerName) {
+		if ("WjrDefaultMethodRunner".equals(runnerName)) {
+			return new WjrDefaultMethodRunner();
+		}
 
-    if (checker.isJUnit4Available()) {
-      return new WjrJUnit4MethodRunner();
-    } else if (checker.isJUnit3Available()) {
-      return new WjrJUnit3MethodRunner();
-    } else {
-      throw new IllegalStateException(
-        "Both JUnit4 and JUnit3 are not available.");
-    }
-  }
+		WjrJUnitVersionChecker checker = getVersionChecker();
 
-  /**
-   * Gets the store loader which matches the version of the using JUnit.
-   * 
-   * @return The store loader.
-   * @throws IllegalStateException
-   *           When both JUnit4 and JUnit3 are not available.
-   */
-  public static WjrStoreLoader getStoreLoader() {
-    WjrJUnitVersionChecker checker = getVersionChecker();
+		if (checker.isJUnit4Available()) {
+			return new WjrJUnit4MethodRunner();
+		} else if (checker.isJUnit3Available()) {
+			return new WjrJUnit3MethodRunner();
+		} else {
+			throw new IllegalStateException("Both JUnit4 and JUnit3 are not available.");
+		}
+	}
 
-    if (checker.isJUnit4Available()) {
-      return new WjrJUnit4StoreLoader();
-    } else if (checker.isJUnit3Available()) {
-      return new WjrJUnit3StoreLoader();
-    } else {
-      throw new IllegalStateException(
-        "Both JUnit4 and JUnit3 are not available.");
-    }
-  }
+	/**
+	 * Gets the store loader which matches the version of the using JUnit.
+	 * 
+	 * @return The store loader.
+	 * @throws IllegalStateException
+	 *             When both JUnit4 and JUnit3 are not available.
+	 */
+	public static WjrStoreLoader getStoreLoader() {
+		WjrJUnitVersionChecker checker = getVersionChecker();
 
-  /**
-   * Gets the version checker.
-   * 
-   * @return The version checker.
-   */
-  protected static WjrJUnitVersionChecker getVersionChecker() {
-    if (versionChecker == null) {
-      versionChecker = new WjrJUnitVersionChecker();
-    }
-    return versionChecker;
-  }
+		if (checker.isJUnit4Available()) {
+			return new WjrJUnit4StoreLoader();
+		} else if (checker.isJUnit3Available()) {
+			return new WjrJUnit3StoreLoader();
+		} else {
+			throw new IllegalStateException("Both JUnit4 and JUnit3 are not available.");
+		}
+	}
+
+	/**
+	 * Gets the version checker.
+	 * 
+	 * @return The version checker.
+	 */
+	protected static WjrJUnitVersionChecker getVersionChecker() {
+		if (versionChecker == null) {
+			versionChecker = new WjrJUnitVersionChecker();
+		}
+		return versionChecker;
+	}
 }

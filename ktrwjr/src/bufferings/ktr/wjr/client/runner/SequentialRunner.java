@@ -149,7 +149,6 @@ public class SequentialRunner extends AbstractRunner implements
     result.copyResult(stored);
 
     if (!cancelRequested
-      && result.isOverQuota()
       && config.isRetryOverQuotaEnabled()
       && stored.getRetryCount() < stored.getMaxRetryCount()) {
 
