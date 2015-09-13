@@ -15,16 +15,15 @@
  */
 package bufferings.ktr.wjr.server.logic;
 
-import static bufferings.ktr.wjr.shared.util.Preconditions.*;
+import static bufferings.ktr.wjr.shared.util.Preconditions.checkNotNull;
+
+import bufferings.ktr.wjr.server.util.WjrServerUtils;
+import bufferings.ktr.wjr.shared.model.WjrMethodItem;
+import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
-import bufferings.ktr.wjr.server.util.WjrServerUtils;
-import bufferings.ktr.wjr.shared.model.WjrMethodItem;
-import bufferings.ktr.wjr.shared.model.WjrStoreItem.State;
-
-import com.google.apphosting.api.ApiProxy.OverQuotaException;
 
 /**
  * The test runner of the {@link WjrMethodItem}.
@@ -33,112 +32,107 @@ import com.google.apphosting.api.ApiProxy.OverQuotaException;
  */
 public class WjrJUnit3MethodRunner implements WjrMethodRunner {
 
-  /**
-   * {@inheritDoc}
-   */
-  public WjrMethodItem runWjrMethod(WjrMethodItem methodItem) {
-    checkNotNull(methodItem, "The methodItem parameter is null.");
-    try {
-      Class<?> clazz = loadClass(methodItem.getClassName());
-      Test runner = getRunner(clazz, methodItem.getMethodName());
-      WjrJUnit3Result result = runTest(runner);
-      return applyResult(methodItem, result);
-    } catch (Exception e) {
-      methodItem.setState(State.ERROR);
-      methodItem.setTrace(getTrace(e));
-      return methodItem;
-    }
-  }
+	/**
+	 * {@inheritDoc}
+	 */
+	public WjrMethodItem runWjrMethod(WjrMethodItem methodItem) {
+		checkNotNull(methodItem, "The methodItem parameter is null.");
+		try {
+			Class<?> clazz = loadClass(methodItem.getClassName());
+			Test runner = getRunner(clazz, methodItem.getMethodName());
+			WjrJUnit3Result result = runTest(runner);
+			return applyResult(methodItem, result);
+		} catch (Exception e) {
+			methodItem.setState(State.ERROR);
+			methodItem.setTrace(getTrace(e));
+			return methodItem;
+		}
+	}
 
-  /**
-   * Gets the trace string from the exception.
-   * 
-   * If the parameter is null, returns empty string.
-   * 
-   * @param e
-   *          The exception.
-   * @return The trace string from the exception.
-   */
-  protected String getTrace(Exception e) {
-    return WjrServerUtils.getTraceStringFromException(e);
-  }
+	/**
+	 * Gets the trace string from the exception.
+	 * 
+	 * If the parameter is null, returns empty string.
+	 * 
+	 * @param e
+	 *            The exception.
+	 * @return The trace string from the exception.
+	 */
+	protected String getTrace(Exception e) {
+		return WjrServerUtils.getTraceStringFromException(e);
+	}
 
-  /**
-   * Loads the class from the class name.
-   * 
-   * @param className
-   *          The class name.
-   * @return The loaded class.
-   * @throws NullPointerException
-   *           When the className parameter is null.
-   * @throws RuntimeException
-   *           When the class is not found.
-   */
-  protected Class<?> loadClass(String className) {
-    return WjrServerUtils.loadClass(className);
-  }
+	/**
+	 * Loads the class from the class name.
+	 * 
+	 * @param className
+	 *            The class name.
+	 * @return The loaded class.
+	 * @throws NullPointerException
+	 *             When the className parameter is null.
+	 * @throws RuntimeException
+	 *             When the class is not found.
+	 */
+	protected Class<?> loadClass(String className) {
+		return WjrServerUtils.loadClass(className);
+	}
 
-  /**
-   * Gets the test runner of the given test method.
-   * 
-   * @param clazz
-   *          The class of the test method.
-   * @param methodName
-   *          The method name to run.
-   * @return The test runner of the given test method.
-   */
-  @SuppressWarnings("unchecked")
-  protected Test getRunner(Class<?> clazz, String methodName) {
-    if (!TestCase.class.isAssignableFrom(clazz)) {
-      throw new IllegalArgumentException(
-        "TestCase is not assignable from the class.");
-    }
+	/**
+	 * Gets the test runner of the given test method.
+	 * 
+	 * @param clazz
+	 *            The class of the test method.
+	 * @param methodName
+	 *            The method name to run.
+	 * @return The test runner of the given test method.
+	 */
+	@SuppressWarnings("unchecked")
+	protected Test getRunner(Class<?> clazz, String methodName) {
+		if (!TestCase.class.isAssignableFrom(clazz)) {
+			throw new IllegalArgumentException("TestCase is not assignable from the class.");
+		}
 
-    Class<? extends TestCase> testCaseClass = (Class<? extends TestCase>) clazz;
-    return TestSuite.createTest(testCaseClass, methodName);
-  }
+		Class<? extends TestCase> testCaseClass = (Class<? extends TestCase>) clazz;
+		return TestSuite.createTest(testCaseClass, methodName);
+	}
 
-  /**
-   * Runs the test runner.
-   * 
-   * @param runner
-   *          The test runner.
-   * @return The test result.
-   */
-  protected WjrJUnit3Result runTest(Test runner) {
-    TestResult result = new TestResult();
-    long before = System.currentTimeMillis();
-    runner.run(result);
-    Long time = System.currentTimeMillis() - before;
-    return new WjrJUnit3Result(result, time);
-  }
+	/**
+	 * Runs the test runner.
+	 * 
+	 * @param runner
+	 *            The test runner.
+	 * @return The test result.
+	 */
+	protected WjrJUnit3Result runTest(Test runner) {
+		TestResult result = new TestResult();
+		long before = System.currentTimeMillis();
+		runner.run(result);
+		Long time = System.currentTimeMillis() - before;
+		return new WjrJUnit3Result(result, time);
+	}
 
-  /**
-   * Applys the result to the methodItem.
-   * 
-   * @param methodItem
-   *          The methodItem to be applied the result.
-   * @param result
-   *          The test result.
-   */
-  protected WjrMethodItem applyResult(WjrMethodItem methodItem,
-      WjrJUnit3Result result) {
-    if (result.getFailureCount() > 0) {
-      methodItem.setState(State.FAILURE);
-      methodItem.setTrace(result.getFailures().get(0).trace());
-    } else if (result.getErrorCount() > 0) {
-      methodItem.setState(State.ERROR);
-      methodItem.setTrace(result.getErrors().get(0).trace());
-      if (result.getErrors().get(0).thrownException() instanceof OverQuotaException) {
-        methodItem.setOverQuota(true);
-      }
-    } else {
-      methodItem.setState(State.SUCCESS);
-      methodItem.setTrace("");
-    }
+	/**
+	 * Applys the result to the methodItem.
+	 * 
+	 * @param methodItem
+	 *            The methodItem to be applied the result.
+	 * @param result
+	 *            The test result.
+	 */
+	protected WjrMethodItem applyResult(WjrMethodItem methodItem, WjrJUnit3Result result) {
+		if (result.getFailureCount() > 0) {
+			methodItem.setState(State.FAILURE);
+			methodItem.setTrace(result.getFailures().get(0).trace());
+		} else if (result.getErrorCount() > 0) {
+			methodItem.setState(State.ERROR);
+			methodItem.setTrace(result.getErrors().get(0).trace());
+		} else {
+			methodItem.setState(State.SUCCESS);
+			methodItem.setTrace("");
+		}
 
-    methodItem.setTime(Long.toString(result.getRunTime()));
-    return methodItem;
-  }
+		methodItem.setTime(Long.toString(result.getRunTime()));
+		return methodItem;
+	}
 
 }

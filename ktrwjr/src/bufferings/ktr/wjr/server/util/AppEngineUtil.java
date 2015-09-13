@@ -26,64 +26,55 @@ package bufferings.ktr.wjr.server.util;
  */
 public final class AppEngineUtil {
 
-    private static final String RUNTIME = "com.google.appengine.runtime";
+	private static final String RUNTIME = "com.google.appengine.runtime";
 
-    /**
-     * The environment key.
-     */
-    public static final String ENVIRONMENT_KEY = RUNTIME + ".environment";
+	/**
+	 * The environment key.
+	 */
+	public static final String ENVIRONMENT_KEY = RUNTIME + ".environment";
 
-    /**
-     * The version value.
-     */
-    public static final String VERSION_KEY = RUNTIME + ".version";
+	/**
+	 * The version value.
+	 */
+	public static final String VERSION_KEY = RUNTIME + ".version";
 
-    /**
-     * The production value.
-     */
-    public static final String PRODUCTION = "Production";
+	/**
+	 * The production value.
+	 */
+	public static final String PRODUCTION = "Production";
 
-    /**
-     * The development value.
-     */
-    public static final String DEVELOPMENT = "Development";
+	/**
+	 * The development value.
+	 */
+	public static final String DEVELOPMENT = "Development";
 
-    /**
-     * Determines if this application is running on App Engine Server.
-     * 
-     * @return whether this application is running on App Engine Server
-     */
-    public static boolean isServer() {
-        return System.getProperty(ENVIRONMENT_KEY) != null;
-    }
+	/**
+	 * Determines if this application is running on App Engine Server.
+	 * 
+	 * @return whether this application is running on App Engine Server
+	 */
+	public static boolean isServer() {
+		return System.getProperty(ENVIRONMENT_KEY) != null;
+	}
 
-    /**
-     * Determines if this application is running on development server.
-     * 
-     * @return whether this application is running on development server
-     */
-    public static boolean isDevelopment() {
-        return DEVELOPMENT.equals(System.getProperty(ENVIRONMENT_KEY));
-    }
+	/**
+	 * Determines if this application is running on development server.
+	 * 
+	 * @return whether this application is running on development server
+	 */
+	public static boolean isDevelopment() {
+		return DEVELOPMENT.equals(System.getProperty(ENVIRONMENT_KEY));
+	}
 
-    /**
-     * Determines if this application is running on production server.
-     * 
-     * @return whether this application is running on production server
-     */
-    public static boolean isProduction() {
-        return PRODUCTION.equals(System.getProperty(ENVIRONMENT_KEY));
-    }
+	/**
+	 * Returns the version
+	 * 
+	 * @return the version
+	 */
+	public static String getVersion() {
+		return System.getProperty(VERSION_KEY);
+	}
 
-    /**
-     * Returns the version
-     * 
-     * @return the version
-     */
-    public static String getVersion() {
-        return System.getProperty(VERSION_KEY);
-    }
-
-    private AppEngineUtil() {
-    }
+	private AppEngineUtil() {
+	}
 }

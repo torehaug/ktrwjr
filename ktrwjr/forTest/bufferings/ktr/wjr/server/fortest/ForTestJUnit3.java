@@ -19,59 +19,49 @@ import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
-import com.google.apphosting.api.ApiProxy;
-
 public class ForTestJUnit3 extends TestCase {
-  private static final Logger logger = Logger.getLogger(ForTestJUnit3.class
-    .getName());
+	private static final Logger logger = Logger.getLogger(ForTestJUnit3.class.getName());
 
-  public void testSuccessMethod() {
-    logger.info("testSuccessMethod");
-  }
+	public void testSuccessMethod() {
+		logger.info("testSuccessMethod");
+	}
 
-  public void testFailureMethod() {
-    logger.info("testFailureMethod");
-    assertTrue(false);
-  }
+	public void testFailureMethod() {
+		logger.info("testFailureMethod");
+		assertTrue(false);
+	}
 
-  public void testErrorMethod() {
-    logger.info("testErrorMethod");
-    throw new RuntimeException();
-  }
+	public void testErrorMethod() {
+		logger.info("testErrorMethod");
+		throw new RuntimeException();
+	}
 
-  public void ignoreMethod() {
-    logger.info("ignoreMethod");
-  }
+	public void ignoreMethod() {
+		logger.info("ignoreMethod");
+	}
 
-  public int testHasReturnMethod() {
-    logger.info("testHasReturnMethod");
-    return 0;
-  }
+	public int testHasReturnMethod() {
+		logger.info("testHasReturnMethod");
+		return 0;
+	}
 
-  public void testOverQuotaExceptionMethod() {
-    logger.info("overQuotaExceptionMethod");
-    throw new ApiProxy.OverQuotaException(
-      ForTest.class.getPackage().getName(),
-      ForTest.class.getSimpleName());
-  }
+	public void testHasParamMethod(int a) {
+		logger.info("testHasParamMethod");
+	}
 
-  public void testHasParamMethod(int a) {
-    logger.info("testHasParamMethod");
-  }
+	public static class ForTestJUnit3InnerStatic extends TestCase {
+		public void testSuccessMethod() {
+			logger.info("ForTestJUnit3InnerStatic#testSuccessMethod");
+		}
 
-  public static class ForTestJUnit3InnerStatic extends TestCase {
-    public void testSuccessMethod() {
-      logger.info("ForTestJUnit3InnerStatic#testSuccessMethod");
-    }
+		public void ignoreMethod() {
+			logger.info("ignoreMethod");
+		}
+	}
 
-    public void ignoreMethod() {
-      logger.info("ignoreMethod");
-    }
-  }
-
-  public class ForTestJUnit3InnerNotStatic extends TestCase {
-    public void testSuccessMethod() {
-      logger.info("ForTestJUnit3InnerNotStatic#testSuccessMethod");
-    }
-  }
+	public class ForTestJUnit3InnerNotStatic extends TestCase {
+		public void testSuccessMethod() {
+			logger.info("ForTestJUnit3InnerNotStatic#testSuccessMethod");
+		}
+	}
 }

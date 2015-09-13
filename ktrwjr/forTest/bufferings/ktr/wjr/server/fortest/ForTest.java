@@ -15,68 +15,57 @@
  */
 package bufferings.ktr.wjr.server.fortest;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.util.logging.Logger;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.google.apphosting.api.ApiProxy;
-
 public class ForTest {
-  private static final Logger logger = Logger
-    .getLogger(ForTest.class.getName());
+	private static final Logger logger = Logger.getLogger(ForTest.class.getName());
 
-  @Test
-  public void successMethod() {
-    logger.info("successMethod");
-  }
+	@Test
+	public void successMethod() {
+		logger.info("successMethod");
+	}
 
-  @Test
-  public void failureMethod() {
-    logger.info("failureMethod");
-    assertThat("", is("aaaa"));
-  }
+	@Test
+	public void failureMethod() {
+		logger.info("failureMethod");
+		assertThat("", is("aaaa"));
+	}
 
-  @Test
-  public void errorMethod() {
-    logger.info("errorMethod");
-    throw new RuntimeException();
-  }
+	@Test
+	public void errorMethod() {
+		logger.info("errorMethod");
+		throw new RuntimeException();
+	}
 
-  @Test
-  @Ignore
-  public void ignoreMethod() {
-    logger.info("ignoreMethod");
-  }
+	@Test
+	@Ignore
+	public void ignoreMethod() {
+		logger.info("ignoreMethod");
+	}
 
-  @Test
-  public void overQuotaExceptionMethod() {
-    logger.info("overQuotaExceptionMethod");
-    throw new ApiProxy.OverQuotaException(
-      ForTest.class.getPackage().getName(),
-      ForTest.class.getSimpleName());
-  }
+	public static class ForTestInnerStatic {
+		@Test
+		public void successMethod() {
+			logger.info("ForTestInner#successMethod");
+		}
 
-  public static class ForTestInnerStatic {
-    @Test
-    public void successMethod() {
-      logger.info("ForTestInner#successMethod");
-    }
+		@Test
+		@Ignore
+		public void ignoreMethod() {
+			logger.info("ignoreMethod");
+		}
+	}
 
-    @Test
-    @Ignore
-    public void ignoreMethod() {
-      logger.info("ignoreMethod");
-    }
-  }
-
-  public class ForTestInnerNotStatic {
-    @Test
-    public void successMethod() {
-      logger.info("ForTestInner#successMethod");
-    }
-  }
+	public class ForTestInnerNotStatic {
+		@Test
+		public void successMethod() {
+			logger.info("ForTestInner#successMethod");
+		}
+	}
 }
