@@ -117,7 +117,6 @@ public class WjrMethodItemTest {
     methodItem.setTime("1111");
     methodItem.setCpuTime("1111");
     methodItem.setApiTime("1111");
-    methodItem.setOverQuota(true);
 
     methodItem.clearResult();
 
@@ -131,7 +130,6 @@ public class WjrMethodItemTest {
     assertThat(methodItem.getTime(), is(""));
     assertThat(methodItem.getCpuTime(), is(""));
     assertThat(methodItem.getApiTime(), is(""));
-    assertThat(methodItem.isOverQuota(), is(false));
   }
 
   @Test(expected = NullPointerException.class)
@@ -184,7 +182,6 @@ public class WjrMethodItemTest {
   @Test
   public void copyResult_WillNotCopyRetryInfo() {
     WjrMethodItem from = new WjrMethodItem("bar.foo.Foo", "barMethod");
-    from.setOverQuota(true);
     from.setRetryCount(5);
     from.setMaxRetryCount(10);
     from.setWaitingSeconds(15);
@@ -192,7 +189,6 @@ public class WjrMethodItemTest {
     WjrMethodItem to = new WjrMethodItem("bar.foo.Foo", "barMethod");
     from.copyResult(to);
 
-    assertThat(to.isOverQuota(), is(false));
     assertThat(to.getRetryCount(), is(0));
     assertThat(to.getMaxRetryCount(), is(0));
     assertThat(to.getWaitingSeconds(), is(0));

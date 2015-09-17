@@ -418,7 +418,6 @@ public class WjrJUnit4MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.ERROR));
     assertThat(methodItem.getTrace(), is(not("")));
-    assertThat(methodItem.isOverQuota(), is(true));
 
     methodItem =
       new WjrMethodItem(
@@ -427,6 +426,5 @@ public class WjrJUnit4MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.ERROR));
     assertThat(methodItem.getTrace(), is(not("")));
-    assertThat(methodItem.isOverQuota(), is(true));
   }
 }

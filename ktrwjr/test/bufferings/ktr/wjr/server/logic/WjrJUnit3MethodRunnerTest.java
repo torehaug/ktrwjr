@@ -256,7 +256,6 @@ public class WjrJUnit3MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.SUCCESS));
     assertThat(methodItem.getTrace(), is(""));
-    assertThat(methodItem.isOverQuota(), is(false));
   }
 
   @Test
@@ -266,7 +265,6 @@ public class WjrJUnit3MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.FAILURE));
     assertThat(methodItem.getTrace(), is(not(nullValue())));
-    assertThat(methodItem.isOverQuota(), is(false));
   }
 
   @Test
@@ -276,7 +274,6 @@ public class WjrJUnit3MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.ERROR));
     assertThat(methodItem.getTrace(), is(not(nullValue())));
-    assertThat(methodItem.isOverQuota(), is(false));
   }
 
   @Test
@@ -288,7 +285,6 @@ public class WjrJUnit3MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.SUCCESS));
     assertThat(methodItem.getTrace(), is(""));
-    assertThat(methodItem.isOverQuota(), is(false));
   }
 
   @Test
@@ -300,7 +296,6 @@ public class WjrJUnit3MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.SUCCESS));
     assertThat(methodItem.getTrace(), is(""));
-    assertThat(methodItem.isOverQuota(), is(false));
   }
 
   @Test
@@ -310,7 +305,6 @@ public class WjrJUnit3MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.FAILURE));
     assertThat(methodItem.getTrace(), is(not(nullValue())));
-    assertThat(methodItem.isOverQuota(), is(false));
   }
 
   @Test
@@ -320,7 +314,6 @@ public class WjrJUnit3MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.ERROR));
     assertThat(methodItem.getTrace(), is(not("")));
-    assertThat(methodItem.isOverQuota(), is(false));
   }
 
   @Test
@@ -332,6 +325,5 @@ public class WjrJUnit3MethodRunnerTest {
     methodRunner.runWjrMethod(methodItem);
     assertThat(methodItem.getState(), is(State.ERROR));
     assertThat(methodItem.getTrace(), is(not("")));
-    assertThat(methodItem.isOverQuota(), is(true));
   }
 }
