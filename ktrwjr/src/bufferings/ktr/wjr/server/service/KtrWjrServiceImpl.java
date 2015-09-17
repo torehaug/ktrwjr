@@ -79,8 +79,7 @@ public class KtrWjrServiceImpl implements KtrWjrService {
 		}
 
 		WjrMethodRunner methodRunner = new WjrDefaultMethodRunner();
-		// WjrMethodRunner methodRunner =
-		// getMethodRunner("WjrDefaultMethodRunner");
+//		WjrMethodRunner methodRunner = getMethodRunner();
 		methodItem.clearResult();
 
 		if (logRecorder != null) {
@@ -113,8 +112,8 @@ public class KtrWjrServiceImpl implements KtrWjrService {
 	/**
 	 * Gets the method runner which runs the tests.
 	 */
-	protected WjrMethodRunner getMethodRunner(final String runnerName) {
-		return WjrJUnitLogicFactory.getMethodRunner(runnerName);
+	protected WjrMethodRunner getMethodRunner() {
+		return WjrJUnitLogicFactory.getMethodRunner();
 	}
 
 	/**

@@ -34,11 +34,7 @@ public class WjrJUnitLogicFactory {
 	 * @throws IllegalStateException
 	 *             When both JUnit4 and JUnit3 are not available.
 	 */
-	public static WjrMethodRunner getMethodRunner(String runnerName) {
-		if ("WjrDefaultMethodRunner".equals(runnerName)) {
-			return new WjrDefaultMethodRunner();
-		}
-
+	public static WjrMethodRunner getMethodRunner() {
 		WjrJUnitVersionChecker checker = getVersionChecker();
 
 		if (checker.isJUnit4Available()) {
